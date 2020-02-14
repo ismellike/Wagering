@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Wagering.Models;
 
-namespace Wagering.Models
+namespace Wagering
 {
     public static class Helpers
     {

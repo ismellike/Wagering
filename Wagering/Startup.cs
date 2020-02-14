@@ -33,11 +33,27 @@ namespace Wagering
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
-            services.AddAuthentication()
-                .AddIdentityServerJwt();
-
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    IConfigurationSection section =
+                        Configuration.GetSection("Authentication:Google");
+
+                    options.ClientId = section["ClientId"];
+                    options.ClientSecret = section["ClientSecret"];
+                })
+                .AddTwitter(options =>
+                {
+                    IConfigurationSection section =
+                        Configuration.GetSection("Authentication:Twitter");
+
+                    options.ConsumerKey = section["ClientId"];
+                    options.ConsumerSecret = section["ClientSecret"];
+                })
+                .AddIdentityServerJwt();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
