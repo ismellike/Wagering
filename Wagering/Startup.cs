@@ -104,7 +104,6 @@ namespace Wagering
                 {
                     spa.UseVueCli(npmScript: "serve");
                 }
-
             });
         }
     }

@@ -1,52 +1,104 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import OidcCallback from './views/OidcCallback.vue'
-import OidcPopupCallback from './views/OidcPopupCallback.vue'
-import OidcCallbackError from './views/OidcCallbackError.vue'
-import { vuexOidcCreateRouterMiddleware } from 'vuex-oidc'
-import store from '@/store'
+import {
+  LoginActions,
+  LogoutActions,
+  ApplicationPaths
+} from './auth/AuthConstants'
+import Login from './auth/Login'
+import Logout from './auth/Logout'
+import store from './store'
 
 Vue.use(Router)
 
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-    {
+  routes: [{
       path: '/',
       name: 'home',
-      component: Home,
-      meta: {
-        isPublic: true
-      }
+      component: Home
     },
     {
       path: '/protected',
       name: 'protected',
-      component: () => import(/* webpackChunkName: "protected" */ './views/Protected.vue')
-    },
-    {
-      path: '/oidc-callback', // Needs to match redirectUri in you oidcSettings
-      name: 'oidcCallback',
-      component: OidcCallback
-    },
-    {
-      path: '/oidc-popup-callback', // Needs to match popupRedirectUri in you oidcSettings
-      name: 'oidcPopupCallback',
-      component: OidcPopupCallback
-    },
-    {
-      path: '/oidc-callback-error', // Needs to match redirect_uri in you oidcSettings
-      name: 'oidcCallbackError',
-      component: OidcCallbackError,
+      component: () => import('./views/Protected.vue'),
       meta: {
-        isPublic: true
+        requiresAuth: true
+      }
+    }, //Auth Routes
+    {
+      path: ApplicationPaths.Login,
+      component: Login,
+      props: {
+        action: LoginActions.Login
+      }
+    },
+    {
+      path: ApplicationPaths.LoginFailed,
+      component: Login,
+      props: {
+        action: LoginActions.LoginFailed
+      }
+    },
+    {
+      path: ApplicationPaths.LoginCallback,
+      component: Login,
+      props: {
+        action: LoginActions.LoginCallback
+      }
+    },
+    {
+      path: ApplicationPaths.Profile,
+      component: Login,
+      props: {
+        action: LoginActions.Profile
+      }
+    },
+    {
+      path: ApplicationPaths.Register,
+      component: Login,
+      props: {
+        action: LoginActions.Register
+      }
+    },
+    {
+      path: ApplicationPaths.LogOut,
+      component: Logout,
+      props: {
+        action: LogoutActions.LogOut
+      }
+    },
+    {
+      path: ApplicationPaths.LogOutCallback,
+      component: Logout,
+      props: {
+        action: LogoutActions.LogOutCallback
+      }
+    },
+    {
+      path: ApplicationPaths.LoggedOut,
+      component: Logout,
+      props: {
+        action: LogoutActions.LoggedOut
       }
     }
   ]
 })
 
-router.beforeEach(vuexOidcCreateRouterMiddleware(store, 'oidcStore'))
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (store.state.account.isAuthenticated) {
+      next()
+    } else {
+      next({
+        path: ApplicationPaths.Login
+      })
+    }
+  } else {
+    next()
+  }
+})
 
 export default router
