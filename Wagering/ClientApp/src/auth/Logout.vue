@@ -18,40 +18,39 @@ import {
 } from "./AuthConstants";
 
 export default {
+  props: {
+    action: {
+      type: String,
+      required: true
+    }
+  },
+  data() {
+    return {
+      message: undefined,
+      isReady: false,
+      authenticated: false
+    };
+  },
   mounted() {
-    const action = this.props.action;
+    const action = this.action;
     switch (action) {
       case LogoutActions.Logout:
-        if (!!window.history.state.state.local) {
-          this.logout(this.getReturnUrl());
-        } else {
-          // This prevents regular links to <app>/authentication/logout from triggering a logout
-          isReady = true;
-          message = "The logout was not initiated from within the page.";
-        }
+        this.logout(this.getReturnUrl());
         break;
       case LogoutActions.LogoutCallback:
         this.processLogoutCallback();
         break;
       case LogoutActions.LoggedOut:
-        isReady = true;
-        message = "You successfully logged out!";
+        this.isReady = true;
+        this.message = "You successfully logged out!";
         break;
       default:
         throw new Error(`Invalid action '${action}'`);
     }
     this.populateAuthenticationState();
   },
-  props: {
-    action: String
-  },
-  data: {
-    message: String,
-    isReady: Boolean,
-    authenticated: Boolean
-  },
   methods: {
-    logout: async returnUrl => {
+    async logout(returnUrl) {
       const state = { returnUrl };
       const isauthenticated = await AuthService.isAuthenticated();
       if (isauthenticated) {
@@ -60,20 +59,21 @@ export default {
           case AuthenticationResultStatus.Redirect:
             break;
           case AuthenticationResultStatus.Success:
-            removeUser();
+            this.removeUser();
             await this.navigateToReturnUrl(returnUrl);
             break;
           case AuthenticationResultStatus.Fail:
-            message = result.message;
+            this.message = result.message;
             break;
           default:
             throw new Error("Invalid authentication result status.");
         }
       } else {
-        message = "You successfully logged out!";
+        this.removeUser();
+        this.message = "You successfully logged out!";
       }
     },
-    processLogoutCallback: async () => {
+    async processLogoutCallback() {
       const url = window.location.href;
       const result = await AuthService.completeSignOut(url);
       switch (result.status) {
@@ -82,25 +82,25 @@ export default {
           // is when we are doing a redirect sign in flow.
           throw new Error("Should not redirect.");
         case AuthenticationResultStatus.Success:
-          removeUser();
+          this.removeUser();
           await this.navigateToReturnUrl(this.getReturnUrl(result.state));
           break;
         case AuthenticationResultStatus.Fail:
-          message = result.message;
+          this.message = result.message;
           break;
         default:
           throw new Error("Invalid authentication result status.");
       }
     },
-    removeUser: function() {
+    removeUser() {
       this.$store.dispatch("setLogout");
     },
-    populateAuthenticationState: async () => {
+    async populateAuthenticationState() {
       const result = await AuthService.isAuthenticated();
-      isReady = true;
-      authenticated = result;
+      this.isReady = true;
+      this.authenticated = result;
     },
-    getReturnUrl: function(state) {
+    getReturnUrl(state) {
       const params = new URLSearchParams(window.location.search);
       const fromQuery = params.get(QueryParameterNames.ReturnUrl);
       if (fromQuery && !fromQuery.startsWith(`${window.location.origin}/`)) {
@@ -115,7 +115,7 @@ export default {
         `${window.location.origin}${ApplicationPaths.LoggedOut}`
       );
     },
-    navigateToReturnUrl: function(returnUrl) {
+    navigateToReturnUrl(returnUrl) {
       // It's important that we do a replace here so that we remove the callback uri with the
       // fragment containing the tokens from the browser history.
       window.location.replace(returnUrl);

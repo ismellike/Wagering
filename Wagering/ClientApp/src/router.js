@@ -67,14 +67,14 @@ const router = new Router({
       path: ApplicationPaths.LogOut,
       component: Logout,
       props: {
-        action: LogoutActions.LogOut
+        action: LogoutActions.Logout
       }
     },
     {
       path: ApplicationPaths.LogOutCallback,
       component: Logout,
       props: {
-        action: LogoutActions.LogOutCallback
+        action: LogoutActions.LogoutCallback
       }
     },
     {

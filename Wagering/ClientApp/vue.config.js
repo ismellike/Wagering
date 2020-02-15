@@ -6,7 +6,7 @@ module.exports = {
     app: {
       entry: 'src/main.js',
       template: 'public/index.html',
-      filename: 'index.html',
+      filename: 'index.html'
     }
   }
-}
+};

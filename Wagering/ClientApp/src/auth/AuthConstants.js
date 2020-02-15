@@ -1,4 +1,4 @@
-﻿export const ApplicationName = 'Wagering.gg'
+﻿export const ApplicationName = 'Wagering'
 
 export const QueryParameterNames = {
   ReturnUrl: 'returnUrl',

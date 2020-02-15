@@ -3,7 +3,7 @@
     <div id="nav">
       <router-link to="/">Home</router-link>|
       <router-link to="/protected">Protected</router-link>|
-      <LoginMenu></LoginMenu>
+      <LoginMenu />
     </div>
     <router-view />
   </div>

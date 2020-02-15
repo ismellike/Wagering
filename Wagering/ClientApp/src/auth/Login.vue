@@ -17,8 +17,19 @@ import {
 } from "./AuthConstants";
 
 export default {
+  props: {
+    action: {
+      type: String,
+      required: true
+    }
+  },
+  data() {
+    return {
+      message: undefined
+    };
+  },
   mounted() {
-    const action = this.props.action;
+    const action = this.action;
     switch (action) {
       case LoginActions.Login:
         this.login(this.getReturnUrl());
@@ -29,7 +40,7 @@ export default {
       case LoginActions.LoginFailed:
         const params = new URLSearchParams(window.location.search);
         const error = params.get(QueryParameterNames.Message);
-        message = error;
+        this.message = error;
         break;
       case LoginActions.Profile:
         this.redirectToProfile();
@@ -41,31 +52,25 @@ export default {
         throw new Error(`Invalid action '${action}'`);
     }
   },
-  props: {
-    action: String
-  },
-  data: {
-    message: String
-  },
   methods: {
-    login: async returnUrl => {
+    async login(returnUrl) {
       const state = { returnUrl };
       const result = await AuthService.signIn(state);
       switch (result.status) {
         case AuthenticationResultStatus.Redirect:
           break;
         case AuthenticationResultStatus.Success:
-          await addUser();
+          await this.addUser();
           await this.navigateToReturnUrl(returnUrl);
           break;
         case AuthenticationResultStatus.Fail:
-          message = result.message;
+          this.message = result.message;
           break;
         default:
           throw new Error(`Invalid status result ${result.status}.`);
       }
     },
-    processLoginCallback: async () => {
+    async processLoginCallback() {
       const url = window.location.href;
       const result = await AuthService.completeSignIn(url);
       switch (result.status) {
@@ -74,11 +79,11 @@ export default {
           // is when we are doing a redirect sign in flow.
           throw new Error("Should not redirect.");
         case AuthenticationResultStatus.Success:
-          await addUser();
+          await this.addUser();
           await this.navigateToReturnUrl(this.getReturnUrl(result.state));
           break;
         case AuthenticationResultStatus.Fail:
-          message = result.message;
+          this.message = result.message;
           break;
         default:
           throw new Error(
@@ -86,11 +91,12 @@ export default {
           );
       }
     },
-    addUser: async () => {
+    async addUser() {
       const user = await AuthService.getUser();
-      this.$store.dispatch("setLogin", user && user.name);
+      if (user && user.name != undefined)
+        this.$store.dispatch("setLogin", user && user.name);
     },
-    getReturnUrl: function(state) {
+    getReturnUrl(state) {
       const params = new URLSearchParams(window.location.search);
       const fromQuery = params.get(QueryParameterNames.ReturnUrl);
       if (fromQuery && !fromQuery.startsWith(`${window.location.origin}/`)) {
@@ -103,24 +109,24 @@ export default {
         (state && state.returnUrl) || fromQuery || `${window.location.origin}/`
       );
     },
-    redirectToRegister: function() {
+    redirectToRegister() {
       this.redirectToApiAuthorizationPath(
         `${ApplicationPaths.IdentityRegisterPath}?${
           QueryParameterNames.ReturnUrl
         }=${encodeURI(ApplicationPaths.Login)}`
       );
     },
-    redirectToProfile: function() {
+    redirectToProfile() {
       this.redirectToApiAuthorizationPath(ApplicationPaths.IdentityManagePath);
     },
-    redirectToApiAuthorizationPath: function(apiAuthorizationPath) {
+    redirectToApiAuthorizationPath(apiAuthorizationPath) {
       const redirectUrl = `${window.location.origin}${apiAuthorizationPath}`;
       // It's important that we do a replace here so that when the user hits the back arrow on the
       // browser he gets sent back to where it was on the app instead of to an endpoint on this
       // component.
       window.location.replace(redirectUrl);
     },
-    navigateToReturnUrl: function(returnUrl) {
+    navigateToReturnUrl(returnUrl) {
       // It's important that we do a replace here so that we remove the callback uri with the
       // fragment containing the tokens from the browser history.
       window.location.replace(returnUrl);
