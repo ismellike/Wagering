@@ -1,53 +1,32 @@
 {
-  "name": "wagering",
+  "name": "vuex-oidc-example",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "uselocaldep": "cp ../vuex-oidc/dist/vuex-oidc.esm.js ./node_modules/vuex-oidc/dist/vuex-oidc.esm.js"
+  },
   "dependencies": {
-    "@material-ui/core": "*",
-    "babel-eslint": "*",
-    "bootstrap": "*",
-    "jquery": "*",
-    "merge": "*",
-    "oidc-client": "*",
-    "react": "*",
-    "react-dom": "*",
-    "react-router-bootstrap": "*",
-    "react-router-dom": "*",
-    "react-scripts": "*",
-    "reactstrap": "*",
-    "rimraf": "*"
+    "oidc-client": "^1.9.1",
+    "vue": "^2.5.17",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1",
+    "vuex-oidc": "^3.4.0"
   },
   "devDependencies": {
-    "ajv": "*",
-    "cross-env": "*",
-    "eslint": "*",
-    "eslint-config-react-app": "*",
-    "eslint-plugin-flowtype": "*",
-    "eslint-plugin-import": "*",
-    "eslint-plugin-jsx-a11y": "*",
-    "eslint-plugin-react": "*",
-    "typescript": "*"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "scripts": {
-    "start": "rimraf ./build && react-scripts start",
-    "build": "react-scripts build",
-    "test": "cross-env CI=true react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "lint": "eslint ./src/"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "@vue/cli-plugin-babel": "^3.0.3",
+    "@vue/cli-plugin-eslint": "^3.0.3",
+    "@vue/cli-service": "^3.0.3",
+    "@vue/eslint-config-standard": "^4.0.0",
+    "ajv": "^6.6.2",
+    "core-js": "^2.5.7",
+    "eslint": "^5.10.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "json-markup": "^1.1.1",
+    "vue-template-compiler": "^2.5.17"
   }
 }

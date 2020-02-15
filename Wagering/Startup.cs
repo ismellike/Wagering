@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using VueCliMiddleware;
 using Wagering.Data;
 using Wagering.Models;
 
@@ -33,9 +33,6 @@ namespace Wagering
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
-            services.AddControllersWithViews();
-            services.AddRazorPages();
-
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
@@ -55,10 +52,12 @@ namespace Wagering
                 })
                 .AddIdentityServerJwt();
 
+            services.AddControllersWithViews();
+            services.AddRazorPages();
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/build";
+                configuration.RootPath = "ClientApp";
             });
         }
 
@@ -96,12 +95,16 @@ namespace Wagering
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "ClientApp";
+                if (env.IsDevelopment())
+                    spa.Options.SourcePath = "ClientApp";
+                else
+                    spa.Options.SourcePath = "dist";
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
+                    spa.UseVueCli(npmScript: "serve");
                 }
+
             });
         }
     }
