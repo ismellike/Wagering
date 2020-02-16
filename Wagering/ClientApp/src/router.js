@@ -13,17 +13,19 @@ const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [{
-      path: '/',
+      path: '*',
       name: 'home',
       component: Home
     },
     {
-      path: '/protected',
-      name: 'protected',
-      component: () => import('./views/Protected.vue'),
-      meta: {
-        requiresAuth: true
-      }
+      path: '/about',
+      name: 'about',
+      component: () => import('./views/About.vue')
+    },
+    {
+      path: '/hub',
+      name: 'hub',
+      component: () => import('./views/Hub.vue')
     }, //Auth Routes
     {
       path: ApplicationPaths.Login,
@@ -51,6 +53,9 @@ const router = new Router({
       component: Login,
       props: {
         action: LoginActions.Profile
+      },
+      meta: {
+        requiresAuth: true
       }
     },
     {

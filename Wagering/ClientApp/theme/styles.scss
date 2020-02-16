@@ -1,0 +1,43 @@
+@charset "utf-8";
+
+$purple: #663399;
+$black: #000;
+$white: #fff;
+
+$family-sans-serif: Verdana,
+Geneva,
+Tahoma,
+sans-serif;
+$weight-light: 400;
+$weight-normal: 500;
+$weight-medium: 600;
+$weight-semibold: 700;
+$weight-bold: 800;
+$primary: $purple;
+$body-background-color: $black;
+$scheme-main: $purple;
+$card-footer-border-top: 1px solid $black;
+$text: $white;
+
+.card-footer-item.is-button {
+    cursor: pointer;
+
+    &:hover {
+        background-color: darken($primary, 5%)
+    }
+}
+
+@import "../node_modules/bulma/bulma.sass";
+
+.m-auto {
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.mb-1 {
+    margin-bottom: 1rem;
+}
+
+.pointer {
+    cursor: pointer;
+}

@@ -1,12 +1,13 @@
 import Vue from 'vue'
+import Router from 'vue-router'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import ViewUI from 'view-design';
-import '../theme/index.less'
+import '../theme/styles.css'
 
-Vue.config.productionTip = false
-Vue.use(router)
+Vue.config.productionTip = false;
+Vue.use(Router);
 Vue.use(ViewUI);
 
 new Vue({
