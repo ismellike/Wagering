@@ -3,13 +3,15 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import ViewUI from 'view-design';
-import '../app-theme/dist/iview.css'
+import '../theme/index.less'
 
 Vue.config.productionTip = false
+Vue.use(router)
 Vue.use(ViewUI);
 
 new Vue({
+  el: '#app',
   router,
   store,
   render: h => h(App)
-}).$mount('#app')
+})

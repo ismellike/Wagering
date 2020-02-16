@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import {
@@ -9,8 +8,6 @@ import {
 import Login from './auth/Login'
 import Logout from './auth/Logout'
 import store from './store'
-
-Vue.use(Router)
 
 const router = new Router({
   mode: 'history',

@@ -8,5 +8,12 @@ module.exports = {
       template: 'public/index.html',
       filename: 'index.html'
     }
+  },
+  css: {
+    loaderOptions: {
+      less: {
+        javascriptEnabled: true
+      }
+    }
   }
 };
