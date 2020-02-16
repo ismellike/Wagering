@@ -6,7 +6,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using Wagering.Data;
 using Wagering.Server.Controllers;
 using Xunit;
 

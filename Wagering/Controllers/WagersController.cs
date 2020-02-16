@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Wagering.Data;
 using Wagering.Models;
 
 namespace Wagering.Server.Controllers

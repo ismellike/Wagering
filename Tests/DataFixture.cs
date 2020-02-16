@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using Wagering.Data;
 using Wagering.Models;
 
 namespace Wagering.Tests

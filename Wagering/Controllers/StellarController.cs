@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Wagering.Data;
 using Wagering.Models;
 using Stellar = stellar_dotnet_sdk;
 

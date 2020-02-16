@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Wagering.Models;
 
-namespace Wagering.Data
+namespace Wagering
 {
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {

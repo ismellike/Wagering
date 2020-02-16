@@ -26,6 +26,12 @@ const router = new Router({
       path: '/hub',
       name: 'hub',
       component: () => import('./views/Hub.vue')
+    },
+    {
+      path: '/:game/wagers',
+      name: 'wagers',
+      props: true,
+      component: () => import('./wagers/Main.vue')
     }, //Auth Routes
     {
       path: ApplicationPaths.Login,

@@ -38,7 +38,7 @@
           <div class="columns">
             <div class="column is-half is-offset-one-quarter">
               <figure class="image">
-                <img src="../assets/stellar.png" />
+                <img src="@/assets/stellar.png" />
               </figure>
             </div>
           </div>

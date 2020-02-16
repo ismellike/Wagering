@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Wagering.Data;
+using Wagering;
 
-namespace Wagering.Models.Migrations
+namespace Wagering.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200214073003_Initial")]
+    [Migration("20200216234217_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

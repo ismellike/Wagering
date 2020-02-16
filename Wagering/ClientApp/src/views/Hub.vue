@@ -10,7 +10,7 @@
                 <div class="card">
                   <div class="card-content">
                     <figure class="image is-128x128">
-                      <img src="../assets/icons/coins.svg" />
+                      <img src="@/assets/icons/coins.svg" />
                     </figure>
                   </div>
                   <footer class="card-footer">
@@ -26,7 +26,7 @@
                 <div class="card">
                   <div class="card-content">
                     <figure class="image is-128x128">
-                      <img src="../assets/icons/trophy.svg" />
+                      <img src="@/assets/icons/trophy.svg" />
                     </figure>
                   </div>
                   <footer class="card-footer">

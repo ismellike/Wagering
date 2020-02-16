@@ -6,7 +6,7 @@
           <p class="heading">Discord</p>
           <a href="https://discord.gg/HmmVMs2" target="_blank">
             <figure class="image is-48x48 m-auto">
-              <img src="../assets/discord.svg" />
+              <img src="@/assets/discord.svg" />
             </figure>
           </a>
         </div>
@@ -16,7 +16,7 @@
           <p class="heading">Instagram</p>
           <a href="https://www.instagram.com/wagering.gg" target="_blank">
             <figure class="image is-48x48 m-auto">
-              <img src="../assets/instagram.png" />
+              <img src="@/assets/instagram.png" />
             </figure>
           </a>
         </div>
@@ -26,7 +26,7 @@
           <p class="heading">Twitter</p>
           <a href="https://twitter.com/WageringGG" target="_blank">
             <figure class="image is-48x48 m-auto">
-              <img src="../assets/twitter.svg" />
+              <img src="@/assets/twitter.svg" />
             </figure>
           </a>
         </div>

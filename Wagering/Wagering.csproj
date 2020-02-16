@@ -23,7 +23,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
-    <PackageReference Include="stellar-dotnet-sdk" Version="4.0.0" />
+    <PackageReference Include="stellar-dotnet-sdk" Version="4.0.11" />
     <PackageReference Include="VueCliMiddleware" Version="3.1.1" />
   </ItemGroup>
 
@@ -37,6 +37,8 @@
   <ItemGroup>
     <Compile Remove="Data\Migrations\20200214072905_Initial.cs" />
     <Compile Remove="Data\Migrations\20200214072905_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20200216234138_Initial.cs" />
+    <Compile Remove="Migrations\20200216234138_Initial.Designer.cs" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

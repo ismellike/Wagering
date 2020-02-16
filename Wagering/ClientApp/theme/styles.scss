@@ -14,16 +14,21 @@ $weight-medium: 600;
 $weight-semibold: 700;
 $weight-bold: 800;
 $primary: $purple;
+$focus: darken($primary, 5%);
 $body-background-color: $black;
-$scheme-main: $purple;
+$scheme-main: $primary;
 $card-footer-border-top: 1px solid $black;
 $text: $white;
+$text-strong: $white;
+$radius-small: 0px;
+$radius: 0px;
+$input-border-color: $black;
 
 .card-footer-item.is-button {
     cursor: pointer;
 
     &:hover {
-        background-color: darken($primary, 5%)
+        background-color: $focus;
     }
 }
 
