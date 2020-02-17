@@ -3,11 +3,16 @@
   <div v-else>
     <div v-if="action === LoginActions.Login">Processing login</div>
     <div v-else-if="action === LoginActions.LoginCallback">Processing login callback</div>
-    <div v-else-if="action === LoginActions.Profile || action === LoginActions.Register" />
+    <div
+      v-else-if="
+        action === LoginActions.Profile || action === LoginActions.Register
+      "
+    />
     <div v-else>Invalid action {{ action }}</div>
   </div>
 </template>
 <script>
+/* eslint-disable no-case-declarations */
 import AuthService from "./AuthService";
 import { AuthenticationResultStatus } from "./AuthService";
 import {

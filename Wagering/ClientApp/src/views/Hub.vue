@@ -1,55 +1,22 @@
 <template>
-  <div class="hero-body is-block">
-    <div class="container">
-      <article class="media">
-        <div class="media-content">
-          <div class="content">
-            <h2 class="title has-text-centered">Fortnite</h2>
-            <div class="columns is-mobile is-centered">
-              <div class="column is-narrow">
-                <div class="card">
-                  <div class="card-content">
-                    <figure class="image is-128x128">
-                      <img src="@/assets/icons/coins.svg" />
-                    </figure>
-                  </div>
-                  <footer class="card-footer">
-                    <div class="card-footer-item">Wagers</div>
-                    <router-link
-                      :to="{ name: 'wagers', params: { game: 'fortnite' }}"
-                      class="card-footer-item is-button"
-                    >Enter</router-link>
-                  </footer>
-                </div>
-              </div>
-              <div class="column is-narrow">
-                <div class="card">
-                  <div class="card-content">
-                    <figure class="image is-128x128">
-                      <img src="@/assets/icons/trophy.svg" />
-                    </figure>
-                  </div>
-                  <footer class="card-footer">
-                    <div class="card-footer-item">Tournaments</div>
-                    <router-link
-                      :to="{ name: 'tournaments', params: { game: 'fortnite' }}"
-                      class="card-footer-item is-button"
-                    >Enter</router-link>
-                  </footer>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
-    </div>
-  </div>
+  <v-container>
+    <v-row dense>
+      <v-col cols="12" sm="6" lg="4">
+        <v-card color="deep-purple" dark>
+          <v-card-title class="display-1">Fortnite</v-card-title>
+          <v-card-actions>
+            <v-btn class="ma-2" :to="{ name: 'wagers', params: { game: 'fortnite' }}">
+              <v-icon dark>mdi-coin</v-icon>Wagers
+            </v-btn>
+            <v-btn class="ma-2" :to="{ name: 'tournaments', params: { game: 'fortnite' }}">
+              <v-icon dark>mdi-trophy</v-icon>Tournaments
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template> 
 <script>
 export default {};
 </script>
-<style scoped>
-a.card-footer-item.is-button {
-  color: white;
-}
-</style>
