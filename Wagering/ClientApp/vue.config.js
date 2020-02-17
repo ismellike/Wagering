@@ -9,12 +9,5 @@ module.exports = {
       filename: 'index.html'
     }
   },
-  css: {
-    loaderOptions: {
-      less: {
-        javascriptEnabled: true
-      }
-    }
-  },
   publicPath: '/'
 };

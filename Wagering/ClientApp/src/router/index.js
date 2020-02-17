@@ -4,10 +4,10 @@ import {
   LoginActions,
   LogoutActions,
   ApplicationPaths
-} from './auth/AuthConstants'
+} from '../auth/AuthConstants'
 import Login from './auth/Login'
 import Logout from './auth/Logout'
-import store from './store'
+import store from '../store'
 
 const router = new Router({
   mode: 'history',
