@@ -12,6 +12,7 @@ namespace Wagering.Server.Controllers
     public class WagersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private const int ResultSize = 15;
 
         public WagersController(ApplicationDbContext context)
         {
@@ -19,14 +20,23 @@ namespace Wagering.Server.Controllers
         }
         //POST: api/wagers/search
         [HttpPost("search")]
-        public async Task<ActionResult<PaginatedList<Wager>>> GetWagers([FromBody]SearchQuery query)
+        public async Task<ActionResult<PaginatedList<Wager>>> SearchWagers([FromBody]SearchQuery query)
         {
-            if (query.Page < 1 || query.Size < 1)
-                return BadRequest();
+            if (query.Page < 1)
+                return BadRequest($"{query.Page} is not a valid page.");
+            if (query.MinimumWager.HasValue && query.MaximumWager.HasValue && query.MinimumWager.Value > query.MaximumWager.Value)
+                return BadRequest("Minimum wager cannot be larger than the maximum wager.");
+            if (query.MaximumWager.HasValue && query.MaximumWager.Value < 0)
+                return BadRequest("Maximum wager cannot be negative.");
+            if (query.MinimumWager.HasValue && query.MinimumWager.Value < 0)
+                return BadRequest("Minimum wager cannot be negative.");
+            if (query.PlayerCount.HasValue && query.PlayerCount.Value < 0)
+                return BadRequest("Player count cannot be negative.");
+
             List<Game> games = await _context.Games.ToListAsync();
             Game game = games.Find(x => x.Name.ToURL() == query.Game);
             if (game == null)
-                return BadRequest();
+                return BadRequest($"{query.Game} is not a valid game.");
 
             IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => x.GameId == game.Id).Where(x => x.IsClosed == query.ShowClosed);
 
@@ -39,13 +49,10 @@ namespace Wagering.Server.Controllers
             if (query.MaximumWager.HasValue)
                 wagerQuery = wagerQuery.Where(x => x.MaximumWager == null || (x.MinimumWager.HasValue && x.MinimumWager < query.MaximumWager) || (x.MaximumWager.HasValue && x.MaximumWager < query.MaximumWager));
 
-            PaginatedList<Wager> wagers = await PaginatedList<Wager>.CreateAsync(wagerQuery, query.Page, query.Size);
+            PaginatedList<Wager> wagers = await PaginatedList<Wager>.CreateAsync(wagerQuery.OrderByDescending(x => x.Date), query.Page, ResultSize);
 
             foreach (Wager wager in wagers.List)
                 wager.ChallengeCount = await _context.Challenges.Where(x => x.WagerId == wager.Id).CountAsync();
-
-            if (wagers == null)
-                return NotFound();
 
             return Ok(wagers);
         }

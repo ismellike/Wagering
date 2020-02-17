@@ -40,6 +40,5 @@ export default {};
 <style scoped>
 .heading {
   color: black;
-  font-weight: bold;
 }
 </style>

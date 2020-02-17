@@ -35,11 +35,12 @@ namespace Wagering
 
             string hourComponent;
             string minuteComponent;
+            int hour = (int)span.TotalHours;
 
-            if (span.Hours == 1)
+            if (hour == 1)
                 hourComponent = "1 hour";
             else
-                hourComponent = $"{span.Hours} hours";
+                hourComponent = $"{hour} hours";
             if (span.Minutes == 1)
                 minuteComponent = "1 minute";
             else

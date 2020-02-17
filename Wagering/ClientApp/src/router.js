@@ -32,6 +32,12 @@ const router = new Router({
       name: 'wagers',
       props: true,
       component: () => import('./wagers/Main.vue')
+    },
+    {
+      path: '/:game/wagers/:id',
+      name: 'wager_view',
+      props: true,
+      component: () => import('./wagers/View.vue')
     }, //Auth Routes
     {
       path: ApplicationPaths.Login,

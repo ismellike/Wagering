@@ -10,7 +10,6 @@
         }
         private string _game;
         public int Page { get; set; }
-        public int Size { get; set; }
         public int? PlayerCount { get; set; }
         public bool ShowClosed { get; set; }
         public decimal? MinimumWager { get; set; }
@@ -19,7 +18,6 @@
         public SearchQuery()
         {
             Page = 1;
-            Size = 15;
             ShowClosed = false;
         }
     }

@@ -28,6 +28,12 @@ namespace Wagering.Models
         [NotMapped]
         public int ChallengeCount { get; set; }
 
+        [NotMapped]
+        public string TimeAgo
+        {
+            get { return Date.ToTime(); }
+        }
+
         public bool IsApproved()
         {
             foreach (WagerHostBid bid in Hosts)

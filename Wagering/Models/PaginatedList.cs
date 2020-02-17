@@ -21,16 +21,6 @@ namespace Wagering.Models
             List = items;
         }
 
-        public bool HasPreviousPage()
-        {
-            return (PageIndex > 1);
-        }
-
-        public bool HasNextPage()
-        {
-            return (PageIndex < TotalPages);
-        }
-
         public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
         {
             var count = await source.CountAsync();
