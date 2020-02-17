@@ -3,18 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "css-build": "node-sass --omit-source-map-url ./theme/styles.scss ./theme/styles.css",
-    "css-watch": "npm run css-build -- --watch",
-    "start": "npm run css-watch",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "css-build": "node-sass --omit-source-map-url ./theme/styles.scss ./theme/styles.css",
+    "css-watch": "npm run css-build -- --watch",
+    "start": "npm run css-watch"
   },
   "dependencies": {
-    "core-js": "^3.6.4",
-    "register-service-worker": "^1.6.2",
     "axios": "^0.19.2",
+    "core-js": "^3.6.4",
     "oidc-client": "^1.10.1",
+    "register-service-worker": "^1.6.2",
     "vue": "^2.6.11",
     "vue-router": "^3.1.5",
     "vuetify": "^2.2.12",
@@ -36,6 +36,8 @@
     "prettier": "^1.19.1",
     "sass": "^1.25.0",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-cli-plugin-vuetify": "~2.0.5",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.3.0"
   }
 }
