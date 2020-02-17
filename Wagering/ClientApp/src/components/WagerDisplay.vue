@@ -1,23 +1,15 @@
 <template>
-  <article class="message is-dark">
-    <div class="message-header">
-      <p>{{ hostsString(4) }}</p>
-      <router-link
+  <v-card color="white">
+    <v-toolbar color="grey darken-3" window dark>
+      <v-toolbar-title>{{ hostsString(4) }}</v-toolbar-title>
+      <v-spacer />
+      <v-btn
+        color="green"
         v-if="hasView"
-        class="button is-small is-primary"
         :to="{ name: 'wager_view', params: { game: game, id: wager.id }}"
-      >View</router-link>
-    </div>
-    <div class="message-body">
-      <p class="content">{{ wager.description }}</p>
-      <div class="level is-size-7">
-        <div class="level-item">{{ wager.challengeCount }} Challenges</div>
-        <div class="level-item">Minimum Wager: {{ numDisplay(wager.minimumWager) }}</div>
-        <div class="level-item">Maximum Wager: {{ numDisplay(wager.maximumWager) }}</div>
-        <div class="level-item">{{ wager.timeAgo }}</div>
-      </div>
-    </div>
-  </article>
+      >View</v-btn>
+    </v-toolbar>
+  </v-card>
 </template>
 <script>
 export default {
