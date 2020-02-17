@@ -1,27 +1,19 @@
 <template>
-  <div class="hero-body is-block">
-    <div class="container">
-      <h1 class="title has-text-centered">Wagering.gg</h1>
-      <h2 class="subtitle has-text-centered">Invest in yourself: one game at a time.</h2>
-      <div class="columns">
-        <div class="column">
-          <figure class="image is-9by16">
-            <img src="../assets/agreement.jpg" />
-          </figure>
-        </div>
-        <div class="column">
-          <figure class="image is-9by16">
-            <img src="../assets/play.jpg" />
-          </figure>
-        </div>
-        <div class="column">
-          <figure class="image is-9by16">
-            <img src="../assets/peace.jpg" />
-          </figure>
-        </div>
-      </div>
-    </div>
-  </div>
+  <v-container>
+    <h1 class="text-center">Wagering.gg</h1>
+    <h2 class="text-center">Invest in yourself: one game at a time.</h2>
+    <v-row>
+      <v-col cols="12" sm="4">
+        <v-img src="../assets/agreement.jpg" aspect-ratio=".5625" />
+      </v-col>
+      <v-col cols="12" sm="4">
+        <v-img src="../assets/play.jpg" aspect-ratio=".5625" />
+      </v-col>
+      <v-col cols="12" sm="4">
+        <v-img src="../assets/peace.jpg" aspect-ratio=".5625" />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

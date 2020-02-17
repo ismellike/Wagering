@@ -22,6 +22,7 @@
     "vuex-persist": "^2.2.0"
   },
   "devDependencies": {
+    "@mdi/font": "^4.9.95",
     "@vue/cli-plugin-babel": "~4.2.0",
     "@vue/cli-plugin-eslint": "~4.2.0",
     "@vue/cli-plugin-pwa": "~4.2.0",

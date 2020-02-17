@@ -107,22 +107,26 @@
                 class="button is-primary is-outlined"
                 target="_blank"
                 href="https://www.stellarx.com/"
-              >StellarX</a>
+                >StellarX</a
+              >
               <a
                 class="button is-primary is-outlined"
                 target="_blank"
                 href="https://www.coinbase.com/join/lopez_rdfi"
-              >Coinbase</a>
+                >Coinbase</a
+              >
               <a
                 class="button is-primary is-outlined"
                 target="_blank"
                 href="https://pro.coinbase.com/"
-              >Coinbase Pro</a>
+                >Coinbase Pro</a
+              >
               <a
                 class="button is-primary is-outlined"
                 target="_blank"
                 href="https://shapeshift.io/"
-              >Shapeshift</a>
+                >Shapeshift</a
+              >
             </div>
             <h3 class="subtitle">
               <span class="has-text-primary">##</span>Earning
@@ -131,12 +135,14 @@
               class="button is-primary is-outlined"
               target="_blank"
               href="https://brave.com/?ref=ism355"
-            >Brave</a>
+              >Brave</a
+            >
             <a
               class="button is-primary is-outlined"
               target="_blank"
               href="https://bounty0x.io/"
-            >Bounty0x</a>
+              >Bounty0x</a
+            >
           </div>
         </section>
       </div>
