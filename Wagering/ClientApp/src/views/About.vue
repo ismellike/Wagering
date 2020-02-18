@@ -124,6 +124,58 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
+    <h1 class="display-2 mt-4 mb-2">
+      <span class="deep-purple--text">#</span>
+      Resources
+    </h1>
+    <h3 class="display-1 mb-2">
+      <span class="deep-purple--text">##</span>Exchanges
+    </h3>
+    <v-btn
+      color="deep-purple"
+      outlined
+      target="_blank"
+      href="https://www.stellarx.com/"
+      >StellarX</v-btn
+    >
+    <v-btn
+      color="deep-purple"
+      outlined
+      target="_blank"
+      href="https://www.coinbase.com/join/lopez_rdfi"
+      >Coinbase</v-btn
+    >
+    <v-btn
+      color="deep-purple"
+      outlined
+      target="_blank"
+      href="https://pro.coinbase.com/"
+      >Coinbase Pro</v-btn
+    >
+    <v-btn
+      color="deep-purple"
+      outlined
+      target="_blank"
+      href="https://shapeshift.io/"
+      >Shapeshift</v-btn
+    >
+    <h3 class="display-1 mb-2">
+      <span class="deep-purple--text">##</span>Earning
+    </h3>
+    <v-btn
+      color="deep-purple"
+      outlined
+      target="_blank"
+      href="https://brave.com/?ref=ism355"
+      >Brave</v-btn
+    >
+    <v-btn
+      color="deep-purple"
+      outlined
+      target="_blank"
+      href="https://bounty0x.io/"
+      >Bounty0x</v-btn
+    >
   </v-container>
 </template>
 <script>

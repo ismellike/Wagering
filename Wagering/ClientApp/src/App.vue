@@ -8,7 +8,6 @@
       app
       right
       dark
-      value
       height="100%"
     >
       <v-list dense>

@@ -1,20 +1,18 @@
 <template>
-  <div class="hero-body is-block">
-    <div class="container">
-      <Loading v-if="wager == null" />
-      <div v-else>
+  <v-container>
+    <v-skeleton-loader v-if="wager == null" type="card" />
+    <v-row v-else dense>
+      <v-col cols="12">
         <WagerDisplay :hasView="false" :game="game" :data="wager" />
-      </div>
-    </div>
-  </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script>
 import WagerDisplay from "../components/WagerDisplay";
-import Loading from "../components/Loading";
 export default {
   components: {
-    WagerDisplay,
-    Loading
+    WagerDisplay
   },
   props: {
     game: {
@@ -22,7 +20,6 @@ export default {
       required: true
     },
     id: {
-      type: Number,
       required: true
     }
   },
