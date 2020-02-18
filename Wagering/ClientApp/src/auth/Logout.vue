@@ -1,12 +1,13 @@
 ﻿<template>
-  <div v-if="!isReady" />
-  <div v-else-if="!!message">{{ message }}</div>
-  <div v-else>
-    <div v-if="action === LogoutActions.Logout">Processing logout</div>
-    <div v-else-if="action === LogoutActions.LogoutCallback">Processing login callback</div>
-    <div v-else-if="action === LogoutActions.LoggedOut">{{ message }}</div>
-    <div v-else>Invalid action {{ action }}</div>
-  </div>
+  <v-container>
+    <h1 v-if="!!message">{{ message }}</h1>
+    <div v-else>
+      <h1 v-if="action === logout">Processing logout</h1>
+      <h1 v-else-if="action === callback">Processing login callback</h1>
+      <h1 v-else-if="action === loggedOut">{{ message }}</h1>
+      <h1 v-else>Invalid action {{ action }}</h1>
+    </div>
+  </v-container>
 </template>
 <script>
 import AuthService from "./AuthService";
@@ -27,21 +28,22 @@ export default {
   data() {
     return {
       message: undefined,
-      isReady: false,
-      authenticated: false
+      authenticated: false,
+      logout: LogoutActions.Logout,
+      callback: LogoutActions.LogoutCallback,
+      loggedOut: LogoutActions.LoggedOut
     };
   },
   mounted() {
     const action = this.action;
     switch (action) {
       case LogoutActions.Logout:
-        this.logout(this.getReturnUrl());
+        this.processLogout(this.getReturnUrl());
         break;
       case LogoutActions.LogoutCallback:
         this.processLogoutCallback();
         break;
       case LogoutActions.LoggedOut:
-        this.isReady = true;
         this.message = "You successfully logged out!";
         break;
       default:
@@ -50,7 +52,7 @@ export default {
     this.populateAuthenticationState();
   },
   methods: {
-    async logout(returnUrl) {
+    async processLogout(returnUrl) {
       const state = { returnUrl };
       const isauthenticated = await AuthService.isAuthenticated();
       if (isauthenticated) {
@@ -97,7 +99,6 @@ export default {
     },
     async populateAuthenticationState() {
       const result = await AuthService.isAuthenticated();
-      this.isReady = true;
       this.authenticated = result;
     },
     getReturnUrl(state) {

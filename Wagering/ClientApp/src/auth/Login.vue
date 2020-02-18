@@ -1,15 +1,15 @@
 ﻿<template>
-  <div v-if="!!message">{{ message }}</div>
-  <div v-else>
-    <div v-if="action === LoginActions.Login">Processing login</div>
-    <div v-else-if="action === LoginActions.LoginCallback">Processing login callback</div>
-    <div
-      v-else-if="
-        action === LoginActions.Profile || action === LoginActions.Register
-      "
-    />
-    <div v-else>Invalid action {{ action }}</div>
-  </div>
+  <v-container>
+    <h1 v-if="!!message">{{ message }}</h1>
+    <div v-else>
+      <h1 v-if="action === login">Processing login</h1>
+      <h1 v-else-if="action === callback">Processing login callback</h1>
+      <h1 v-else-if="
+        action === profile || action === register
+      " />
+      <h1 v-else>Invalid action {{ action }}</h1>
+    </div>
+  </v-container>
 </template>
 <script>
 /* eslint-disable no-case-declarations */
@@ -30,14 +30,18 @@ export default {
   },
   data() {
     return {
-      message: undefined
+      message: undefined,
+      login: LoginActions.Login,
+      callback: LoginActions.LoginCallback,
+      profile: LoginActions.Profile,
+      register: LoginActions.Register
     };
   },
   mounted() {
     const action = this.action;
     switch (action) {
       case LoginActions.Login:
-        this.login(this.getReturnUrl());
+        this.processLogin(this.getReturnUrl());
         break;
       case LoginActions.LoginCallback:
         this.processLoginCallback();
@@ -58,7 +62,7 @@ export default {
     }
   },
   methods: {
-    async login(returnUrl) {
+    async processLogin(returnUrl) {
       const state = { returnUrl };
       const result = await AuthService.signIn(state);
       switch (result.status) {
