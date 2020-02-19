@@ -38,6 +38,12 @@ const routes = [
     name: "wager_view",
     props: true,
     component: () => import("../wagers/View.vue")
+  },
+  {
+    path: "/accounts/:name",
+    name: "account_view",
+    props: true,
+    component: () => import("../accounts/View.vue")
   }, //Auth Routes
   {
     path: ApplicationPaths.Login,

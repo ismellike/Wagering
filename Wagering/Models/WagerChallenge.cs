@@ -20,6 +20,12 @@ namespace Wagering.Models
         [Column(TypeName = "decimal(18,7)")]
         public decimal Amount { get; set; }
 
+        [NotMapped]
+        public string TimeAgo
+        {
+            get { return Date.ToTime(); }
+        }
+
         public bool IsApproved()
         {
             foreach (WagerChallengeBid bid in Challengers)

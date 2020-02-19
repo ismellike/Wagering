@@ -6,13 +6,16 @@
         <WagerDisplay :hasView="false" :game="game" :data="wager" />
       </v-col>
     </v-row>
+    <ChallengeDisplay v-for="challenge in wager.challenges" :data="challenge" :key="challenge.id" />
   </v-container>
 </template>
 <script>
 import WagerDisplay from "../components/WagerDisplay";
+import ChallengeDisplay from "../components/ChallengeDisplay";
 export default {
   components: {
-    WagerDisplay
+    WagerDisplay,
+    ChallengeDisplay
   },
   props: {
     game: {
