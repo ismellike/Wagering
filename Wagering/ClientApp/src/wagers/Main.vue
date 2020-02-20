@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <h1 v-mutate="onMutate" class="text-center">Wagers | Page {{ query.page }}</h1>
-    <v-expansion-panels>
+    <v-expansion-panels focusable>
       <v-expansion-panel>
         <v-expansion-panel-header>Filter</v-expansion-panel-header>
         <v-expansion-panel-content>
@@ -53,10 +53,16 @@
                 </ValidationProvider>
               </v-col>
             </v-row>
-            <div class="float-right">
-              <v-btn color="green" v-on:click="submit" class="mr-2">Search</v-btn>
-              <v-btn color="red" v-on:click="clear">Clear</v-btn>
-            </div>
+            <v-row>
+              <v-col sm="2">
+                <v-switch v-model="form.showClosed" label="Show Closed" class="mt-1 pa-1"></v-switch>
+              </v-col>
+              <v-spacer />
+              <v-col class="text-right">
+                <v-btn color="green" v-on:click="submit" class="ma-1">Search</v-btn>
+                <v-btn color="red" v-on:click="clear" class="ma-1">Clear</v-btn>
+              </v-col>
+            </v-row>
           </ValidationObserver>
         </v-expansion-panel-content>
       </v-expansion-panel>

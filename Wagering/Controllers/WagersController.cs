@@ -38,7 +38,9 @@ namespace Wagering.Server.Controllers
             if (game == null)
                 return BadRequest($"{query.Game} is not a valid game.");
 
-            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => x.GameId == game.Id).Where(x => x.IsClosed == query.ShowClosed);
+            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => x.GameId == game.Id);
+            if (!query.ShowClosed)
+                wagerQuery = wagerQuery.Where(x => x.IsClosed == query.ShowClosed);
 
             if (!string.IsNullOrWhiteSpace(query.Username))
                 wagerQuery = wagerQuery.Where(x => x.Hosts.Any(y => y.User.DisplayName.Contains(query.Username)));
