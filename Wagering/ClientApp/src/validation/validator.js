@@ -1,29 +1,39 @@
 import Vue from "vue";
 import { ValidationProvider, extend } from "vee-validate";
-import { required, email, confirmed, min_value } from "vee-validate/dist/rules";
+import {
+  required,
+  email,
+  confirmed,
+  min_value,
+  alpha_num
+} from "vee-validate/dist/rules";
 
 //import rules
 extend("email", email);
 extend("required", required);
 extend("confirmed", confirmed);
-extend("min_value", min_value);
+extend("min_value", {
+  ...min_value,
+  message: "{_field_} must be greater than {min}."
+});
+extend("alpha_num", alpha_num);
 
 // Add a rule.
-extend("min_wager", {
+extend("less_than", {
   params: ["target"],
   validate(value, { target }) {
     if (value === null || target === null) return true;
-    return value < target;
+    return value <= target;
   },
-  message: "The minimum wager must be less than the maximum wager."
+  message: "{_value_} must be less than the {target}."
 });
-extend("max_wager", {
+extend("greater_than", {
   params: ["target"],
   validate(value, { target }) {
     if (value === null || target === null) return true;
-    return value > target;
+    return value >= target;
   },
-  message: "The maximum wager must be less than the minimum wager."
+  message: "{_value_} must be greater than {target}."
 });
 
 // Register it globally

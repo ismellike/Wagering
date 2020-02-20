@@ -1,35 +1,66 @@
 <template>
   <v-container>
-    <h1 class="text-center">Wagers | Page {{ query.page }}</h1>
-    <v-bottom-sheet v-model="showFilter">
-      <template v-slot:activator="{ on }">
-        <v-btn color="green" dark v-on="on">Filter</v-btn>
-      </template>
-      <v-sheet class="text-center" height="200px">
-        <ValidationObserver ref="observer" v-slot="{ validate, reset }">
-          <div class="mt-6">
-            <v-btn color="green" v-on:click="onMutate">Search</v-btn>
-            <v-btn color="red" v-on:click="clear">Clear</v-btn>
-          </div>
-          <v-row>
-            <v-col cols="12" sm="6" md="3">
-              <!-- Validate for spaces -->
-              <v-text-field v-model="form.username" label="Username"></v-text-field>
-            </v-col>
-            <v-col cols="12" sm="6" md="3">
-              <v-text-field v-model="form.playerCount" label="Player Count" type="number"></v-text-field>
-            </v-col>
-            <v-col cols="12" sm="6" md="3">
-              <!-- Add the custom validation -->
-              <v-text-field v-model="form.minimumWager" label="Minimum Wager" type="number"></v-text-field>
-            </v-col>
-            <v-col cols="12" sm="6" md="3">
-              <v-text-field v-model="form.maximumWager" label="Maximum Wager" type="number"></v-text-field>
-            </v-col>
-          </v-row>
-        </ValidationObserver>
-      </v-sheet>
-    </v-bottom-sheet>
+    <h1 v-mutate="onMutate" class="text-center">Wagers | Page {{ query.page }}</h1>
+    <v-expansion-panels>
+      <v-expansion-panel>
+        <v-expansion-panel-header>Filter</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <ValidationObserver ref="observer">
+            <v-row>
+              <v-col cols="12" sm="6" md="3">
+                <ValidationProvider rules="alpha_num" name="Username" v-slot="{ errors }">
+                  <v-text-field v-model="form.username" label="Username" :error-messages="errors"></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="3">
+                <ValidationProvider rules="min_value:1" name="Player Count" v-slot="{ errors }">
+                  <v-text-field
+                    v-model="form.playerCount"
+                    label="Player Count"
+                    type="number"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="3">
+                <ValidationProvider
+                  rules="less_than:@maxWager|min_value:1"
+                  vid="minWager"
+                  name="Minimum Wager"
+                  v-slot="{ errors }"
+                >
+                  <v-text-field
+                    v-model="form.minimumWager"
+                    label="Minimum Wager"
+                    type="number"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="3">
+                <ValidationProvider
+                  rules="greater_than:@minWager|min_value:1"
+                  vid="maxWager"
+                  name="Maximum Wager"
+                  v-slot="{ errors }"
+                >
+                  <v-text-field
+                    v-model="form.maximumWager"
+                    label="Maximum Wager"
+                    type="number"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+            </v-row>
+            <div class="float-right">
+              <v-btn color="green" v-on:click="submit" class="mr-2">Search</v-btn>
+              <v-btn color="red" v-on:click="clear">Clear</v-btn>
+            </div>
+          </ValidationObserver>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
     <div v-if="isLoading">
       <v-skeleton-loader v-for="i in 15" :key="i" type="card" class="my-2" />
     </div>
@@ -38,20 +69,19 @@
         <WagerDisplay :data="wager" :game="query.game" class="my-2" />
       </v-col>
       <v-col class="text-center" cols="12">
-        <v-pagination v-mutate="onMutate" v-model="query.page" :length="totalPages"></v-pagination>
+        <v-pagination v-model="query.page" :length="totalPages"></v-pagination>
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script>
 import WagerDisplay from "../components/WagerDisplay";
-import { ValidationObserver, ValidationProvider } from "vee-validate";
+import { ValidationObserver } from "vee-validate";
 
 export default {
   components: {
     WagerDisplay,
-    ValidationObserver,
-    ValidationProvider
+    ValidationObserver
   },
   props: {
     game: {
@@ -85,24 +115,24 @@ export default {
     };
   },
   methods: {
-    async onMutate() {
-      this.$vuetify.goTo(0);
-      await this.getWagers();
+    onMutate() {
+      window.scrollTo(0, 0);
+      this.getWagers();
     },
-    async getWagers() {
+    getWagers() {
       //api call here
-      await this.$axios
-        .post("/api/wagers/search", this.query)
-        .then(response => {
-          console.log(response);
-          if (response.status == 200) {
-            this.totalPages = response.data.totalPages;
-            this.wagers = response.data.list.slice();
-            this.errors = [];
-          } else {
-            this.errors = response.data.slice();
-          }
-        });
+      this.isLoading = true;
+      this.$axios.post("/api/wagers/search", this.query).then(response => {
+        console.log(response);
+        if (response.status == 200) {
+          this.totalPages = response.data.totalPages;
+          this.wagers = response.data.list.slice();
+          this.errors = [];
+          this.isLoading = false;
+        } else {
+          this.errors = response.data.slice();
+        }
+      });
     },
     async clear() {
       this.form.username = null;
@@ -111,15 +141,15 @@ export default {
       this.form.minimumWager = null;
       this.form.maximumWager = null;
       this.$refs.observer.reset();
-      this.setFormVars();
-      if (this.query.page == 1) await this.onMutate();
-      else this.query.page = 1; //will get checked by mutate if changed
     },
-    async submit() {
-      this.$refs.observer.validate();
-      this.setFormVars();
-      if (this.query.page == 1) await this.onMutate();
-      else this.query.page = 1; //will get checked by mutate if changed
+    submit() {
+      this.$refs.observer.validate().then(response => {
+        if (response) {
+          this.setFormVars();
+          if (this.query.page == 1) this.onMutate();
+          else this.query.page = 1; //will get checked by mutate if changed
+        }
+      });
     },
     setFormVars() {
       this.query.username = this.form.username;
@@ -129,9 +159,8 @@ export default {
       this.query.maximumWager = this.form.maximumWager;
     }
   },
-  async created() {
-    await this.getWagers();
-    this.isLoading = false;
+  created() {
+    this.getWagers();
   }
 };
 </script>
