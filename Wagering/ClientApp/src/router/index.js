@@ -11,8 +11,7 @@ import Logout from "../auth/Logout";
 
 Vue.use(Router);
 
-const routes = [
-  {
+const routes = [{
     path: "*",
     name: "home",
     component: Home
@@ -30,20 +29,17 @@ const routes = [
   {
     path: "/:game/wagers",
     name: "wagers",
-    props: true,
     component: () => import("../wagers/Main.vue")
   },
   {
     path: "/:game/wagers/:id",
     name: "wager_view",
-    props: true,
     component: () => import("../wagers/View.vue")
   },
   {
-    path: "/accounts/:name",
-    name: "account_view",
-    props: true,
-    component: () => import("../accounts/View.vue")
+    path: "/profiles/:name",
+    name: "profile_view",
+    component: () => import("../profiles/View.vue")
   }, //Auth Routes
   {
     path: ApplicationPaths.Login,

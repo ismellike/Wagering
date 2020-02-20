@@ -16,11 +16,11 @@ namespace Wagering.Server.Controllers
             _context = context;
         }
 
-        // GET: api/Wagers/5
+        // GET: api/profile/ismellike
         [HttpGet("{name}")]
-        public async Task<ActionResult<Wager>> GetProfile(string name)
+        public async Task<IActionResult> GetProfile(string name)
         {
-            var profile = await _context.Profiles.Include(x => x.Ratings).Include(x => x.PublicKey).FirstOrDefaultAsync(x => x.DisplayName == name);
+            var profile = await _context.Profiles.Include(x => x.Ratings).FirstOrDefaultAsync(x => x.DisplayName == name);
             if (profile == null)
                 return NotFound();
             return Ok(profile);

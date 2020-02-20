@@ -89,17 +89,11 @@ export default {
     WagerDisplay,
     ValidationObserver
   },
-  props: {
-    game: {
-      type: String,
-      required: true
-    }
-  },
   data() {
     return {
       query: {
         username: null,
-        game: this.game.toLowerCase(),
+        game: this.$route.params.game.toLowerCase(),
         page: 1,
         playerCount: null,
         showClosed: false,
@@ -140,7 +134,7 @@ export default {
         }
       });
     },
-    async clear() {
+    clear() {
       this.form.username = null;
       this.form.playerCount = null;
       this.form.showClosed = false;

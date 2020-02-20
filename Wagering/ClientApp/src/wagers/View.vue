@@ -17,30 +17,23 @@ export default {
     WagerDisplay,
     ChallengeDisplay
   },
-  props: {
-    game: {
-      type: String,
-      required: true
-    },
-    id: {
-      required: true
-    }
-  },
   data() {
     return {
-      wager: null
+      wager: null,
+      id: this.$route.params.id,
+      game: this.$route.params.game
     };
   },
   methods: {
-    async getWager() {
+    getWager() {
       this.$axios.get("/api/wagers/" + this.id).then(response => {
         console.log(response);
         this.wager = response.data;
       });
     }
   },
-  async created() {
-    await this.getWager();
+  created() {
+    this.getWager();
   }
 };
 </script>

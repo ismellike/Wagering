@@ -9,7 +9,7 @@
       <v-btn
         v-for="challenger in challenge.challengers"
         :key="challenger.id"
-        :to="{ name:'account_view', params:{id:challenger.userDisplayName}}"
+        :to="{ name:'profile_view', params:{name:challenger.userDisplayName}}"
         color="deep-purple"
         dark
         class="ma-1"
