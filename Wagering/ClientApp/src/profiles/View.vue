@@ -4,7 +4,9 @@
       <p v-if="error!=null" class="display-1">{{error}}</p>
       <v-skeleton-loader v-else type="card" />
     </div>
-    <div v-else></div>
+    <div v-else>
+      <v-card></v-card>
+    </div>
   </v-container>
 </template>
 <script>

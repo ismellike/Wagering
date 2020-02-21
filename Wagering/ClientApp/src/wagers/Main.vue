@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1 v-mutate="onMutate" class="text-center">Wagers | Page {{ query.page }}</h1>
+    <h1 class="text-center">Wagers | Page {{ query.page }}</h1>
     <v-expansion-panels focusable>
       <v-expansion-panel>
         <v-expansion-panel-header>Filter</v-expansion-panel-header>
@@ -75,7 +75,13 @@
         <WagerDisplay :data="wager" :game="query.game" class="my-2" />
       </v-col>
       <v-col class="text-center" cols="12">
-        <v-pagination v-model="query.page" :length="totalPages"></v-pagination>
+        <v-pagination
+          v-model="query.page"
+          :length="totalPages"
+          @next="searchScroll"
+          @previous="searchScroll"
+          @input="searchScroll"
+        ></v-pagination>
       </v-col>
     </v-row>
   </v-container>
@@ -115,8 +121,8 @@ export default {
     };
   },
   methods: {
-    onMutate() {
-      window.scrollTo(0, 0);
+    searchScroll() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
       this.getWagers();
     },
     getWagers() {
@@ -146,8 +152,8 @@ export default {
       this.$refs.observer.validate().then(response => {
         if (response) {
           this.setFormVars();
-          if (this.query.page == 1) this.onMutate();
-          else this.query.page = 1; //will get checked by mutate if changed
+          this.query.page = 1;
+          this.searchScroll();
         }
       });
     },

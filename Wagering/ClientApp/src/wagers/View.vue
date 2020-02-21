@@ -1,12 +1,18 @@
 <template>
   <v-container>
     <v-skeleton-loader v-if="wager == null" type="card" />
-    <v-row v-else dense>
-      <v-col cols="12">
-        <WagerDisplay :hasView="false" :game="game" :data="wager" />
-      </v-col>
-    </v-row>
-    <ChallengeDisplay v-for="challenge in wager.challenges" :data="challenge" :key="challenge.id" />
+    <div v-else>
+      <v-row dense>
+        <v-col cols="12">
+          <WagerDisplay :hasView="false" :game="game" :data="wager" />
+        </v-col>
+      </v-row>
+      <ChallengeDisplay
+        v-for="challenge in wager.challenges"
+        :data="challenge"
+        :key="challenge.id"
+      />
+    </div>
   </v-container>
 </template>
 <script>
