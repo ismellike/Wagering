@@ -7,7 +7,6 @@
           :key="challenger.id"
           :to="{ name:'profile_view', params:{name:challenger.userDisplayName}}"
           color="deep-purple"
-          dark
           class="ma-1"
         >{{ challenger.userDisplayName }}</v-btn>
       </v-card-text>
