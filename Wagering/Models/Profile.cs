@@ -13,6 +13,7 @@ namespace Wagering.Models
         public string PublicKey { get; set; }
         public string Platform { get; set; }
         public string Input { get; set; }
+        //Collection of ratings depending on game
         public ICollection<Rating> Ratings { get; set; }
     }
 }

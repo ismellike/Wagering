@@ -31,11 +31,12 @@ namespace Wagering
             List<WagerHostBid> hostBids = new List<WagerHostBid>();
             List<WagerChallengeBid> challengeBids = new List<WagerChallengeBid>();
             List<WagerChallenge> challenges = new List<WagerChallenge>();
+            List<Rating> ratings = new List<Rating>();
             DateTime date = new DateTime(2020, 01, 01);
             int hostBidId = -1;
             int challengeBidId = -1;
             int challengeId = -1;
-            Game games = new Game { Id = -1, Name = "Fortnite" };
+            Game games = new Game { Name = "Fortnite", Url = "fortnite" };
 
 
             for (int i = 0; i < 10; i++)
@@ -56,6 +57,14 @@ namespace Wagering
                     ConcurrencyStamp = $"{i}397789b-9897-4430-a9be-1ce19e2e0d09",
                     SecurityStamp = $"4397789b-9897-4430-a9be-1ce19e2e0d0{i}"
                 });
+                ratings.Add(new Rating
+                {
+                    GameName = "Fortnite",
+                    GamesPlayed = 0,
+                    Id = -1 * i - 1,
+                    UserDisplayName = username,
+                    Value = Constants.Rating.Initial
+                });
             }
             for (int i = 1; i <= 50; i++)
             {
@@ -70,35 +79,35 @@ namespace Wagering
                         Percentage = (byte)(100 / (i % 7 + 1)),
                         UserDisplayName = users[x].ProfileDisplayName
                     });
-                    if (x % 2 == 0)
-                        for (int y = 0; y < i % 20; y++)
-                        {
-                            challenges.Add(new WagerChallenge
-                            {
-                                Id = challengeId,
-                                WagerId = id,
-                                Date = date,
-                                Amount = i * 1000.0000002m
-                            });
-                            for (int z = 0; z < x; z++)
-                                challengeBids.Add(new WagerChallengeBid
-                                {
-                                    Id = challengeBidId--,
-                                    ChallengeId = challengeId,
-                                    Approved = true,
-                                    Percentage = (byte)(100 / (i % 7 + 1)),
-                                    UserDisplayName = users[x].ProfileDisplayName
-                                });
-                            challengeId--;
-                            date = date.AddMinutes(5);
-                        }
                 }
+                if (i % 2 == 0)
+                    for (int y = 0; y < i % 15; y++)
+                    {
+                        challenges.Add(new WagerChallenge
+                        {
+                            Id = challengeId,
+                            WagerId = id,
+                            Date = date,
+                            Amount = i * 1000.0000002m
+                        });
+                        for (int x = 1; x <= i % 7 + 1; x++)
+                            challengeBids.Add(new WagerChallengeBid
+                            {
+                                Id = challengeBidId--,
+                                ChallengeId = challengeId,
+                                Approved = true,
+                                Percentage = (byte)(100 / (i % 7 + 1)),
+                                UserDisplayName = users[x].ProfileDisplayName
+                            });
+                        challengeId--;
+                        date = date.AddMinutes(5);
+                    }
                 wagers.Add(new Wager
                 {
                     Id = id,
                     Date = date,
                     IsClosed = false,
-                    GameId = games.Id,
+                    GameName = "Fortnite",
                     Description = "This is a description for wager " + id
                 });
                 date = date.AddMinutes(1);
@@ -111,6 +120,7 @@ namespace Wagering
             builder.Entity<Wager>().HasData(wagers);
             builder.Entity<WagerHostBid>().HasData(hostBids);
             builder.Entity<WagerChallengeBid>().HasData(challengeBids);
+            builder.Entity<Rating>().HasData(ratings);
             base.OnModelCreating(builder);
         }
     }

@@ -1,9 +1,11 @@
-﻿namespace Wagering.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Wagering.Models
 {
     public class Game
     {
-        public int Id { get; set; }
-
+        [Key]
         public string Name { get; set; }
+        public string Url { get; set; }
     }
 }

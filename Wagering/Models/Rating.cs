@@ -8,7 +8,7 @@ namespace Wagering.Models
     {
         public int Id { get; set; }
 
-        public int GameId { get; set; }
+        public string GameName { get; set; }
         public Game Game { get; set; }
         public string UserDisplayName { get; set; }
         public Profile User { get; set; }

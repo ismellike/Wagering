@@ -33,12 +33,11 @@ namespace Wagering.Server.Controllers
             if (query.PlayerCount.HasValue && query.PlayerCount.Value < 0)
                 return BadRequest("Player count cannot be negative.");
 
-            List<Game> games = await _context.Games.ToListAsync();
-            Game game = games.Find(x => x.Name.ToURL() == query.Game);
+            Game game = await _context.Games.FirstOrDefaultAsync(x => x.Url == query.Game);
             if (game == null)
                 return BadRequest($"{query.Game} is not a valid game.");
 
-            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => x.GameId == game.Id);
+            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => x.GameName == game.Name);
             if (!query.ShowClosed)
                 wagerQuery = wagerQuery.Where(x => x.IsClosed == query.ShowClosed);
 
