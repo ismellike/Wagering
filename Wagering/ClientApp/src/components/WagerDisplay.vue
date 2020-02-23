@@ -1,44 +1,60 @@
 <template>
-  <v-card color="white" light>
-    <v-toolbar color="grey darken-3" dense dark>
+  <v-card light>
+    <v-toolbar dense dark>
       <v-toolbar-title>{{ hostsString(4) }}</v-toolbar-title>
       <v-spacer />
       <v-btn
         color="green"
         v-if="hasView"
         :to="{ name: 'wager_view', params: { game: game, id: wager.id } }"
-        >View</v-btn
-      >
+        class="mr-1"
+      >View</v-btn>
+      <v-menu>
+        <template v-slot:activator="{ on }">
+          <v-btn color="deep-purple" v-on="on">Hosts</v-btn>
+        </template>
+        <v-list>
+          <v-list-item v-for="host in wager.hosts" :key="host.id">
+            <v-list-item-title>
+              <v-btn
+                color="deep-purple"
+                :to="{ name:'profile_view', params:{name:host.userDisplayName}}"
+                class="ma-1"
+              >{{ host.userDisplayName }}</v-btn>
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-toolbar>
-    <v-card-text class="title"> {{ wager.description }} </v-card-text>
+    <v-card-text class="title">{{ wager.description }}</v-card-text>
     <v-card-actions>
       <v-row dense>
         <v-col cols="12" sm="6" md="3">
-          <v-card color="grey darken-3" dark>
-            <v-card-text class="subtitle-2 text-center">
-              Minimum Wager: {{ numDisplay(wager.minimumWager) }}</v-card-text
-            >
+          <v-card dark>
+            <v-card-text
+              class="subtitle-2 text-center"
+            >Minimum Wager: {{ numDisplay(wager.minimumWager) }}</v-card-text>
           </v-card>
         </v-col>
         <v-col cols="12" sm="6" md="3">
-          <v-card color="grey darken-3" dark>
-            <v-card-text class="subtitle-2 text-center">
-              Maximum Wager: {{ numDisplay(wager.maximumWager) }}</v-card-text
-            >
+          <v-card dark>
+            <v-card-text
+              class="subtitle-2 text-center"
+            >Maximum Wager: {{ numDisplay(wager.maximumWager) }}</v-card-text>
           </v-card>
         </v-col>
         <v-col cols="12" sm="6" md="3">
-          <v-card color="grey darken-3" dark>
-            <v-card-text class="subtitle-2 text-center">
-              {{ wager.challengeCount }} Challenges
-            </v-card-text>
+          <v-card dark>
+            <v-card-text class="subtitle-2 text-center">{{ wager.challengeCount }} Challenges</v-card-text>
           </v-card>
         </v-col>
         <v-col cols="12" sm="6" md="3">
-          <v-card color="grey darken-3" dark>
-            <v-card-text class="subtitle-2 text-center">{{
+          <v-card dark>
+            <v-card-text class="subtitle-2 text-center">
+              {{
               wager.timeAgo
-            }}</v-card-text>
+              }}
+            </v-card-text>
           </v-card>
         </v-col>
       </v-row>

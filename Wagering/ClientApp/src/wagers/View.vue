@@ -7,11 +7,13 @@
           <WagerDisplay :hasView="false" :game="game" :data="wager" />
         </v-col>
       </v-row>
-      <ChallengeDisplay
-        v-for="challenge in wager.challenges"
-        :data="challenge"
-        :key="challenge.id"
-      />
+      <v-row dense>
+        <ChallengeDisplay
+          v-for="challenge in wager.challenges"
+          :data="challenge"
+          :key="challenge.id"
+        />
+      </v-row>
     </div>
   </v-container>
 </template>

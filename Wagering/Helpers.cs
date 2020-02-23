@@ -34,7 +34,7 @@ namespace Wagering
                 return "Just now";
 
             string hourComponent;
-            string minuteComponent;
+            string minuteComponent = string.Empty;
             int hour = (int)span.TotalHours;
 
             if (hour == 1)
@@ -42,11 +42,11 @@ namespace Wagering
             else
                 hourComponent = $"{hour} hours";
             if (span.Minutes == 1)
-                minuteComponent = "1 minute";
-            else
-                minuteComponent = $"{span.Minutes} minutes";
+                minuteComponent = " 1 minute ";
+            else if (span.Minutes != 0)
+                minuteComponent = $" {span.Minutes} minutes ";
 
-            return $"{hourComponent} {minuteComponent} ago";
+            return $"{hourComponent}{minuteComponent}ago";
         }
     }
 }

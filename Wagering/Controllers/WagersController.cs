@@ -62,10 +62,10 @@ namespace Wagering.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Wager>> GetWager(int id)
         {
-            var wager = await _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
-            wager.ChallengeCount = wager.Challenges.Count();
+            var wager = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
             if (wager == null)
                 return NotFound();
+            wager.ChallengeCount = wager.Challenges.Count();
             return Ok(wager);
         }
 

@@ -19,6 +19,7 @@ namespace Wagering.Models
         [Required]
         [Column(TypeName = "decimal(18,7)")]
         public decimal Amount { get; set; }
+        public bool IsAccepted { get; set; }
 
         [NotMapped]
         public string TimeAgo
