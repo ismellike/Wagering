@@ -1,13 +1,13 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "../views/Home.vue";
+import Home from "@/views/Home.vue";
 import {
   LoginActions,
   LogoutActions,
   ApplicationPaths
-} from "../auth/AuthConstants";
-import Login from "../auth/Login";
-import Logout from "../auth/Logout";
+} from "@/auth/AuthConstants";
+import Login from "@/auth/Login";
+import Logout from "@/auth/Logout";
 
 Vue.use(Router);
 
@@ -20,32 +20,32 @@ const routes = [
   {
     path: "/about",
     name: "about",
-    component: () => import("../views/About.vue")
+    component: () => import("@/views/About.vue")
   },
   {
     path: "/hub",
     name: "hub",
-    component: () => import("../views/Hub.vue")
+    component: () => import("@/views/Hub.vue")
   },
   {
     path: "/control-panel",
     name: "control-panel",
-    component: () => import("../views/Control.vue")
+    component: () => import("@/views/Control.vue")
   },
   {
     path: "/:game/wagers",
     name: "wagers",
-    component: () => import("../wagers/Main.vue")
+    component: () => import("@/views/wagers/Main.vue")
   },
   {
     path: "/:game/wagers/:id",
     name: "wager_view",
-    component: () => import("../wagers/View.vue")
+    component: () => import("@/views/wagers/View.vue")
   },
   {
     path: "/profiles/:name",
     name: "profile_view",
-    component: () => import("../profiles/View.vue")
+    component: () => import("@/views/profiles/View.vue")
   }, //Auth Routes
   {
     path: ApplicationPaths.Login,

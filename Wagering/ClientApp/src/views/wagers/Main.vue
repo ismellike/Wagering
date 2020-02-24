@@ -91,7 +91,7 @@
   </v-container>
 </template>
 <script>
-import WagerDisplay from "../components/WagerDisplay";
+import WagerDisplay from "@/components/WagerDisplay";
 import { ValidationObserver } from "vee-validate";
 
 export default {

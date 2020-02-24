@@ -30,8 +30,8 @@
   </v-container>
 </template>
 <script>
-import WagerDisplay from "../components/WagerDisplay";
-import ChallengeDisplay from "../components/ChallengeDisplay";
+import WagerDisplay from "@/components/WagerDisplay";
+import ChallengeDisplay from "@/components/ChallengeDisplay";
 export default {
   components: {
     WagerDisplay,
