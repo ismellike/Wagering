@@ -7,21 +7,24 @@
           <WagerDisplay :hasView="false" :game="game" :data="wager" />
         </v-col>
       </v-row>
-      <v-expansion-panels v-if="!isHost" focusable class="mt-2">
-        <v-expansion-panel>
-          <v-expansion-panel-header class="title">Apply</v-expansion-panel-header>
-          <v-expansion-panel-content v-if="this.$store.state.account.isAuthenticated">
-            <!--Apply logic here-->
-          </v-expansion-panel-content>
-          <v-expansion-panel-content v-else class="mt-2">Sign in to apply for a wager.</v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
+      <v-container>
+        <v-expansion-panels v-if="!isHost" focusable>
+          <v-expansion-panel>
+            <v-expansion-panel-header class="title">Apply</v-expansion-panel-header>
+            <v-expansion-panel-content v-if="this.$store.state.account.isAuthenticated">
+              <v-container></v-container>
+              <!--Apply logic here-->
+            </v-expansion-panel-content>
+            <v-expansion-panel-content v-else>
+              <v-container>Sign in to apply for a wager.</v-container>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-container>
       <v-row dense>
-        <ChallengeDisplay
-          v-for="challenge in wager.challenges"
-          :data="challenge"
-          :key="challenge.id"
-        />
+        <v-col cols="12" sm="6" v-for="challenge in wager.challenges" :key="challenge.id">
+          <ChallengeDisplay :data="challenge" />
+        </v-col>
       </v-row>
     </div>
   </v-container>

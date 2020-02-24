@@ -39,6 +39,15 @@
             <v-list-item-title>The Hub</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item v-if="this.$store.state.account.isAuthenticated" to="/control-panel" link>
+          <v-list-item-action>
+            <v-icon>mdi-calendar-blank-multiple</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>Control Panel</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
       <template v-slot:append>
         <LoginMenu />
@@ -67,8 +76,7 @@
       <v-btn href="https://twitter.com/WageringGG" target="_blank" icon>
         <v-icon dense>mdi-twitter</v-icon>
       </v-btn>
-      <v-spacer />
-      2020 - Wagering.gg
+      <v-spacer />2020 - Wagering.gg
     </v-footer>
   </v-app>
 </template>

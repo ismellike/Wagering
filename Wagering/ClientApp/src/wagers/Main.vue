@@ -1,78 +1,82 @@
 <template>
   <v-container>
-    <h1 class="text-center">Wagers | Page {{ query.page }}</h1>
-    <v-expansion-panels focusable>
-      <v-expansion-panel>
-        <v-expansion-panel-header>Filter</v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <ValidationObserver ref="observer">
-            <v-row>
-              <v-col cols="12" sm="6" md="3">
-                <ValidationProvider rules="alpha_num" name="Username" v-slot="{ errors }">
-                  <v-text-field v-model="form.username" label="Username" :error-messages="errors"></v-text-field>
-                </ValidationProvider>
-              </v-col>
-              <v-col cols="12" sm="6" md="3">
-                <ValidationProvider rules="min_value:1" name="Player Count" v-slot="{ errors }">
-                  <v-text-field
-                    v-model="form.playerCount"
-                    label="Player Count"
-                    type="number"
-                    :error-messages="errors"
-                  ></v-text-field>
-                </ValidationProvider>
-              </v-col>
-              <v-col cols="12" sm="6" md="3">
-                <ValidationProvider
-                  rules="less_than:@maxWager|min_value:1"
-                  vid="minWager"
-                  name="Minimum Wager"
-                  v-slot="{ errors }"
-                >
-                  <v-text-field
-                    v-model="form.minimumWager"
-                    label="Minimum Wager"
-                    type="number"
-                    :error-messages="errors"
-                  ></v-text-field>
-                </ValidationProvider>
-              </v-col>
-              <v-col cols="12" sm="6" md="3">
-                <ValidationProvider
-                  rules="greater_than:@minWager|min_value:1"
-                  vid="maxWager"
-                  name="Maximum Wager"
-                  v-slot="{ errors }"
-                >
-                  <v-text-field
-                    v-model="form.maximumWager"
-                    label="Maximum Wager"
-                    type="number"
-                    :error-messages="errors"
-                  ></v-text-field>
-                </ValidationProvider>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col sm="2">
-                <v-switch v-model="form.showClosed" label="Show Closed" class="mt-1 pa-1"></v-switch>
-              </v-col>
-              <v-spacer />
-              <v-col class="text-right">
-                <v-btn color="green" v-on:click="submit" class="ma-1">Search</v-btn>
-                <v-btn color="red" v-on:click="clear" class="ma-1">Clear</v-btn>
-              </v-col>
-            </v-row>
-          </ValidationObserver>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
-    <div v-if="isLoading">
-      <v-skeleton-loader v-for="i in 15" :key="i" type="card" class="my-2" />
-    </div>
+    <v-container>
+      <h1 class="text-center">Wagers | Page {{ query.page }}</h1>
+    </v-container>
+    <v-container>
+      <v-expansion-panels focusable>
+        <v-expansion-panel>
+          <v-expansion-panel-header>Filter</v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <ValidationObserver ref="observer">
+              <v-row>
+                <v-col cols="12" sm="6" md="3">
+                  <ValidationProvider rules="alpha_num" name="Username" v-slot="{ errors }">
+                    <v-text-field v-model="form.username" label="Username" :error-messages="errors"></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col cols="12" sm="6" md="3">
+                  <ValidationProvider rules="min_value:1" name="Player Count" v-slot="{ errors }">
+                    <v-text-field
+                      v-model="form.playerCount"
+                      label="Player Count"
+                      type="number"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col cols="12" sm="6" md="3">
+                  <ValidationProvider
+                    rules="less_than:@maxWager|min_value:1"
+                    vid="minWager"
+                    name="Minimum Wager"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      v-model="form.minimumWager"
+                      label="Minimum Wager"
+                      type="number"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col cols="12" sm="6" md="3">
+                  <ValidationProvider
+                    rules="greater_than:@minWager|min_value:1"
+                    vid="maxWager"
+                    name="Maximum Wager"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      v-model="form.maximumWager"
+                      label="Maximum Wager"
+                      type="number"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col sm="2">
+                  <v-switch v-model="form.showClosed" label="Show Closed" class="mt-1 pa-1"></v-switch>
+                </v-col>
+                <v-spacer />
+                <v-col class="text-right">
+                  <v-btn color="green" v-on:click="submit" class="ma-1">Search</v-btn>
+                  <v-btn color="red" v-on:click="clear" class="ma-1">Clear</v-btn>
+                </v-col>
+              </v-row>
+            </ValidationObserver>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-container>
+    <v-container v-if="isLoading">
+      <v-skeleton-loader v-for="i in 15" :key="i" type="card" />
+    </v-container>
     <v-row v-else dense>
       <v-col v-for="wager in wagers" :key="wager.id" cols="12">
-        <WagerDisplay :data="wager" :game="query.game" class="my-2" />
+        <WagerDisplay :data="wager" :game="query.game" />
       </v-col>
       <v-col class="text-center" cols="12">
         <v-pagination

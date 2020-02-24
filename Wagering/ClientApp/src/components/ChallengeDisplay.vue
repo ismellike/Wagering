@@ -1,6 +1,6 @@
 <template>
-  <v-col cols="12" sm="6">
-    <v-card class="my-2">
+  <v-container>
+    <v-card>
       <v-card-text class="text-center">
         <v-btn
           v-for="challenger in challenge.challengers"
@@ -31,7 +31,7 @@
         </v-row>
       </v-card-actions>
     </v-card>
-  </v-col>
+  </v-container>
 </template>
 <script>
 export default {
