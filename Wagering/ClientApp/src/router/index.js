@@ -11,8 +11,7 @@ import Logout from "@/auth/Logout";
 
 Vue.use(Router);
 
-const routes = [
-  {
+const routes = [{
     path: "*",
     name: "home",
     component: Home
@@ -30,7 +29,7 @@ const routes = [
   {
     path: "/control-panel",
     name: "control-panel",
-    component: () => import("@/views/Control.vue")
+    component: () => import("@/views/control/Main.vue")
   },
   {
     path: "/:game/wagers",
