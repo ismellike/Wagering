@@ -69,8 +69,9 @@ export default {
         case AuthenticationResultStatus.Redirect:
           break;
         case AuthenticationResultStatus.Success:
-          await this.addUser();
-          await this.navigateToReturnUrl(returnUrl);
+          this.addUser().then(() => {
+            this.navigateToReturnUrl(returnUrl);
+          });
           break;
         case AuthenticationResultStatus.Fail:
           this.message = result.message;
@@ -88,8 +89,9 @@ export default {
           // is when we are doing a redirect sign in flow.
           throw new Error("Should not redirect.");
         case AuthenticationResultStatus.Success:
-          await this.addUser();
-          await this.navigateToReturnUrl(this.getReturnUrl(result.state));
+          this.addUser().then(() => {
+            this.navigateToReturnUrl(this.getReturnUrl(result.state));
+          });
           break;
         case AuthenticationResultStatus.Fail:
           this.message = result.message;
