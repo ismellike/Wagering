@@ -45,7 +45,6 @@ export default {
       challenge: this.data
     };
   },
-  methods: {},
   created() {
     console.log(this.challenge);
   }
