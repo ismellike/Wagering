@@ -39,13 +39,22 @@
             <v-list-item-title>The Hub</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="this.$store.state.account.isAuthenticated" to="/control-panel" link>
+        <v-list-item v-if="this.$store.state.account.isAuthenticated" to="/host-panel" link>
           <v-list-item-action>
-            <v-icon>mdi-calendar-blank-multiple</v-icon>
+            <v-icon>mdi-clipboard</v-icon>
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>Control Panel</v-list-item-title>
+            <v-list-item-title>Host Panel</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="this.$store.state.account.isAuthenticated" to="/client-panel" link>
+          <v-list-item-action>
+            <v-icon>mdi-clipboard-multiple</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>Client Panel</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>

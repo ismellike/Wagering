@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Wagering.Models;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using Wagering.Models;
 
 namespace Wagering
 {

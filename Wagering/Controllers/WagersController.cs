@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Wagering.Models;
@@ -20,7 +19,7 @@ namespace Wagering.Server.Controllers
         }
         //POST: api/wagers/search
         [HttpPost("search")]
-        public async Task<ActionResult<PaginatedList<Wager>>> SearchWagers([FromBody]SearchQuery query)
+        public async Task<IActionResult> SearchWagers([FromBody]SearchQuery query)
         {
             if (query.Page < 1)
                 return BadRequest($"{query.Page} is not a valid page.");
@@ -58,9 +57,9 @@ namespace Wagering.Server.Controllers
             return Ok(wagers);
         }
 
-        // GET: api/Wagers/5
+        // GET: api/wagers/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Wager>> GetWager(int id)
+        public async Task<IActionResult> GetWager(int id)
         {
             var wager = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
             if (wager == null)

@@ -8,6 +8,7 @@ import {
 } from "@/auth/AuthConstants";
 import Login from "@/auth/Login";
 import Logout from "@/auth/Logout";
+import store from "@/store";
 
 Vue.use(Router);
 
@@ -27,9 +28,20 @@ const routes = [{
     component: () => import("@/views/Hub.vue")
   },
   {
-    path: "/control-panel",
-    name: "control-panel",
-    component: () => import("@/views/control/Main.vue")
+    path: "/host-panel",
+    name: "host-panel",
+    component: () => import("@/views/control/host/Main.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/client-panel",
+    name: "client-panel",
+    component: () => import("@/views/control/client/Main.vue"),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/:game/wagers",
@@ -115,7 +127,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (this.$store.state.account.isAuthenticated) {
+    if (store.state.account.isAuthenticated) {
       next();
     } else {
       next({

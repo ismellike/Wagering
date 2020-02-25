@@ -1,7 +1,11 @@
 <template>
   <v-container>
+    <!--Might need to split in host and request-->
     <!--Split into wagers/tournaments/leagues-->
-    <v-tabs grow optional @change="change">
+    <v-container>
+      <h1 class="text-center">Client Panel</h1>
+    </v-container>
+    <v-tabs grow optional show-arrows @change="change">
       <v-tab>Wagers</v-tab>
       <v-tab>Tournaments</v-tab>
       <v-tab>Leagues</v-tab>
@@ -18,9 +22,9 @@
   </v-container>
 </template>
 <script>
-import Wagers from "@/views/control/Wagers";
-import Tournaments from "@/views/control/Tournaments";
-import Leagues from "@/views/control/Leagues";
+import Wagers from "@/views/control/client/Wagers";
+import Tournaments from "@/views/control/client/Tournaments";
+import Leagues from "@/views/control/client/Leagues";
 export default {
   components: {
     Wagers,
