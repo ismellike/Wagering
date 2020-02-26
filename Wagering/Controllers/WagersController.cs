@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Wagering.Models;
+using Microsoft.AspNetCore.Authorization;
+using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace Wagering.Server.Controllers
 {
@@ -11,11 +14,13 @@ namespace Wagering.Server.Controllers
     public class WagersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
         private const int ResultSize = 15;
 
-        public WagersController(ApplicationDbContext context)
+        public WagersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         //POST: api/wagers/search
         [HttpPost("search")]
@@ -104,12 +109,38 @@ namespace Wagering.Server.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Wager>> PostWager(Wager wager)
+        [Authorize]
+        public async Task<IActionResult> PostWager(Wager wager)
         {
-            _context.Wagers.Add(wager);
-            await _context.SaveChangesAsync();
+            //validate wager
+            if (!ModelState.IsValid)
+                return BadRequest();
+            //save wager
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
 
-            return CreatedAtAction("GetWager", new { id = wager.Id }, wager);
+            Wager newWager = new Wager
+            {
+                GameName = wager.GameName,
+                Date = DateTime.Now,
+                Description = wager.Description,
+                MinimumWager = wager.MinimumWager,
+                MaximumWager = wager.MaximumWager,
+                IsClosed = true,
+                Hosts = new WagerHostBid[]
+                {
+                    new WagerHostBid
+                    {
+                        Approved = true,
+                        UserDisplayName = user.ProfileDisplayName,
+                        Percentage = 100
+                    }
+                }
+            };
+            _context.Wagers.Add(newWager);
+            await _context.SaveChangesAsync();
+            return Ok();
         }
 
         // DELETE: api/Wagers/5

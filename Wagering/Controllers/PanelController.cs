@@ -22,14 +22,25 @@ namespace Wagering.Controllers
             _context = context;
         }
 
-        [HttpGet("requests/wagers")]
-        public async Task<IActionResult> GetWagers()
+        [HttpGet("client/wagers")]
+        public async Task<IActionResult> ClientChallenges()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return Unauthorized();
-            var requests = await _context.Challenges.Include(x => x.Challengers).Include(x => x.Wager).Where(x => x.Challengers.Any(x => x.UserDisplayName == user.ProfileDisplayName)).ToListAsync();
 
+            var requests = await _context.Challenges.Include(x => x.Challengers).Include(x => x.Wager).Where(x => x.Challengers.Any(x => x.UserDisplayName == user.ProfileDisplayName)).ToListAsync();
+            return Ok(requests);
+        }
+
+        [HttpGet("host/wagers")]
+        public async Task<IActionResult> HostWagers()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            var requests = await _context.Wagers.Include(x => x.Challenges).ThenInclude(x => x.Challengers).Where(x => x.Hosts.Any(x => x.UserDisplayName == user.ProfileDisplayName)).ToListAsync();
             return Ok(requests);
         }
     }
