@@ -43,5 +43,22 @@ namespace Wagering.Controllers
             var requests = await _context.Wagers.Include(x => x.Challenges).ThenInclude(x => x.Challengers).Where(x => x.Hosts.Any(x => x.UserDisplayName == user.ProfileDisplayName)).ToListAsync();
             return Ok(requests);
         }
+        
+        [HttpPost("host/request")]
+        public async Task<IActionResult> SendRequest(int wagerId, string displayName)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            //check if wager belongs to user
+            var wager = await _context.Wagers.FindAsync(wagerId);
+            if (wager == null)
+                return BadRequest("Wager was not found.");
+            if (!wager.Hosts.Any(x => x.UserDisplayName == user.ProfileDisplayName))
+                return Unauthorized($"{user.ProfileDisplayName} is not authorized to send requests for this wager.");
+            //send request to user
+            return Ok();
+        }
     }
 }

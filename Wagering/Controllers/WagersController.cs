@@ -114,13 +114,13 @@ namespace Wagering.Server.Controllers
         {
             //validate wager
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(ModelState);
             //save wager
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return Unauthorized();
 
-            Wager newWager = new Wager
+            Wager newWager = new Wager //prevents overposting
             {
                 GameName = wager.GameName,
                 Date = DateTime.Now,
