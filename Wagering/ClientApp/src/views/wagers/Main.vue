@@ -3,6 +3,11 @@
     <v-container>
       <h1 class="text-center">Wagers | Page {{ query.page }}</h1>
     </v-container>
+    <v-container class="text-right">
+      <v-btn :to="{ name:'wager_create', params:{game:query.game}}">
+        <v-icon left>mdi-plus-circle</v-icon>Create
+      </v-btn>
+    </v-container>
     <v-container>
       <v-expansion-panels focusable>
         <v-expansion-panel>
