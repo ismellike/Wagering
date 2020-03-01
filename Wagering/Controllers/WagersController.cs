@@ -140,7 +140,7 @@ namespace Wagering.Server.Controllers
             };
             _context.Wagers.Add(newWager);
             await _context.SaveChangesAsync();
-            return Ok();
+            return Ok(newWager.Id);
         }
 
         // DELETE: api/Wagers/5
