@@ -32,7 +32,7 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="3">
                   <ValidationProvider
-                    rules="less_than:@maxWager|min_value:1"
+                    rules="less_than:@maxWager|min_value:.001"
                     vid="minWager"
                     name="Minimum Wager"
                     v-slot="{ errors }"
@@ -47,7 +47,7 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="3">
                   <ValidationProvider
-                    rules="greater_than:@minWager|min_value:1"
+                    rules="greater_than:@minWager|min_value:.001"
                     vid="maxWager"
                     name="Maximum Wager"
                     v-slot="{ errors }"

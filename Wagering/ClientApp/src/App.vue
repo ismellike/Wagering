@@ -106,6 +106,10 @@ export default {
   }),
   created() {
     this.$vuetify.theme.dark = true;
+
+    if (this.$store.state.account.isAuthenticated)
+      this.$axios.defaults.headers.common["Authorization"] =
+        "Bearer " + this.$store.state.account.token;
   }
 };
 </script>

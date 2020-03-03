@@ -95,7 +95,8 @@ export default {
       }
     },
     removeUser() {
-      this.$store.dispatch("setLogout");
+        this.$store.dispatch("setLogout");
+        delete axios.defaults.headers.common["Authorization"];
     },
     async populateAuthenticationState() {
       const result = await AuthService.isAuthenticated();

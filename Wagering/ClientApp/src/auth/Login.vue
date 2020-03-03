@@ -111,6 +111,7 @@ export default {
                 token: accessToken
             }
             this.$store.dispatch("setLogin", payload);
+            this.$axios.defaults.headers.common["Authorization"] = "Bearer " + accessToken;
         }
     },
     getReturnUrl(state) {

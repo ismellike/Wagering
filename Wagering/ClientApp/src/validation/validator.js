@@ -1,5 +1,8 @@
 import Vue from "vue";
-import { ValidationProvider, extend } from "vee-validate";
+import {
+  ValidationProvider,
+  extend
+} from "vee-validate";
 import {
   required,
   email,
@@ -21,19 +24,23 @@ extend("alpha_num", alpha_num);
 // Add a rule.
 extend("less_than", {
   params: ["target"],
-  validate(value, { target }) {
+  validate(value, {
+    target
+  }) {
     if (value === null || target === null) return true;
     return value <= target;
   },
-  message: "{_value_} must be less than the {target}."
+  message: "{_field_} must be less than the {target}."
 });
 extend("greater_than", {
   params: ["target"],
-  validate(value, { target }) {
+  validate(value, {
+    target
+  }) {
     if (value === null || target === null) return true;
     return value >= target;
   },
-  message: "{_value_} must be greater than {target}."
+  message: "{_field_} must be greater than {target}."
 });
 
 // Register it globally
