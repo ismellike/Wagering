@@ -9,6 +9,7 @@ import "./validation/validator";
 
 Vue.config.productionTip = false;
 Vue.prototype.$axios = axios;
+//use interceptor for setting bearer token
 
 new Vue({
   store,

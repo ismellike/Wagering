@@ -103,9 +103,15 @@ export default {
       }
     },
     async addUser() {
-      const user = await AuthService.getUser();
-      if (user && user.name != undefined)
-        this.$store.dispatch("setLogin", user && user.name);
+        const user = await AuthService.getUser();
+        const accessToken = await AuthService.getAccessToken();
+        if (user && user.name != undefined) {
+            var payload = {
+                username: user && user.name,
+                token: accessToken
+            }
+            this.$store.dispatch("setLogin", payload);
+        }
     },
     getReturnUrl(state) {
       const params = new URLSearchParams(window.location.search);

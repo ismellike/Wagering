@@ -49,7 +49,7 @@ namespace Wagering.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-                return Unauthorized();
+                return Unauthorized("User not found.");
 
             //check if wager belongs to user
             var wager = await _context.Wagers.FindAsync(wagerId);

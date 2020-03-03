@@ -1,14 +1,17 @@
 const state = {
     isAuthenticated: false,
-    username: undefined
+    username: null,
+    token: null
 }
 const mutations = {
     setLogin(state, payload) {
-        state.username = payload
+        state.username = payload.username
+        state.token = payload.token
         state.isAuthenticated = true
     },
     setLogout(state) {
-        state.username = undefined
+        state.username = null
+        state.token = null
         state.isAuthenticated = false
     }
 }
