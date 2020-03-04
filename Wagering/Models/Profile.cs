@@ -5,10 +5,12 @@ namespace Wagering.Models
 {
     public class Profile
     {
-        [Key]
-        [StringLength(20, MinimumLength = 4)]
-        public string DisplayName { get; set; }
+        public int Id { get; set; }
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
 
+        [StringLength(12, MinimumLength = 4)]
+        public string DisplayName { get; set; }
         public bool IsVerified { get; set; }
         public string PublicKey { get; set; }
         public string Platform { get; set; }

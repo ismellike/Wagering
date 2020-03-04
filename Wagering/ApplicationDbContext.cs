@@ -14,7 +14,7 @@ namespace Wagering
         public DbSet<Wager> Wagers { get; set; }
         public DbSet<WagerChallenge> Challenges { get; set; }
         public DbSet<WagerResult> Results { get; set; }
-        public DbSet<WagerHostBid> Bids { get; set; }
+        public DbSet<WagerHostBid> WagerBids { get; set; }
         public DbSet<Game> Games { get; set; }
 
         public ApplicationDbContext(
@@ -44,6 +44,7 @@ namespace Wagering
                 var username = $"user{i}";
                 profiles.Add(new Profile
                 {
+                    Id = -1 * i - 1,
                     DisplayName = username,
                     IsVerified = false,
                     PublicKey = $"{i}FF8A9FU328JF8A9SJF8923"
@@ -53,7 +54,6 @@ namespace Wagering
                     UserName = $"user{i}@gmail.com",
                     Email = $"user{i}@gmail.com",
                     Id = $"{i}AAAAAAAAAAAAAAAAAAAAAAAAA",
-                    ProfileDisplayName = username,
                     ConcurrencyStamp = $"{i}397789b-9897-4430-a9be-1ce19e2e0d09",
                     SecurityStamp = $"4397789b-9897-4430-a9be-1ce19e2e0d0{i}"
                 });
@@ -77,7 +77,7 @@ namespace Wagering
                         WagerId = id,
                         Approved = true,
                         Percentage = (byte)(100 / (i % 7 + 1)),
-                        UserDisplayName = users[x].ProfileDisplayName
+                        UserDisplayName = profiles[x].DisplayName
                     });
                 }
                 if (i % 2 == 0)
@@ -97,7 +97,7 @@ namespace Wagering
                                 ChallengeId = challengeId,
                                 Approved = true,
                                 Percentage = (byte)(100 / (i % 7 + 1)),
-                                UserDisplayName = users[x].ProfileDisplayName
+                                UserDisplayName = profiles[x].DisplayName
                             });
                         challengeId--;
                         date = date.AddMinutes(5);
@@ -115,6 +115,7 @@ namespace Wagering
 
             builder.Entity<WagerChallenge>().HasData(challenges);
             builder.Entity<Profile>().HasData(profiles);
+            builder.Entity<Profile>().HasIndex(x => x.DisplayName).IsUnique();
             builder.Entity<Game>().HasData(games);
             builder.Entity<ApplicationUser>().HasData(users);
             builder.Entity<Wager>().HasData(wagers);

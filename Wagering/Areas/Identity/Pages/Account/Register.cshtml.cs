@@ -51,6 +51,12 @@ namespace Wagering.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
+            [RegularExpression(Constants.NameRegex)]
+            [StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
+            [Display(Name = "Display Name")]
+            public string DisplayName { get; set; }
+
+            [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
@@ -74,7 +80,16 @@ namespace Wagering.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser
+                {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    Profile = new Profile
+                    {
+                        DisplayName = Input.DisplayName,
+                        IsVerified = false
+                    }
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

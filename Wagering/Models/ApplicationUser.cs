@@ -4,7 +4,7 @@ namespace Wagering.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public string ProfileDisplayName { get; set; }
+        public int ProfileId { get; set; }
         public Profile Profile { get; set; }
     }
 }

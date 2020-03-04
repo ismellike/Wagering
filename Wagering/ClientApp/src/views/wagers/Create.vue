@@ -41,8 +41,8 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12" sm="6" class="text-right">
-          <v-btn color="green" v-on:click="submit" class="ma-1">Search</v-btn>
+        <v-col cols="12" sm="6" class="mx-auto text-right">
+          <v-btn color="green" v-on:click="submit" class="ma-1">Create</v-btn>
         </v-col>
       </v-row>
     </ValidationObserver>
@@ -74,7 +74,6 @@ export default {
       });
     },
     postWager() {
-      console.log(this.$axios.defaults.headers.common["Authorization"]);
       this.$axios.post("/api/wagers", this.wager).then(response => {
         //send to wager view if successful or show corresponding server error messages
         console.log(response);

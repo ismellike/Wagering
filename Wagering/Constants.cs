@@ -10,5 +10,6 @@
             public const int K = 750;
             public const int N = 1000;
         }
+        public const string NameRegex = @"^[a-zA-Z0-9-_]+$";
     }
 }

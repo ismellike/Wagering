@@ -6,6 +6,8 @@ using Wagering.Models;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using System.Collections.Generic;
 
 namespace Wagering.Server.Controllers
 {
@@ -14,13 +16,11 @@ namespace Wagering.Server.Controllers
     public class WagersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
         private const int ResultSize = 15;
 
-        public WagersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public WagersController(ApplicationDbContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
         //POST: api/wagers/search
         [HttpPost("search")]
@@ -116,8 +116,9 @@ namespace Wagering.Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             //save wager
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var profile = await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == id);
+            if (profile == null)
                 return Unauthorized();
 
             Wager newWager = new Wager //prevents overposting
@@ -132,13 +133,13 @@ namespace Wagering.Server.Controllers
                 {
                     new WagerHostBid
                     {
+                        UserDisplayName = profile.DisplayName,
                         Approved = true,
-                        UserDisplayName = user.ProfileDisplayName,
                         Percentage = 100
                     }
                 }
             };
-            _context.Wagers.Add(newWager);
+            await _context.Wagers.AddAsync(newWager);
             await _context.SaveChangesAsync();
             return Ok(newWager.Id);
         }

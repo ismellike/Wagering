@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Wagering.Models;
 using Stellar = stellar_dotnet_sdk;
+using System.Security.Claims;
 
 namespace Wagering.Server.Controllers
 {
@@ -27,14 +28,14 @@ namespace Wagering.Server.Controllers
         [HttpGet("/create")]
         public async Task<IActionResult> CreateAccount()
         {
-            //check if user is authorized
-            ApplicationUser user = await _context.Users.Include(x => x.Profile).FirstAsync(x => x.UserName == HttpContext.User.Identity.Name);
-            if (user == null)
+            var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var profile = await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == id);
+            if (profile == null)
                 return Unauthorized();
 
             //create account public key and secret seed
             Stellar.KeyPair pair = Stellar.KeyPair.Random();
-            user.Profile.PublicKey = pair.AccountId;
+            profile.PublicKey = pair.AccountId;
             string url = $"https://friendbot.stellar.org/?addr={pair.AccountId}";
             //create account on stellar test net
             HttpClient client = new HttpClient();
