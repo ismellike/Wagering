@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
@@ -19,17 +20,20 @@ namespace Wagering.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
+            ApplicationDbContext context,
             ILogger<ExternalLoginModel> logger,
             IEmailSender emailSender)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _context = context;
             _logger = logger;
             _emailSender = emailSender;
         }
@@ -125,6 +129,12 @@ namespace Wagering.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                if (await _context.Profiles.AnyAsync(x => x.DisplayName == Input.DisplayName))
+                {
+                    ModelState.AddModelError(string.Empty, $"{Input.DisplayName} is already taken.");
+                    return Page();
+                }
+
                 var user = new ApplicationUser
                 {
                     UserName = Input.Email,

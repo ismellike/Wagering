@@ -10,8 +10,8 @@ using Wagering;
 namespace Wagering.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200224060338_IsAccepted")]
-    partial class IsAccepted
+    [Migration("20200305210538_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -280,9 +280,6 @@ namespace Wagering.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ProfileDisplayName")
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -303,8 +300,6 @@ namespace Wagering.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("ProfileDisplayName");
-
                     b.ToTable("AspNetUsers");
 
                     b.HasData(
@@ -317,7 +312,6 @@ namespace Wagering.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            ProfileDisplayName = "user0",
                             SecurityStamp = "4397789b-9897-4430-a9be-1ce19e2e0d00",
                             TwoFactorEnabled = false,
                             UserName = "user0@gmail.com"
@@ -331,7 +325,6 @@ namespace Wagering.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            ProfileDisplayName = "user1",
                             SecurityStamp = "4397789b-9897-4430-a9be-1ce19e2e0d01",
                             TwoFactorEnabled = false,
                             UserName = "user1@gmail.com"
@@ -345,7 +338,6 @@ namespace Wagering.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            ProfileDisplayName = "user2",
                             SecurityStamp = "4397789b-9897-4430-a9be-1ce19e2e0d02",
                             TwoFactorEnabled = false,
                             UserName = "user2@gmail.com"
@@ -359,7 +351,6 @@ namespace Wagering.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            ProfileDisplayName = "user3",
                             SecurityStamp = "4397789b-9897-4430-a9be-1ce19e2e0d03",
                             TwoFactorEnabled = false,
                             UserName = "user3@gmail.com"
@@ -373,7 +364,6 @@ namespace Wagering.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            ProfileDisplayName = "user4",
                             SecurityStamp = "4397789b-9897-4430-a9be-1ce19e2e0d04",
                             TwoFactorEnabled = false,
                             UserName = "user4@gmail.com"
@@ -387,7 +377,6 @@ namespace Wagering.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            ProfileDisplayName = "user5",
                             SecurityStamp = "4397789b-9897-4430-a9be-1ce19e2e0d05",
                             TwoFactorEnabled = false,
                             UserName = "user5@gmail.com"
@@ -401,7 +390,6 @@ namespace Wagering.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            ProfileDisplayName = "user6",
                             SecurityStamp = "4397789b-9897-4430-a9be-1ce19e2e0d06",
                             TwoFactorEnabled = false,
                             UserName = "user6@gmail.com"
@@ -415,7 +403,6 @@ namespace Wagering.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            ProfileDisplayName = "user7",
                             SecurityStamp = "4397789b-9897-4430-a9be-1ce19e2e0d07",
                             TwoFactorEnabled = false,
                             UserName = "user7@gmail.com"
@@ -429,7 +416,6 @@ namespace Wagering.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            ProfileDisplayName = "user8",
                             SecurityStamp = "4397789b-9897-4430-a9be-1ce19e2e0d08",
                             TwoFactorEnabled = false,
                             UserName = "user8@gmail.com"
@@ -443,7 +429,6 @@ namespace Wagering.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            ProfileDisplayName = "user9",
                             SecurityStamp = "4397789b-9897-4430-a9be-1ce19e2e0d09",
                             TwoFactorEnabled = false,
                             UserName = "user9@gmail.com"
@@ -472,9 +457,14 @@ namespace Wagering.Migrations
 
             modelBuilder.Entity("Wagering.Models.Profile", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<string>("DisplayName")
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
+                        .HasColumnType("nvarchar(12)")
+                        .HasMaxLength(12);
 
                     b.Property<string>("Input")
                         .HasColumnType("nvarchar(max)");
@@ -488,70 +478,101 @@ namespace Wagering.Migrations
                     b.Property<string>("PublicKey")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("DisplayName");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DisplayName")
+                        .IsUnique()
+                        .HasFilter("[DisplayName] IS NOT NULL");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Profiles");
 
                     b.HasData(
                         new
                         {
+                            Id = -1,
                             DisplayName = "user0",
                             IsVerified = false,
-                            PublicKey = "0FF8A9FU328JF8A9SJF8923"
+                            PublicKey = "0FF8A9FU328JF8A9SJF8923",
+                            UserId = "0AAAAAAAAAAAAAAAAAAAAAAAAA"
                         },
                         new
                         {
+                            Id = -2,
                             DisplayName = "user1",
                             IsVerified = false,
-                            PublicKey = "1FF8A9FU328JF8A9SJF8923"
+                            PublicKey = "1FF8A9FU328JF8A9SJF8923",
+                            UserId = "1AAAAAAAAAAAAAAAAAAAAAAAAA"
                         },
                         new
                         {
+                            Id = -3,
                             DisplayName = "user2",
                             IsVerified = false,
-                            PublicKey = "2FF8A9FU328JF8A9SJF8923"
+                            PublicKey = "2FF8A9FU328JF8A9SJF8923",
+                            UserId = "2AAAAAAAAAAAAAAAAAAAAAAAAA"
                         },
                         new
                         {
+                            Id = -4,
                             DisplayName = "user3",
                             IsVerified = false,
-                            PublicKey = "3FF8A9FU328JF8A9SJF8923"
+                            PublicKey = "3FF8A9FU328JF8A9SJF8923",
+                            UserId = "3AAAAAAAAAAAAAAAAAAAAAAAAA"
                         },
                         new
                         {
+                            Id = -5,
                             DisplayName = "user4",
                             IsVerified = false,
-                            PublicKey = "4FF8A9FU328JF8A9SJF8923"
+                            PublicKey = "4FF8A9FU328JF8A9SJF8923",
+                            UserId = "4AAAAAAAAAAAAAAAAAAAAAAAAA"
                         },
                         new
                         {
+                            Id = -6,
                             DisplayName = "user5",
                             IsVerified = false,
-                            PublicKey = "5FF8A9FU328JF8A9SJF8923"
+                            PublicKey = "5FF8A9FU328JF8A9SJF8923",
+                            UserId = "5AAAAAAAAAAAAAAAAAAAAAAAAA"
                         },
                         new
                         {
+                            Id = -7,
                             DisplayName = "user6",
                             IsVerified = false,
-                            PublicKey = "6FF8A9FU328JF8A9SJF8923"
+                            PublicKey = "6FF8A9FU328JF8A9SJF8923",
+                            UserId = "6AAAAAAAAAAAAAAAAAAAAAAAAA"
                         },
                         new
                         {
+                            Id = -8,
                             DisplayName = "user7",
                             IsVerified = false,
-                            PublicKey = "7FF8A9FU328JF8A9SJF8923"
+                            PublicKey = "7FF8A9FU328JF8A9SJF8923",
+                            UserId = "7AAAAAAAAAAAAAAAAAAAAAAAAA"
                         },
                         new
                         {
+                            Id = -9,
                             DisplayName = "user8",
                             IsVerified = false,
-                            PublicKey = "8FF8A9FU328JF8A9SJF8923"
+                            PublicKey = "8FF8A9FU328JF8A9SJF8923",
+                            UserId = "8AAAAAAAAAAAAAAAAAAAAAAAAA"
                         },
                         new
                         {
+                            Id = -10,
                             DisplayName = "user9",
                             IsVerified = false,
-                            PublicKey = "9FF8A9FU328JF8A9SJF8923"
+                            PublicKey = "9FF8A9FU328JF8A9SJF8923",
+                            UserId = "9AAAAAAAAAAAAAAAAAAAAAAAAA"
                         });
                 });
 
@@ -569,7 +590,10 @@ namespace Wagering.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserDisplayName")
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(9,2)");
@@ -578,7 +602,7 @@ namespace Wagering.Migrations
 
                     b.HasIndex("GameName");
 
-                    b.HasIndex("UserDisplayName");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Rating");
 
@@ -2506,13 +2530,16 @@ namespace Wagering.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("UserDisplayName")
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ChallengeId");
 
-                    b.HasIndex("UserDisplayName");
+                    b.HasIndex("UserId");
 
                     b.ToTable("WagerChallengeBid");
 
@@ -7525,7 +7552,10 @@ namespace Wagering.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("UserDisplayName")
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<int>("WagerId")
                         .HasColumnType("int");
@@ -7535,13 +7565,13 @@ namespace Wagering.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserDisplayName");
+                    b.HasIndex("UserId");
 
                     b.HasIndex("WagerId");
 
                     b.HasIndex("WagerResultId");
 
-                    b.ToTable("Bids");
+                    b.ToTable("WagerBids");
 
                     b.HasData(
                         new
@@ -9210,11 +9240,11 @@ namespace Wagering.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Wagering.Models.ApplicationUser", b =>
+            modelBuilder.Entity("Wagering.Models.Profile", b =>
                 {
-                    b.HasOne("Wagering.Models.Profile", "Profile")
-                        .WithMany()
-                        .HasForeignKey("ProfileDisplayName");
+                    b.HasOne("Wagering.Models.ApplicationUser", "User")
+                        .WithOne("Profile")
+                        .HasForeignKey("Wagering.Models.Profile", "UserId");
                 });
 
             modelBuilder.Entity("Wagering.Models.Rating", b =>
@@ -9225,7 +9255,7 @@ namespace Wagering.Migrations
 
                     b.HasOne("Wagering.Models.Profile", "User")
                         .WithMany("Ratings")
-                        .HasForeignKey("UserDisplayName");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Wagering.Models.Wager", b =>
@@ -9254,14 +9284,14 @@ namespace Wagering.Migrations
 
                     b.HasOne("Wagering.Models.Profile", "User")
                         .WithMany()
-                        .HasForeignKey("UserDisplayName");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Wagering.Models.WagerHostBid", b =>
                 {
                     b.HasOne("Wagering.Models.Profile", "User")
                         .WithMany()
-                        .HasForeignKey("UserDisplayName");
+                        .HasForeignKey("UserId");
 
                     b.HasOne("Wagering.Models.Wager", "Wager")
                         .WithMany("Hosts")

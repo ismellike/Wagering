@@ -22,9 +22,9 @@
   </v-container>
 </template>
 <script>
-import Wagers from "@/views/control/host/Wagers";
-import Tournaments from "@/views/control/host/Tournaments";
-import Leagues from "@/views/control/host/Leagues";
+import Wagers from "@/views/control/host/wagers/Main";
+import Tournaments from "@/views/control/host/tournaments/Main";
+import Leagues from "@/views/control/host/leagues/Main";
 export default {
   components: {
     Wagers,
