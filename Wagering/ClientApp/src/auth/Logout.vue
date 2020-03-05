@@ -3,7 +3,7 @@
     <h1 v-if="!!message">{{ message }}</h1>
     <div v-else>
       <h1 v-if="action === logout">Processing logout</h1>
-      <h1 v-else-if="action === callback">Processing login callback</h1>
+      <h1 v-else-if="action === callback">Processing logout callback</h1>
       <h1 v-else-if="action === loggedOut">{{ message }}</h1>
       <h1 v-else>Invalid action {{ action }}</h1>
     </div>
@@ -96,7 +96,7 @@ export default {
     },
     removeUser() {
         this.$store.dispatch("setLogout");
-        delete axios.defaults.headers.common["Authorization"];
+        delete this.$axios.defaults.headers.common["Authorization"];
     },
     async populateAuthenticationState() {
       const result = await AuthService.isAuthenticated();

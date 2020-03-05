@@ -12,7 +12,8 @@ import store from "@/store";
 
 Vue.use(Router);
 
-const routes = [{
+const routes = [
+  {
     path: "*",
     name: "home",
     component: Home
@@ -52,7 +53,12 @@ const routes = [{
     path: "/:game/wagers/create",
     name: "wager_create",
     component: () => import("@/views/wagers/Create.vue")
-  },
+    },
+    {
+        path: "/:game/wagers/create",
+        name: "wager_edit",
+        component: () => import("@/views/wagers/Create.vue")
+    },
   {
     path: "/:game/wagers/:id",
     name: "wager_view",

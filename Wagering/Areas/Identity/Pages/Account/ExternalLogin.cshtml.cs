@@ -49,6 +49,12 @@ namespace Wagering.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+
+            [Required]
+            [RegularExpression(Constants.NameRegex)]
+            [StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
+            [Display(Name = "Display Name")]
+            public string DisplayName { get; set; }
         }
 
         public IActionResult OnGetAsync()
@@ -119,7 +125,16 @@ namespace Wagering.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser
+                {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    Profile = new Profile
+                    {
+                        DisplayName = Input.DisplayName,
+                        IsVerified = false
+                    }
+                };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

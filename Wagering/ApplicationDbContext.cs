@@ -42,26 +42,29 @@ namespace Wagering
             for (int i = 0; i < 10; i++)
             {
                 var username = $"user{i}";
-                profiles.Add(new Profile
-                {
-                    Id = -1 * i - 1,
-                    DisplayName = username,
-                    IsVerified = false,
-                    PublicKey = $"{i}FF8A9FU328JF8A9SJF8923"
-                });
+                int id = -1 * i - 1;
+                string userId = $"{i}AAAAAAAAAAAAAAAAAAAAAAAAA";
                 users.Add(new ApplicationUser
                 {
                     UserName = $"user{i}@gmail.com",
                     Email = $"user{i}@gmail.com",
-                    Id = $"{i}AAAAAAAAAAAAAAAAAAAAAAAAA",
+                    Id = userId,
                     ConcurrencyStamp = $"{i}397789b-9897-4430-a9be-1ce19e2e0d09",
                     SecurityStamp = $"4397789b-9897-4430-a9be-1ce19e2e0d0{i}"
+                });
+                profiles.Add(new Profile
+                {
+                    Id = id,
+                    DisplayName = username,
+                    IsVerified = false,
+                    PublicKey = $"{i}FF8A9FU328JF8A9SJF8923",
+                    UserId = userId
                 });
                 ratings.Add(new Rating
                 {
                     GameName = "Fortnite",
                     GamesPlayed = 0,
-                    Id = -1 * i - 1,
+                    Id = id,
                     UserDisplayName = username,
                     Value = Constants.Rating.Initial
                 });
