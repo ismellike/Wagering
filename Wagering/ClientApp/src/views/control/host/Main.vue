@@ -5,19 +5,21 @@
     <v-container>
       <h1 class="text-center">Host Panel</h1>
     </v-container>
-    <v-tabs grow optional @change="change">
+    <v-tabs grow optional :value="selected">
       <v-tab>Wagers</v-tab>
       <v-tab>Tournaments</v-tab>
       <v-tab>Leagues</v-tab>
-      <v-tab-item>
-        <Wagers />
-      </v-tab-item>
-      <v-tab-item>
-        <Tournaments />
-      </v-tab-item>
-      <v-tab-item>
-        <Leagues />
-      </v-tab-item>
+      <v-tabs-items>
+        <v-tab-item>
+          <Wagers />
+        </v-tab-item>
+        <v-tab-item>
+          <Tournaments />
+        </v-tab-item>
+        <v-tab-item>
+          <Leagues />
+        </v-tab-item>
+      </v-tabs-items>
     </v-tabs>
   </v-container>
 </template>
@@ -33,25 +35,21 @@ export default {
   },
   data() {
     return {
-      loadedPage: null
+      loadedPage: null,
+      selected: null
     };
   },
-  methods: {
-    change(page) {
-      if (page == undefined) return;
-      if (this.loadedPage == page) return;
-      this.loadedPage = page;
-
-      //load data here
-      switch (page) {
-        //Wagers
-        case 0:
+  created() {
+    if (this.$route.params.type != null) {
+      switch (this.$route.params.type.toLowerCase()) {
+        case "wagers":
+          this.selected = 0;
           break;
-        //Tournaments
-        case 1:
+        case "tournaments":
+          this.selected = 1;
           break;
-        //Leagues
-        case 2:
+        case "leagues":
+          this.selected = 2;
           break;
       }
     }

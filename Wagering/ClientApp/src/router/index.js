@@ -12,7 +12,8 @@ import store from "@/store";
 
 Vue.use(Router);
 
-const routes = [{
+const routes = [
+  {
     path: "*",
     name: "home",
     component: Home
@@ -28,7 +29,7 @@ const routes = [{
     component: () => import("@/views/Hub.vue")
   },
   {
-    path: "/host-panel",
+    path: "/host-panel/:type?",
     name: "host-panel",
     component: () => import("@/views/control/host/Main.vue"),
     meta: {
