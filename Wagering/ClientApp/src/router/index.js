@@ -29,12 +29,26 @@ const routes = [
     component: () => import("@/views/Hub.vue")
   },
   {
-    path: "/host-panel/:type?",
+    path: "/host-panel",
     name: "host-panel",
     component: () => import("@/views/control/host/Main.vue"),
     meta: {
       requiresAuth: true
-    }
+    },
+    children: [
+      {
+        path: "wagers",
+        component: () => import("@/views/control/host/wagers/Main.vue")
+      },
+      {
+        path: "tournaments",
+        component: () => import("@/views/control/host/tournaments/Main.vue")
+      },
+      {
+        path: "leagues",
+        component: () => import("@/views/control/host/leagues/Main.vue")
+      }
+    ]
   }, //consider putting children components here
   {
     path: "/host-panel/wagers/edit/:id",

@@ -5,7 +5,7 @@
     <v-container>
       <h1 class="text-center">Client Panel</h1>
     </v-container>
-    <v-tabs grow optional show-arrows @change="change">
+    <v-tabs grow optional show-arrows :value="selected">
       <v-tab>Wagers</v-tab>
       <v-tab>Tournaments</v-tab>
       <v-tab>Leagues</v-tab>
@@ -33,28 +33,30 @@ export default {
   },
   data() {
     return {
-      loadedPage: null
+      loadedPage: null,
+      selected: null
     };
   },
-  methods: {
-    change(page) {
-      if (page == undefined) return;
-      if (this.loadedPage == page) return;
-      this.loadedPage = page;
-
-      //load data here
-      switch (page) {
-        //Wagers
-        case 0:
+  created() {
+    if (this.$route.params.type != null) {
+      switch (this.$route.params.type.toLowerCase()) {
+        case "wagers":
+          this.selected = 0;
           break;
-        //Tournaments
-        case 1:
+        case "tournaments":
+          this.selected = 1;
           break;
-        //Leagues
-        case 2:
+        case "leagues":
+          this.selected = 2;
           break;
       }
     }
   }
 };
 </script>
+<style>
+.v-tabs-bar.v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(.v-tabs-bar--show-arrows):not(.v-slide-group--has-affixes)
+  .v-slide-group__prev {
+  display: none !important;
+}
+</style>

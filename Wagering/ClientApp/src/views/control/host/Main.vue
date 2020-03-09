@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <!--Might need to split in host and request-->
+    <!--Need to change from tabs to nav bar-->
     <!--Split into wagers/tournaments/leagues-->
     <v-container>
       <h1 class="text-center">Host Panel</h1>
@@ -9,17 +9,9 @@
       <v-tab>Wagers</v-tab>
       <v-tab>Tournaments</v-tab>
       <v-tab>Leagues</v-tab>
-      <v-tabs-items>
-        <v-tab-item>
-          <Wagers />
-        </v-tab-item>
-        <v-tab-item>
-          <Tournaments />
-        </v-tab-item>
-        <v-tab-item>
-          <Leagues />
-        </v-tab-item>
-      </v-tabs-items>
+      <v-tab-item>
+        <router-view />
+      </v-tab-item>
     </v-tabs>
   </v-container>
 </template>
@@ -38,6 +30,9 @@ export default {
       loadedPage: null,
       selected: null
     };
+  },
+  methods: {
+    change() {}
   },
   created() {
     if (this.$route.params.type != null) {
