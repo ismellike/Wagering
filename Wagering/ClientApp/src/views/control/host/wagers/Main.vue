@@ -30,7 +30,9 @@ export default {
     };
   },
   created() {
-    //get all wagers
+    this.$axios.get("/api/panel/host/wagers").then(response => {
+      console.log(response);
+    });
   }
 };
 </script>

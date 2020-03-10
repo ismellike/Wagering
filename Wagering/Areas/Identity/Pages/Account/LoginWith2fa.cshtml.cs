@@ -64,7 +64,7 @@ namespace Wagering.Areas.Identity.Pages.Account
                 return Page();
             }
 
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl = returnUrl ?? Url.Content("~/login-callback");
 
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
