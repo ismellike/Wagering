@@ -6,6 +6,7 @@ namespace Wagering.Models
     {
         public static decimal GetNewRating(this Rating r1, Rating r2, bool isWin)
         {
+            //take wager amount into consideration
             return r1.Value + Constants.Rating.K * ((isWin ? 1 : 0) - GetExpectedOutcome(r1, r2));
         }
 
