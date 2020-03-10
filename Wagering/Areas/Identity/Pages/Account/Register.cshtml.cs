@@ -84,7 +84,7 @@ namespace Wagering.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                if(await _context.Profiles.AnyAsync(x => x.DisplayName == Input.DisplayName))
+                if (await _context.Profiles.AnyAsync(x => x.DisplayName == Input.DisplayName))
                 {
                     ModelState.AddModelError(string.Empty, $"{Input.DisplayName} is already taken.");
                     return Page();

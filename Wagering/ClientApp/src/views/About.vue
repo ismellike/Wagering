@@ -1,4 +1,5 @@
 <template>
+  <!--Considering stripe instead-->
   <v-container>
     <v-container>
       <h1 class="display-2">

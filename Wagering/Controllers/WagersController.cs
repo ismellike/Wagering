@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Wagering.Models;
-using Microsoft.AspNetCore.Authorization;
-using System;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
-using System.Collections.Generic;
 
 namespace Wagering.Server.Controllers
 {

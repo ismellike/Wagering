@@ -23,5 +23,14 @@
   </v-tabs>
 </template>
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      data: null
+    };
+  },
+  created() {
+    //get all wagers
+  }
+};
 </script>
