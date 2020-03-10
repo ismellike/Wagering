@@ -15,22 +15,18 @@ Vue.use(Router);
 const routes = [
   {
     path: "*",
-    name: "home",
     component: Home
   },
   {
     path: "/about",
-    name: "about",
     component: () => import("@/views/About.vue")
   },
   {
     path: "/hub",
-    name: "hub",
     component: () => import("@/views/Hub.vue")
   },
   {
     path: "/host-panel",
-    name: "host-panel",
     component: () => import("@/views/control/host/Main.vue"),
     meta: {
       requiresAuth: true
@@ -57,11 +53,24 @@ const routes = [
   },
   {
     path: "/client-panel",
-    name: "client-panel",
     component: () => import("@/views/control/client/Main.vue"),
     meta: {
       requiresAuth: true
-    }
+    },
+    children: [
+      {
+        path: "wagers",
+        component: () => import("@/views/control/client/wagers/Main.vue")
+      },
+      {
+        path: "tournaments",
+        component: () => import("@/views/control/client/tournaments/Main.vue")
+      },
+      {
+        path: "leagues",
+        component: () => import("@/views/control/client/leagues/Main.vue")
+      }
+    ]
   }, // wagers
   {
     path: "/:game/wagers",
