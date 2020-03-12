@@ -1,5 +1,5 @@
 <template>
-  <!--Considering stripe instead-->
+  <!--Decided to use USDC stablecoin with Nethereum and circle api-->
   <v-container>
     <v-container>
       <h1 class="display-2">
