@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Nethereum.JsonRpc.Client;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -46,17 +47,34 @@ namespace Wagering.Controllers
         }
 
         [HttpPost("host/wagers/edit")]
-        public async Task<IActionResult> EditWager(Wager wager)
+        public async Task<IActionResult> EditWager(Wager newWager)
         {
+            //authorization
             var profile = await GetProfileAsync();
             if (profile == null)
                 return Unauthorized();
+            var wager = await _context.Wagers.Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync(x => x.Id == newWager.Id);
+            if (wager == null)
+                return BadRequest("Wager was not found.");
+            if (!wager.Hosts.Any(x => x.UserDisplayName == profile.DisplayName))
+                return Unauthorized();
 
             //reset all host and client approved to false
-
+            foreach (var host in wager.Hosts)
+                host.Approved = false;
+            foreach (var challenge in wager.Challenges)
+                foreach (var client in challenge.Challengers)
+                    client.Approved = false;
             //set new wager
+            //need to set percentage ratings & other users
+            wager.Description = newWager.Description;
+            wager.MinimumWager = newWager.MinimumWager;
+            wager.MaximumWager = newWager.MaximumWager;
+            wager.IsPrivate = newWager.IsPrivate;
 
             //save wager
+            _context.Wagers.Update(wager);
+            await _context.SaveChangesAsync();
             return Ok();
         }
 
