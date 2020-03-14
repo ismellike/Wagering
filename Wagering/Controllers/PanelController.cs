@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -14,15 +15,14 @@ namespace Wagering.Controllers
     [Authorize]
     public class PanelController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public PanelController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public PanelController(ApplicationDbContext context)
         {
-            _userManager = userManager;
             _context = context;
         }
 
+        #region Wagers
         [HttpGet("client/wagers")]
         public async Task<IActionResult> ClientChallenges()
         {
@@ -45,8 +45,23 @@ namespace Wagering.Controllers
             return Ok(requests);
         }
 
+        [HttpPost("host/wagers/edit")]
+        public async Task<IActionResult> EditWager()
+        {
+            var profile = await GetProfileAsync();
+            if (profile == null)
+                return Unauthorized();
+
+            //reset all host and client approved to false
+
+            //set new wager
+
+            //save wager
+            return Ok();
+        }
+
         [HttpPost("host/request")]
-        public async Task<IActionResult> SendRequest(int wagerId, string displayName)
+        public async Task<IActionResult> SendRequest(int wagerId, decimal amount)
         {
             var profile = await GetProfileAsync();
             if (profile == null)
@@ -57,10 +72,25 @@ namespace Wagering.Controllers
             if (wager == null)
                 return BadRequest("Wager was not found.");
             if (!wager.Hosts.Any(x => x.UserDisplayName == profile.DisplayName))
-                return Unauthorized($"{profile.DisplayName} is not authorized to send requests for this wager.");
+                return Unauthorized($"{profile.DisplayName} cannot request, because they are a host.");
             //send request to user
+            //check for balance and hold
+            wager.Challenges.Add(new WagerChallenge
+            {
+                Challengers = new WagerChallengeBid[]
+                {
+                    new WagerChallengeBid{
+                    UserDisplayName = profile.DisplayName,
+                    Approved = false,
+                    Percentage = 100
+                    }
+                },
+                Date = DateTime.Now,
+                Amount = amount,
+            });
             return Ok();
         }
+        #endregion
 
         private async Task<Profile> GetProfileAsync()
         {

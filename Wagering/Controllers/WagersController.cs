@@ -132,7 +132,7 @@ namespace Wagering.Server.Controllers
                     new WagerHostBid
                     {
                         UserDisplayName = profile.DisplayName,
-                        Approved = true,
+                        Approved = false,
                         Percentage = 100
                     }
                 }
