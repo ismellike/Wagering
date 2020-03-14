@@ -22,7 +22,7 @@ namespace Wagering.Server.Controllers
         }
         //POST: api/wagers/search
         [HttpPost("search")]
-        public async Task<IActionResult> SearchWagers([FromBody]SearchQuery query)
+        public async Task<IActionResult> SearchWagers([FromBody]WagerQuery query)
         {
             if (query.Page < 1)
                 return BadRequest($"{query.Page} is not a valid page.");
@@ -39,9 +39,7 @@ namespace Wagering.Server.Controllers
             if (game == null)
                 return BadRequest($"{query.Game} is not a valid game.");
 
-            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => x.GameName == game.Name);
-            if (!query.ShowClosed)
-                wagerQuery = wagerQuery.Where(x => x.IsClosed == query.ShowClosed);
+            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => !x.IsPrivate).Where(x => x.GameName == game.Name);
 
             if (!string.IsNullOrWhiteSpace(query.Username))
                 wagerQuery = wagerQuery.Where(x => x.Hosts.Any(y => y.User.DisplayName.Contains(query.Username)));
@@ -126,7 +124,7 @@ namespace Wagering.Server.Controllers
                 Description = wager.Description,
                 MinimumWager = wager.MinimumWager,
                 MaximumWager = wager.MaximumWager,
-                IsClosed = true,
+                IsPrivate = true,
                 Hosts = new WagerHostBid[]
                 {
                     new WagerHostBid

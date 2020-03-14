@@ -62,10 +62,6 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col sm="2">
-                  <v-switch v-model="form.showClosed" label="Show Closed" class="mt-1 pa-1"></v-switch>
-                </v-col>
-                <v-spacer />
                 <v-col class="text-right">
                   <v-btn color="green" v-on:click="submit" class="ma-1">Search</v-btn>
                   <v-btn color="red" v-on:click="clear" class="ma-1">Clear</v-btn>
@@ -111,14 +107,12 @@ export default {
         game: this.$route.params.game.toLowerCase(),
         page: 1,
         playerCount: null,
-        showClosed: false,
         minimumWager: null,
         maximumWager: null
       },
       form: {
         username: null,
         playerCount: null,
-        showClosed: false,
         minimumWager: null,
         maximumWager: null
       },
@@ -152,7 +146,6 @@ export default {
     clear() {
       this.form.username = null;
       this.form.playerCount = null;
-      this.form.showClosed = false;
       this.form.minimumWager = null;
       this.form.maximumWager = null;
       this.$refs.observer.reset();
@@ -169,7 +162,6 @@ export default {
     setFormVars() {
       this.query.username = this.form.username;
       this.query.playerCount = this.form.playerCount;
-      this.query.showClosed = this.form.showClosed;
       this.query.minimumWager = this.form.minimumWager;
       this.query.maximumWager = this.form.maximumWager;
     }

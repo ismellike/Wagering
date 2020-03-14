@@ -23,7 +23,7 @@ namespace Wagering.Models
         public decimal? MinimumWager { get; set; }
         [Column(TypeName = "decimal(18,7)")]
         public decimal? MaximumWager { get; set; }
-        public bool IsClosed { get; set; }
+        public bool IsPrivate { get; set; }
 
         [NotMapped]
         public int ChallengeCount { get; set; }

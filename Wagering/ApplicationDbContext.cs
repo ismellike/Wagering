@@ -109,7 +109,7 @@ namespace Wagering
                 {
                     Id = id,
                     Date = date,
-                    IsClosed = false,
+                    IsPrivate = false,
                     GameName = "Fortnite",
                     Description = "This is a description for wager " + id
                 });

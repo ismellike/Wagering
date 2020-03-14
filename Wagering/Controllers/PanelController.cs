@@ -46,7 +46,7 @@ namespace Wagering.Controllers
         }
 
         [HttpPost("host/wagers/edit")]
-        public async Task<IActionResult> EditWager()
+        public async Task<IActionResult> EditWager(Wager wager)
         {
             var profile = await GetProfileAsync();
             if (profile == null)
