@@ -22,35 +22,35 @@ namespace Wagering.Server.Controllers
         }
         //POST: api/wagers/search
         [HttpPost("search")]
-        public async Task<IActionResult> SearchWagers([FromBody]WagerQuery query)
+        public async Task<IActionResult> GetWagers(string game, int page, string username, int? minimumWager, int? maximumWager, int? playerCount)
         {
-            if (query.Page < 1)
-                return BadRequest($"{query.Page} is not a valid page.");
-            if (query.MinimumWager.HasValue && query.MaximumWager.HasValue && query.MinimumWager.Value > query.MaximumWager.Value)
+            if (page < 1)
+                return BadRequest($"{page} is not a valid page.");
+            if (minimumWager.HasValue && maximumWager.HasValue && minimumWager.Value > maximumWager.Value)
                 return BadRequest("Minimum wager cannot be larger than the maximum wager.");
-            if (query.MaximumWager.HasValue && query.MaximumWager.Value < 0)
+            if (maximumWager.HasValue && maximumWager.Value < 0)
                 return BadRequest("Maximum wager cannot be negative.");
-            if (query.MinimumWager.HasValue && query.MinimumWager.Value < 0)
+            if (minimumWager.HasValue && minimumWager.Value < 0)
                 return BadRequest("Minimum wager cannot be negative.");
-            if (query.PlayerCount.HasValue && query.PlayerCount.Value < 0)
+            if (playerCount.HasValue && playerCount.Value < 0)
                 return BadRequest("Player count cannot be negative.");
 
-            Game game = await _context.Games.FirstOrDefaultAsync(x => x.Url == query.Game);
-            if (game == null)
-                return BadRequest($"{query.Game} is not a valid game.");
+            Game Game = await _context.Games.FirstOrDefaultAsync(x => x.Url == game);
+            if (Game == null)
+                return BadRequest($"{game} is not a valid game.");
 
-            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => !x.IsPrivate).Where(x => x.GameName == game.Name);
+            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => !x.IsPrivate).Where(x => x.GameName == Game.Name);
 
-            if (!string.IsNullOrWhiteSpace(query.Username))
-                wagerQuery = wagerQuery.Where(x => x.Hosts.Any(y => y.User.DisplayName.Contains(query.Username)));
-            if (query.PlayerCount.HasValue)
-                wagerQuery = wagerQuery.Where(x => x.Hosts.Count == query.PlayerCount);
-            if (query.MinimumWager.HasValue)
-                wagerQuery = wagerQuery.Where(x => x.MinimumWager == null || (x.MinimumWager.HasValue && x.MinimumWager > query.MinimumWager) || (x.MaximumWager.HasValue && x.MaximumWager > query.MinimumWager));
-            if (query.MaximumWager.HasValue)
-                wagerQuery = wagerQuery.Where(x => x.MaximumWager == null || (x.MinimumWager.HasValue && x.MinimumWager < query.MaximumWager) || (x.MaximumWager.HasValue && x.MaximumWager < query.MaximumWager));
+            if (!string.IsNullOrWhiteSpace(username))
+                wagerQuery = wagerQuery.Where(x => x.Hosts.Any(y => y.User.DisplayName.Contains(username)));
+            if (playerCount.HasValue)
+                wagerQuery = wagerQuery.Where(x => x.Hosts.Count == playerCount);
+            if (minimumWager.HasValue)
+                wagerQuery = wagerQuery.Where(x => x.MinimumWager == null || (x.MinimumWager.HasValue && x.MinimumWager > minimumWager) || (x.MaximumWager.HasValue && x.MaximumWager > minimumWager));
+            if (maximumWager.HasValue)
+                wagerQuery = wagerQuery.Where(x => x.MaximumWager == null || (x.MinimumWager.HasValue && x.MinimumWager < maximumWager) || (x.MaximumWager.HasValue && x.MaximumWager < maximumWager));
 
-            PaginatedList<Wager> wagers = await PaginatedList<Wager>.CreateAsync(wagerQuery.OrderByDescending(x => x.Date), query.Page, ResultSize);
+            PaginatedList<Wager> wagers = await PaginatedList<Wager>.CreateAsync(wagerQuery.OrderByDescending(x => x.Date), page, ResultSize);
 
             foreach (Wager wager in wagers.List)
                 wager.ChallengeCount = await _context.Challenges.Where(x => x.WagerId == wager.Id).CountAsync();
@@ -69,43 +69,11 @@ namespace Wagering.Server.Controllers
             return Ok(wager);
         }
 
-        // PUT: api/Wagers/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutWager(int id, Wager wager)
-        {
-            if (id != wager.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(wager).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!WagerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         // POST: api/Wagers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
         [Authorize]
+        [HttpPost]
         public async Task<IActionResult> PostWager(Wager wager)
         {
             //validate wager
@@ -140,25 +108,99 @@ namespace Wagering.Server.Controllers
             return Ok(newWager.Id);
         }
 
-        // DELETE: api/Wagers/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Wager>> DeleteWager(int id)
+        [HttpGet("client/wagers")]
+        [Authorize]
+        public async Task<IActionResult> ClientChallenges()
         {
-            var wager = await _context.Wagers.FindAsync(id);
-            if (wager == null)
-            {
-                return NotFound();
-            }
+            var profile = await GetProfileAsync();
+            if (profile == null)
+                return Unauthorized();
 
-            _context.Wagers.Remove(wager);
-            await _context.SaveChangesAsync();
-
-            return wager;
+            var requests = await _context.Challenges.Include(x => x.Challengers).Include(x => x.Wager).Where(x => x.Challengers.Any(x => x.UserDisplayName == profile.DisplayName)).ToListAsync();
+            return Ok(requests);
         }
 
-        private bool WagerExists(int id)
+        [HttpGet("host/wagers")]
+        [Authorize]
+        public async Task<IActionResult> HostWagers()
         {
-            return _context.Wagers.Any(e => e.Id == id);
+            var profile = await GetProfileAsync();
+            if (profile == null)
+                return Unauthorized();
+
+            var requests = await _context.Wagers.Include(x => x.Challenges).ThenInclude(x => x.Challengers).Where(x => x.Hosts.Any(x => x.UserDisplayName == profile.DisplayName)).ToListAsync();
+            return Ok(requests);
+        }
+
+        [HttpPost("host/wagers/edit")]
+        [Authorize]
+        public async Task<IActionResult> EditWager(Wager newWager)
+        {
+            //authorization
+            var profile = await GetProfileAsync();
+            if (profile == null)
+                return Unauthorized();
+            var wager = await _context.Wagers.Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync(x => x.Id == newWager.Id);
+            if (wager == null)
+                return BadRequest("Wager was not found.");
+            if (!wager.Hosts.Any(x => x.UserDisplayName == profile.DisplayName))
+                return Unauthorized();
+
+            //reset all host and client approved to false
+            foreach (var host in wager.Hosts)
+                host.Approved = false;
+            foreach (var challenge in wager.Challenges)
+                foreach (var client in challenge.Challengers)
+                    client.Approved = false;
+            //set new wager
+            //need to set percentage ratings & other users
+            wager.Description = newWager.Description;
+            wager.MinimumWager = newWager.MinimumWager;
+            wager.MaximumWager = newWager.MaximumWager;
+            wager.IsPrivate = newWager.IsPrivate;
+
+            //save wager
+            _context.Wagers.Update(wager);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost("host/request")]
+        [Authorize]
+        public async Task<IActionResult> SendRequest(int wagerId, decimal amount)
+        {
+            var profile = await GetProfileAsync();
+            if (profile == null)
+                return Unauthorized();
+
+            //check if wager belongs to user
+            var wager = await _context.Wagers.FindAsync(wagerId);
+            if (wager == null)
+                return BadRequest("Wager was not found.");
+            if (!wager.Hosts.Any(x => x.UserDisplayName == profile.DisplayName))
+                return Unauthorized($"{profile.DisplayName} cannot request, because they are a host.");
+            //send request to user
+            //check for balance and hold
+            wager.Challenges.Add(new WagerChallenge
+            {
+                Challengers = new WagerChallengeBid[]
+                {
+                    new WagerChallengeBid{
+                    UserDisplayName = profile.DisplayName,
+                    Approved = false,
+                    Percentage = 100
+                    }
+                },
+                Date = DateTime.Now,
+                Amount = amount,
+            });
+            return Ok();
+        }
+
+        private async Task<Profile> GetProfileAsync()
+        {
+            var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            return await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == id);
         }
     }
 }

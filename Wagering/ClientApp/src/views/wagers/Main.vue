@@ -131,7 +131,7 @@ export default {
     getWagers() {
       //api call here
       this.isLoading = true;
-      this.$axios.post("/api/wagers/search", this.query).then(response => {
+      this.$axios.post("/api/wagers/search", this.$route.query).then(response => {
         console.log(response);
         if (response.status == 200) {
           this.totalPages = response.data.totalPages;
@@ -166,7 +166,10 @@ export default {
       this.query.maximumWager = this.form.maximumWager;
     }
   },
-  created() {
+        created() {
+            if (this.$route.query.page == 0) { //handle default query params here or in controller
+                this.$route.query.page = 1;
+            }
     this.getWagers();
   }
 };
