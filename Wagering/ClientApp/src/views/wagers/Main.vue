@@ -152,15 +152,14 @@
             getQuery() {
                 return {
                     ...(this.query.page !== 1) && { page: this.query.page },
-                    ...(this.query.username !== null) && { username: this.query.username },
-                    ...(this.query.playerCount !== null) && { playerCount: this.query.playerCount },
-                    ...(this.query.minimumWager !== null) && { minimumWager: this.query.minimumWager },
-                    ...(this.query.maximumWager !== null) && { maximumWager: this.query.maximumWager },
+                    ...(this.query.username) && { username: this.query.username },
+                    ...(this.query.playerCount) && { playerCount: this.query.playerCount },
+                    ...(this.query.minimumWager) && { minimumWager: this.query.minimumWager },
+                    ...(this.query.maximumWager) && { maximumWager: this.query.maximumWager },
                 };
             },
             setFormVars() {
                 this.query.page = 1;
-                //if form var is empty then set to null
                 this.query.username = this.form.username;
                 this.query.playerCount = this.form.playerCount;
                 this.query.minimumWager = this.form.minimumWager;
