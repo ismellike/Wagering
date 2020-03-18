@@ -72,9 +72,9 @@
             <v-col class="text-center" cols="12">
                 <v-pagination v-model="query.page"
                               :length="totalPages"
-                              @next="searchScroll"
-                              @previous="searchScroll"
-                              @input="searchScroll"></v-pagination>
+                              @next="goTo"
+                              @previous="goTo"
+                              @input="goTo"></v-pagination>
             </v-col>
         </v-row>
     </v-container>
@@ -112,9 +112,10 @@
             };
         },
         methods: {
-            searchScroll() {
-                window.scrollTo({ top: 0, behavior: "smooth" });
-                this.getWagers();
+            goTo() {
+                this.$router.push({
+                    name: "wagers", params: { game: this.query.game }, query: this.getQuery()
+                });
             },
             getWagers() {
                 //api call here
@@ -142,25 +143,46 @@
                 this.$refs.observer.validate().then(response => {
                     if (response) {
                         this.setFormVars();
-                        this.query.page = 1;
-                        this.searchScroll();
+                        this.$router.push({
+                            name: "wagers", params: { game: this.query.game }, query: this.getQuery()
+                        });
                     }
                 });
             },
+            getQuery() {
+                return {
+                    ...(this.query.page !== 1) && { page: this.query.page },
+                    ...(this.query.username !== null) && { username: this.query.username },
+                    ...(this.query.playerCount !== null) && { playerCount: this.query.playerCount },
+                    ...(this.query.minimumWager !== null) && { minimumWager: this.query.minimumWager },
+                    ...(this.query.maximumWager !== null) && { maximumWager: this.query.maximumWager },
+                };
+            },
             setFormVars() {
+                this.query.page = 1;
+                //if form var is empty then set to null
                 this.query.username = this.form.username;
                 this.query.playerCount = this.form.playerCount;
                 this.query.minimumWager = this.form.minimumWager;
                 this.query.maximumWager = this.form.maximumWager;
             },
-            setQueryVars() {
-                if (this.$route.query) {
-                    //iterate and set from route to this.query
-                }
+            setQueryVars(query) {
+                Object.keys(query).forEach(key => {
+                    this.query[key] = query[key];
+                });
+                this.query.page = Number(this.query.page);
             }
         },
+        beforeRouteUpdate(to, from, next) {
+            if (to.path == from.path) {
+                this.setQueryVars(to.query)
+                this.getWagers();
+            }
+            next();
+        },
         created() {
-            this.setQueryVars();
+            this.setQueryVars(this.$route.query);
+            console.log(this.query);
             this.getWagers();
         }
     };
