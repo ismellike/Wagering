@@ -24,6 +24,8 @@ namespace Wagering.Models
         [Column(TypeName = "decimal(18,7)")]
         public decimal? MaximumWager { get; set; }
         public bool IsPrivate { get; set; }
+        //0-pending 1-confirmed 2-completed
+        public byte Status { get; set; }
 
         [NotMapped]
         public int ChallengeCount { get; set; }
@@ -36,6 +38,9 @@ namespace Wagering.Models
 
         public bool IsApproved()
         {
+            if (Status == 1)
+                return true;
+
             foreach (WagerHostBid bid in Hosts)
                 if (bid.Approved == false)
                     return false;
