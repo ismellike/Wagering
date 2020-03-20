@@ -9,22 +9,47 @@
         <v-tab-item>
             <v-container>
                 <!--pending-->
+                <v-row dense v-for="wager in pending" :key="wager.id">
+                    <v-col>
+                        <v-container>
+                            <WagerDisplay :data="wager" :code="2" />
+                        </v-container>
+                    </v-col>
+                </v-row>
             </v-container>
         </v-tab-item>
         <v-tab-item>
             <v-container>
-                <!--confirmed-->
+                <!--pending-->
+                <v-row dense v-for="wager in confirmed" :key="wager.id">
+                    <v-col>
+                        <v-container>
+                            <WagerDisplay :data="wager" :code="2" />
+                        </v-container>
+                    </v-col>
+                </v-row>
             </v-container>
         </v-tab-item>
         <v-tab-item>
             <v-container>
                 <!--completed-->
+                <v-row dense v-for="wager in completed" :key="wager.id">
+                    <v-col>
+                        <v-container>
+                            <WagerDisplay :data="wager" :code="2" />
+                        </v-container>
+                    </v-col>
+                </v-row>
             </v-container>
         </v-tab-item>
     </v-tabs>
 </template>
 <script>
+    import WagerDisplay from "@/components/WagerDisplay";
     export default {
+        components: {
+            WagerDisplay
+        },
         data() {
             return {
                 pending: [],

@@ -62,21 +62,30 @@
                 </v-expansion-panel>
             </v-expansion-panels>
         </v-container>
-        <v-container v-if="isLoading">
-            <v-skeleton-loader v-for="i in 15" :key="i" type="card" />
-        </v-container>
-        <v-row v-else dense>
-            <v-col v-for="wager in wagers" :key="wager.id" cols="12">
-                <WagerDisplay :data="wager" :game="query.game" />
-            </v-col>
-            <v-col class="text-center" cols="12">
-                <v-pagination v-model="query.page"
-                              :length="totalPages"
-                              @next="goTo"
-                              @previous="goTo"
-                              @input="goTo"></v-pagination>
-            </v-col>
-        </v-row>
+        <div v-if="isLoading">
+            <v-row dense v-for="i in 15" :key="i">
+                <v-col>
+                    <v-container>
+                        <v-skeleton-loader type="card" />
+                    </v-container>
+                </v-col>
+            </v-row>
+        </div>
+        <div v-else>
+            <v-row dense v-for="wager in wagers" :key="wager.id">
+                <v-col>
+                    <v-container>
+                        <WagerDisplay :data="wager" :code="1" />
+                    </v-container>
+                </v-col>
+            </v-row>
+            <v-pagination v-model="query.page"
+                          class="text-center"
+                          :length="totalPages"
+                          @next="goTo"
+                          @previous="goTo"
+                          @input="goTo"></v-pagination>
+        </div>
     </v-container>
 </template>
 <script>

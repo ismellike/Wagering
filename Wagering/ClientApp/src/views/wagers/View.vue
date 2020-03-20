@@ -4,7 +4,7 @@
     <div v-else>
       <v-row dense>
         <v-col cols="12">
-          <WagerDisplay :hasView="false" :game="game" :data="wager" />
+          <WagerDisplay :code="0" :data="wager" />
         </v-col>
       </v-row>
       <v-container>
