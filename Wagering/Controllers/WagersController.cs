@@ -90,9 +90,7 @@ namespace Wagering.Server.Controllers
             //validate wager
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            //save wager
-            var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var profile = await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == id);
+            var profile = await GetProfileAsync();
             if (profile == null)
                 return Unauthorized();
 
@@ -104,6 +102,7 @@ namespace Wagering.Server.Controllers
                 MinimumWager = wager.MinimumWager,
                 MaximumWager = wager.MaximumWager,
                 IsPrivate = true,
+                Status = 0,
                 Hosts = new WagerHostBid[]
                 {
                     new WagerHostBid
@@ -119,7 +118,7 @@ namespace Wagering.Server.Controllers
             return Ok(newWager.Id);
         }
 
-        [HttpGet("client/wagers")]
+        [HttpGet("client")]
         [Authorize]
         public async Task<IActionResult> ClientChallenges()
         {
@@ -131,7 +130,7 @@ namespace Wagering.Server.Controllers
             return Ok(requests);
         }
 
-        [HttpGet("host/wagers")]
+        [HttpGet("host")]
         [Authorize]
         public async Task<IActionResult> HostWagers()
         {
@@ -143,7 +142,7 @@ namespace Wagering.Server.Controllers
             return Ok(requests);
         }
 
-        [HttpPost("host/wagers/edit")]
+        [HttpPost("host/edit")]
         [Authorize]
         public async Task<IActionResult> EditWager(Wager newWager)
         {

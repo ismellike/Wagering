@@ -27,15 +27,29 @@
     export default {
         data() {
             return {
-                pending: null,
-                confirmed: null,
-                completed: null
+                pending: [],
+                confirmed: [],
+                completed: []
             };
         },
         created() {
-            this.$axios.get("/api/panel/host/wagers").then(response => {
+            this.$axios.get("/api/wagers/host").then(response => {
                 console.log(response);
-                //foreach add to pending/confirmed/completed array
+                if (response.status == 200) {
+                    response.data.forEach(item => {
+                        if (item.status == 0) {
+                            this.pending.push(item);
+                        } else if (item.status == 1) {
+                            this.confirmed.push(item);
+                        }
+                        else if (item.status == 2) {
+                            this.completed.push(item);
+                        }
+                    });
+                    console.log(this.pending);
+                    console.log(this.confirmed);
+                    console.log(this.completed);
+                }
             });
         }
     };
