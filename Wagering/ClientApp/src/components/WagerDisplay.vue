@@ -9,7 +9,7 @@
                    class="mr-2">View</v-btn>
             <v-btn color="green"
                    v-else-if="code == 2"
-                   :to="{ name: 'host_wager_edit', params: { id: wager.id } }"
+                   :to="{ name: 'wager_edit', params: { id: wager.id } }"
                    class="mr-2">
                 Edit
             </v-btn>

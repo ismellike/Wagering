@@ -45,7 +45,7 @@ const routes = [
         component: () => import("@/views/control/host/leagues/Main.vue")
       }
     ]
-  }, //consider putting children components here
+  },
   {
     path: "/host-panel/wagers/edit/:id",
     name: "wager_edit",
