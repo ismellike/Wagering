@@ -59,7 +59,6 @@
         },
         created() {
             this.$axios.get("/api/wagers/host").then(response => {
-                console.log(response);
                 if (response.status == 200) {
                     response.data.forEach(item => {
                         if (item.status == 0) {
@@ -71,9 +70,6 @@
                             this.completed.push(item);
                         }
                     });
-                    console.log(this.pending);
-                    console.log(this.confirmed);
-                    console.log(this.completed);
                 }
             });
         }

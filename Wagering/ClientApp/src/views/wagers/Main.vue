@@ -130,7 +130,6 @@
                 //api call here
                 this.isLoading = true;
                 this.$axios.post("/api/wagers/search", this.query).then(response => {
-                    console.log(response);
                     if (response.status == 200) {
                         this.totalPages = response.data.totalPages;
                         this.wagers = response.data.list.slice();
@@ -190,7 +189,6 @@
         },
         created() {
             this.setQueryVars(this.$route.query);
-            console.log(this.query);
             this.getWagers();
         }
     };

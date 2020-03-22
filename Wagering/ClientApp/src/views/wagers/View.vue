@@ -48,7 +48,6 @@ export default {
   methods: {
     getWager() {
       this.$axios.get("/api/wagers/" + this.id).then(response => {
-        console.log(response);
         this.wager = response.data;
         //check if user is part of hosts
       });

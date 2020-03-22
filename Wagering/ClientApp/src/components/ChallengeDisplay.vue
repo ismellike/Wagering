@@ -42,7 +42,6 @@
             };
         },
         created() {
-            console.log(this.challenge);
         }
     };
 </script>

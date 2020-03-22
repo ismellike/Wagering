@@ -64,7 +64,6 @@
                     .get("/api/profile/" + this.name)
                     .then(response => {
                         if (response.status == 200) {
-                            console.log(response.data);
                             this.profile = response.data;
                             this.error = null;
                         }

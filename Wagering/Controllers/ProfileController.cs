@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Wagering.Server.Controllers
@@ -22,6 +23,13 @@ namespace Wagering.Server.Controllers
             var profile = await _context.Profiles.Include(x => x.Ratings).FirstOrDefaultAsync(x => x.DisplayName == name);
             if (profile == null)
                 return NotFound();
+            return Ok(profile);
+        }
+
+        [HttpGet("search/{query}")]
+        public async Task<IActionResult> SearchProfile(string query)
+        {
+            var profile = await _context.Profiles.Where(x => x.DisplayName.Contains(query)).Take(5).ToListAsync();
             return Ok(profile);
         }
     }
