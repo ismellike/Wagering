@@ -1,18 +1,41 @@
 <template>
     <v-container>
         <!--Wager Settings-->
-        <v-autocomplete v-model="form.select"
-                        :loading="form.loading"
-                        :items="users"
-                        :search-input.sync="search"
-                        cache-items
-                        class="mx-4"
-                        hide-no-data
-                        hide-details
-                        label="Username"
-                        item-text="displayName"
-                        prepend-icon="mdi-account-plus"
-                        return-object></v-autocomplete>
+        <v-container>
+            <v-card>
+                <v-card-text>
+                    <v-autocomplete v-model="form.select"
+                                    :loading="form.loading"
+                                    :items="users"
+                                    :search-input.sync="search"
+                                    cache-items
+                                    class="mx-4"
+                                    hide-no-data
+                                    hide-details
+                                    clearable
+                                    label="Username"
+                                    item-text="displayName"
+                                    prepend-icon="mdi-account-plus"
+                                    return-object></v-autocomplete>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer />
+                    <v-btn color="deep-purple" @click="addUser">
+                        Add User
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-container>
+        <v-container>
+            <v-card>
+                <v-card-title>
+                    Member List
+                </v-card-title>
+                <v-card-text>
+
+                </v-card-text>
+            </v-card>
+        </v-container>
         <!--Member Section-->
         <!--Winning Split-->
     </v-container>
@@ -68,6 +91,11 @@
                     }
                     this.loading = false;
                 });
+            },
+            addUser() {
+                if (this.form.select) {
+                    //move user to member list
+                }
             }
         },
         created() {
