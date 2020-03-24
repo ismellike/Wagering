@@ -1,41 +1,35 @@
 <template>
     <v-container>
         <!--Wager Settings-->
-        <v-container>
-            <v-card>
-                <v-card-text>
-                    <v-autocomplete v-model="form.select"
-                                    :loading="form.loading"
-                                    :items="users"
-                                    :search-input.sync="search"
-                                    cache-items
-                                    class="mx-4"
-                                    hide-no-data
-                                    hide-details
-                                    clearable
-                                    label="Username"
-                                    item-text="displayName"
-                                    prepend-icon="mdi-account-plus"
-                                    return-object></v-autocomplete>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer />
-                    <v-btn color="deep-purple" @click="addUser">
-                        Add User
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-container>
-        <v-container>
-            <v-card>
-                <v-card-title>
-                    Member List
-                </v-card-title>
-                <v-card-text>
-
-                </v-card-text>
-            </v-card>
-        </v-container>
+        <v-row>
+            <v-col cols="12" sm="10" md="6" class="mx-auto">
+                <v-card>
+                    <v-card-title>
+                        Member Manager
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-toolbar>
+                                <v-autocomplete v-model="form.select"
+                                                :loading="form.loading"
+                                                :items="users"
+                                                :search-input.sync="search"
+                                                cache-items
+                                                hide-no-data
+                                                hide-details
+                                                clearable
+                                                label="Username"
+                                                item-text="displayName"
+                                                return-object></v-autocomplete>
+                                <v-btn icon @click="addUser">
+                                    <v-icon>mdi-account-plus</v-icon>
+                                </v-btn>
+                            </v-toolbar>
+                        </v-container>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+        </v-row>
         <!--Member Section-->
         <!--Winning Split-->
     </v-container>
