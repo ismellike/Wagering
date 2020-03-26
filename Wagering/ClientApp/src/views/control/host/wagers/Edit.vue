@@ -96,12 +96,12 @@
                     editedIndex: -1,
                     editedItem: {
                         username: '',
-                        accepted: false,
+                        approved: false,
                         percentage: 0
                     },
                     defaultItem: {
                         username: '',
-                        accepted: false,
+                        approved: false,
                         percentage: 0
 
                     },
@@ -151,7 +151,7 @@
             },
             editUser(item) {
                 //get index of user
-                this.editedItem = Object.assign({}, item)
+                this.form.editedItem = Object.assign({}, item)
             },
 
             deleteUser(item) {
@@ -164,8 +164,8 @@
             close() {
                 this.form.dialog = false
                 setTimeout(() => {
-                    this.editedItem = Object.assign({}, this.defaultItem)
-                    this.editedIndex = -1
+                    this.form.editedItem = Object.assign({}, this.form.defaultItem)
+                    this.form.editedIndex = -1
                 }, 300);
             }
         },
