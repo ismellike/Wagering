@@ -73,7 +73,8 @@
 
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
-                                        <v-btn text @click="closeEdit">Cancel</v-btn>
+                                        <v-btn color="deep-purple" @click="saveUser">Save</v-btn>
+                                        <v-btn @click="closeEdit">Cancel</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
@@ -190,19 +191,25 @@
                         percentage: 0
                     });
                     //push to server
+
+                    this.newDialog = false;
+                    this.form.select = null;
                 }
             },
+            saveUser() {
+                Object.assign(this.data.hosts[this.form.index], this.form.user);
+                this.closeEdit();
+            },
             editUser(item) {
-                //get index of user
-                console.log(item);
+                this.form.index = this.data.hosts.indexOf(item);
                 this.form.editDialog = true;
                 this.form.user = Object.assign({}, item)
             },
 
             deleteUser(item) {
-                //get index of user
+                const index = this.data.hosts.indexOf(item);
                 if (confirm('Are you sure you want to remove this user?')) {
-                    //remove user from list
+                    this.data.hosts.splice(index, 1);
                     //send data to server for deletion
                 }
             },

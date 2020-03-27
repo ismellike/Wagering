@@ -94,7 +94,7 @@ namespace Wagering
                 endpoints.MapRazorPages();
                 endpoints.MapToVueCliProxy(
                     "{*path}",
-                    new SpaOptions { SourcePath = "ClientApp", StartupTimeout = TimeSpan.FromMinutes(2) },
+                    new SpaOptions { SourcePath = "ClientApp" },
                     npmScript: (System.Diagnostics.Debugger.IsAttached) ? "serve" : null,
                     regex: "Compiled successfully",
                     forceKill: true
