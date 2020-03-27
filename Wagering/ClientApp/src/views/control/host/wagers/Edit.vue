@@ -2,7 +2,7 @@
     <v-container>
         <!--Wager Settings-->
         <v-row>
-            <v-col cols="12" sm="10" md="6" class="mx-auto">
+            <v-col cols="12" sm="10" md="8" class="mx-auto">
                 <v-data-table :headers="form.headers" :items="data.hosts" hide-default-footer>
                     <template v-slot:top>
                         <v-toolbar>
@@ -10,15 +10,15 @@
                             <v-spacer></v-spacer>
                             <v-dialog v-model="form.newDialog" max-width="500px">
                                 <template v-slot:activator="{ on }">
-                                    <v-btn color="deep-purple" dark class="mb-2" v-on="on">New Item</v-btn>
+                                    <v-btn color="deep-purple" v-on="on">New Item</v-btn>
                                 </template>
                                 <v-card>
                                     <v-card-title>
                                         Add User
                                     </v-card-title>
                                     <v-card-text>
-                                        <v-container>
-                                            <v-toolbar>
+                                        <v-row>
+                                            <v-col cols="12" sm="6">
                                                 <v-autocomplete v-model="form.select"
                                                                 :loading="form.loading"
                                                                 :items="form.users"
@@ -29,18 +29,25 @@
                                                                 clearable
                                                                 label="Username"
                                                                 item-text="displayName"
-                                                                return-object></v-autocomplete>
-                                                <v-btn icon @click="addUser">
-                                                    <v-icon>mdi-account-plus</v-icon>
-                                                </v-btn>
-                                            </v-toolbar>
-                                            <!--Percentage reward and percentage paid-->
-                                        </v-container>
+                                                                return-object>
+                                                </v-autocomplete>
+                                            </v-col>
+                                            <v-spacer />
+                                            <v-col cols="6" sm="3">
+                                                <v-text-field v-model="form.percentage"
+                                                              label="Percentage"
+                                                              type="number"
+                                                              append-icon="mdi-percent-outline"></v-text-field>
+                                            </v-col>
+                                        </v-row>
                                     </v-card-text>
 
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
-                                        <v-btn text @click="close">Cancel</v-btn>
+                                        <v-btn color="deep-purple" @click="addUser">
+                                            Add
+                                        </v-btn>
+                                        <v-btn @click="closeNew">Cancel</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
@@ -51,18 +58,13 @@
                                     </v-card-title>
                                     <v-card-text>
                                         <v-container>
-                                            <v-toolbar>
-                                                <v-text-field disabled :value="form.editedItem.username"></v-text-field>
-                                                <v-btn icon @click="addUser">
-                                                    <v-icon>mdi-account-plus</v-icon>
-                                                </v-btn>
-                                            </v-toolbar>
+                                            <v-text-field disabled label="Username" :value="form.editedItem.userDisplayName"></v-text-field>
                                         </v-container>
                                     </v-card-text>
 
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
-                                        <v-btn text @click="close">Cancel</v-btn>
+                                        <v-btn text @click="closeEdit">Cancel</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
@@ -81,6 +83,11 @@
                     </template>
                     <template v-slot:item.approved="{ item }">
                         <v-simple-checkbox v-model="item.approved" disabled></v-simple-checkbox>
+                    </template>
+                    <template v-slot:item.percentage="{ item }">
+                        <v-progress-circular :value="item.percentage" class="overline">
+                            {{ item.percentage }}
+                        </v-progress-circular>
                     </template>
                 </v-data-table>
             </v-col>
@@ -116,14 +123,15 @@
                     loading: false,
                     select: null,
                     username: null,
+                    percentage: 50,
                     editedIndex: -1,
                     editedItem: {
-                        username: '',
+                        userDisplayName: '',
                         approved: false,
                         percentage: 0
                     },
                     defaultItem: {
-                        username: '',
+                        userDisplayName: '',
                         approved: false,
                         percentage: 0
 
@@ -175,6 +183,7 @@
             },
             editUser(item) {
                 //get index of user
+                console.log(item);
                 this.form.editDialog = true;
                 this.form.editedItem = Object.assign({}, item)
             },
