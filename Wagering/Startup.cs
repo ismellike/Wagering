@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using VueCliMiddleware;
 using Wagering.Models;
 
@@ -93,7 +94,7 @@ namespace Wagering
                 endpoints.MapRazorPages();
                 endpoints.MapToVueCliProxy(
                     "{*path}",
-                    new SpaOptions { SourcePath = "ClientApp" },
+                    new SpaOptions { SourcePath = "ClientApp", StartupTimeout = TimeSpan.FromMinutes(2) },
                     npmScript: (System.Diagnostics.Debugger.IsAttached) ? "serve" : null,
                     regex: "Compiled successfully",
                     forceKill: true

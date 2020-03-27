@@ -34,7 +34,7 @@
                                             </v-col>
                                             <v-spacer />
                                             <v-col cols="6" sm="3">
-                                                <v-text-field v-model="form.percentage"
+                                                <v-text-field v-model="form.user.percentage"
                                                               label="Percentage"
                                                               type="number"
                                                               append-icon="mdi-percent-outline"></v-text-field>
@@ -57,9 +57,18 @@
                                         Edit User
                                     </v-card-title>
                                     <v-card-text>
-                                        <v-container>
-                                            <v-text-field disabled label="Username" :value="form.editedItem.userDisplayName"></v-text-field>
-                                        </v-container>
+                                        <v-row>
+                                            <v-col cols="12" sm="6">
+                                                <v-text-field disabled label="Username" :value="form.user.userDisplayName"></v-text-field>
+                                            </v-col>
+                                            <v-spacer />
+                                            <v-col cols="6" sm="3">
+                                                <v-text-field v-model="form.user.percentage"
+                                                              label="Percentage"
+                                                              type="number"
+                                                              append-icon="mdi-percent-outline"></v-text-field>
+                                            </v-col>
+                                        </v-row>
                                     </v-card-text>
 
                                     <v-card-actions>
@@ -122,18 +131,16 @@
                     timer: null,
                     loading: false,
                     select: null,
-                    username: null,
-                    percentage: 50,
-                    editedIndex: -1,
-                    editedItem: {
+                    index: -1,
+                    user: {
                         userDisplayName: '',
                         approved: false,
-                        percentage: 0
+                        percentage: 50
                     },
-                    defaultItem: {
+                    defaultUser: {
                         userDisplayName: '',
                         approved: false,
-                        percentage: 0
+                        percentage: 50
 
                     },
                     newDialog: false,
@@ -177,7 +184,11 @@
             },
             addUser() {
                 if (this.form.select) {
-                    //move user to member list with some defaults
+                    this.data.hosts.push({
+                        userDisplayName: this.form.select.displayName,
+                        approved: false,
+                        percentage: 0
+                    });
                     //push to server
                 }
             },
@@ -185,7 +196,7 @@
                 //get index of user
                 console.log(item);
                 this.form.editDialog = true;
-                this.form.editedItem = Object.assign({}, item)
+                this.form.user = Object.assign({}, item)
             },
 
             deleteUser(item) {
@@ -198,8 +209,8 @@
             closeEdit() {
                 this.form.editDialog = false
                 setTimeout(() => {
-                    this.form.editedItem = Object.assign({}, this.form.defaultItem)
-                    this.form.editedIndex = -1
+                    this.form.user = Object.assign({}, this.form.defaultUser)
+                    this.form.index = -1
                 }, 300);
             },
             closeNew() {
