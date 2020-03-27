@@ -8,13 +8,13 @@
                         <v-toolbar>
                             <v-toolbar-title>Member Manager</v-toolbar-title>
                             <v-spacer></v-spacer>
-                            <v-dialog v-model="form.dialog" max-width="500px">
+                            <v-dialog v-model="form.newDialog" max-width="500px">
                                 <template v-slot:activator="{ on }">
                                     <v-btn color="deep-purple" dark class="mb-2" v-on="on">New Item</v-btn>
                                 </template>
                                 <v-card>
                                     <v-card-title>
-                                        <span class="headline">Add User</span>
+                                        Add User
                                     </v-card-title>
                                     <v-card-text>
                                         <v-container>
@@ -30,6 +30,29 @@
                                                                 label="Username"
                                                                 item-text="displayName"
                                                                 return-object></v-autocomplete>
+                                                <v-btn icon @click="addUser">
+                                                    <v-icon>mdi-account-plus</v-icon>
+                                                </v-btn>
+                                            </v-toolbar>
+                                            <!--Percentage reward and percentage paid-->
+                                        </v-container>
+                                    </v-card-text>
+
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn text @click="close">Cancel</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                            <v-dialog v-model="form.editDialog" max-width="500px">
+                                <v-card>
+                                    <v-card-title>
+                                        Edit User
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-container>
+                                            <v-toolbar>
+                                                <v-text-field disabled :value="form.editedItem.username"></v-text-field>
                                                 <v-btn icon @click="addUser">
                                                     <v-icon>mdi-account-plus</v-icon>
                                                 </v-btn>
@@ -105,7 +128,8 @@
                         percentage: 0
 
                     },
-                    dialog: false
+                    newDialog: false,
+                    editDialog: false
                 }
             };
         },
@@ -151,6 +175,7 @@
             },
             editUser(item) {
                 //get index of user
+                this.form.editDialog = true;
                 this.form.editedItem = Object.assign({}, item)
             },
 
@@ -161,12 +186,15 @@
                     //send data to server for deletion
                 }
             },
-            close() {
-                this.form.dialog = false
+            closeEdit() {
+                this.form.editDialog = false
                 setTimeout(() => {
                     this.form.editedItem = Object.assign({}, this.form.defaultItem)
                     this.form.editedIndex = -1
                 }, 300);
+            },
+            closeNew() {
+                this.form.newDialog = false;
             }
         },
         created() {
