@@ -99,6 +99,24 @@
                             {{ item.percentage }}
                         </v-progress-circular>
                     </template>
+                    <template v-slot:body.append>
+                        <tr>
+                            <th>
+                                Total:
+                            </th>
+                            <td>
+                                <v-progress-circular :value="getTotalPercentage" class="overline">
+                                    {{ getTotalPercentage }}
+                                </v-progress-circular>
+                            </td>
+                            <td></td>
+                            <td>
+                                <v-btn small text @click="normalize">
+                                    Normalize
+                                </v-btn>
+                            </td>
+                        </tr>
+                    </template>
                 </v-data-table>
             </v-col>
         </v-row>
@@ -163,6 +181,15 @@
                 }
             },
         },
+        computed: {
+            getTotalPercentage() {
+                var s = 0;
+                this.data.hosts.forEach(item => {
+                    s += parseInt(item.percentage);
+                });
+                return s;
+            }
+        },
         methods: {
             getUsers() {
                 this.$axios.get("/api/profile/search/" + this.form.username).then(response => {
@@ -185,14 +212,17 @@
             },
             addUser() {
                 if (this.form.select) {
-                    this.data.hosts.push({
-                        userDisplayName: this.form.select.displayName,
-                        approved: false,
-                        percentage: 0
-                    });
-                    //push to server
+                    const username = this.form.select.displayName;
+                    if (!this.data.hosts.some(x => { return x.userDisplayName == username })) {
+                        this.data.hosts.push({
+                            userDisplayName: username,
+                            approved: false,
+                            percentage: 0
+                        });
+                        //push to server
+                    }
 
-                    this.newDialog = false;
+                    this.form.newDialog = false;
                     this.form.select = null;
                 }
             },
@@ -222,6 +252,12 @@
             },
             closeNew() {
                 this.form.newDialog = false;
+            },
+            normalize() {
+                const count = this.data.hosts.length;
+                this.data.hosts.forEach(item => {
+                    item.percentage = Math.floor(100 / count);
+                });
             }
         },
         created() {
