@@ -2,7 +2,6 @@
     <v-app id="app">
         <v-navigation-drawer v-model="drawer"
                              color="grey darken-4"
-                             elevation="20"
                              clipped
                              app
                              right
@@ -61,7 +60,7 @@
             </template>
         </v-navigation-drawer>
 
-        <v-app-bar app color="deep-purple" elevation="25" dense clipped-right dark>
+        <v-app-bar app color="deep-purple" dense clipped-right dark>
             <v-toolbar-title>Wagering.gg</v-toolbar-title>
             <v-spacer />
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
@@ -73,7 +72,7 @@
             </v-container>
         </v-content>
 
-        <v-footer elevation="15" absolute inset clipped-right app dark>
+        <v-footer absolute inset clipped-right app dark>
             <v-btn href="https://discord.gg/HmmVMs2" target="_blank" icon>
                 <v-icon dense>mdi-discord</v-icon>
             </v-btn>

@@ -9,7 +9,6 @@ namespace Wagering.Models
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 
-        [StringLength(12, MinimumLength = 4)]
         public string DisplayName { get; set; }
         public bool IsVerified { get; set; }
         public string PublicKey { get; set; }

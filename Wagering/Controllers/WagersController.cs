@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Wagering.Models;
 
-namespace Wagering.Server.Controllers
+namespace Wagering.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

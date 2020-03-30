@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Wagering.Server.Controllers
+namespace Wagering.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
