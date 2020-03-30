@@ -99,23 +99,22 @@
                             {{ item.percentage }}
                         </v-progress-circular>
                     </template>
-                    <template v-slot:body.append>
-                        <tr>
-                            <th>
-                                Total:
-                            </th>
-                            <td>
-                                <v-progress-circular :value="getTotalPercentage" class="overline">
-                                    {{ getTotalPercentage }}
-                                </v-progress-circular>
-                            </td>
-                            <td></td>
-                            <td>
-                                <v-btn small text @click="normalize">
-                                    Normalize
-                                </v-btn>
-                            </td>
-                        </tr>
+                    <template v-slot:footer>
+                        <v-container>
+                            <v-row class="text-center">
+                                <v-col class="overline">
+                                    Total:
+                                    <v-progress-circular :value="getTotalPercentage">
+                                        {{ getTotalPercentage }}
+                                    </v-progress-circular>
+                                </v-col>
+                                <v-col>
+                                    <v-btn small text @click="normalize">
+                                        Normalize
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-container>
                     </template>
                 </v-data-table>
             </v-col>

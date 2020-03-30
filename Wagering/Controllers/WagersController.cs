@@ -109,6 +109,7 @@ namespace Wagering.Server.Controllers
                     {
                         UserDisplayName = profile.DisplayName,
                         Approved = false,
+                        IsOwner = true,
                         Percentage = 100
                     }
                 }
