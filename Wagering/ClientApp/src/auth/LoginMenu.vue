@@ -1,7 +1,7 @@
 ﻿<template>
     <v-list dense>
         <div v-if="this.$store.state.account.isAuthenticated">
-            <v-list-item :to="profile" link>
+            <v-list-item to="/manage" link>
                 <v-list-item-action>
                     <v-icon>mdi-account</v-icon>
                 </v-list-item-action>
@@ -9,7 +9,7 @@
                     <v-list-item-title>Hello {{ this.$store.state.account.username }}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item :to="logout" link>
+            <v-list-item @click="logout" link>
                 <v-list-item-action>
                     <v-icon>mdi-logout</v-icon>
                 </v-list-item-action>
@@ -39,16 +39,18 @@
     </v-list>
 </template>
 <script>
-    import { ApplicationPaths } from "./AuthConstants";
+    import AuthService from "./AuthService";
     export default {
         name: "LoginMenu",
-        data() {
-            return {
-                profile: ApplicationPaths.Profile,
-                logout: ApplicationPaths.LogOut,
-                register: ApplicationPaths.Register,
-                login: ApplicationPaths.Login
-            };
+        methods: {
+            logout() {
+                AuthService.isAuthenticated().then(isAuthenticated => {
+                    if (isAuthenticated) {
+                        AuthService.signOut(null);
+                    }
+                    this.$store.dispatch("setLogout");
+                });
+            }
         }
     };
 </script>

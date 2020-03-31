@@ -61,10 +61,9 @@
                         case AuthenticationResultStatus.Redirect:
                             break;
                         case AuthenticationResultStatus.Success:
-                            this.addUser().then(() => {
-                                this.$router.push({
-                                    path: "/"
-                                });
+                            this.addUser();
+                            this.$router.push({
+                                path: "/"
                             });
                             break;
                         case AuthenticationResultStatus.Fail:
@@ -76,23 +75,22 @@
                 }).catch(e => {
                     console.log(e);
                 });
-            }
-        },
-        addUser() {
-            AuthService.getUser().then(user => {
-                const accessToken = user && user.access_token;
-                const name = user && user.name;
-                if (name != undefined) {
-                    var payload = {
-                        username: name,
-                        token: accessToken
+            },
+            addUser() {
+                AuthService.getUser().then(user => {
+                    const accessToken = user && user.access_token;
+                    const name = user && user.name;
+                    if (name) {
+                        var payload = {
+                            username: name,
+                            token: accessToken
+                        }
+                        this.$store.dispatch("setLogin", payload);
                     }
-                    this.$store.dispatch("setLogin", payload);
-                    this.$axios.defaults.headers.common["Authorization"] = "Bearer " + accessToken;
-                }
-            }).catch(e => {
-                console.log(e);
-            });
+                }).catch(e => {
+                    console.log(e);
+                });
+            }
         }
     };
 </script>
