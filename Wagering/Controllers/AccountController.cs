@@ -19,7 +19,7 @@ namespace Wagering.Controllers
             _signInManager = signInManager;
         }
 
-        public class Account
+        public class AccountModel
         {
             [Required]
             [StringLength(12, MinimumLength = 4)]
@@ -35,7 +35,7 @@ namespace Wagering.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAccount([FromBody]Account account)
+        public async Task<IActionResult> CreateAccount([FromBody]AccountModel account)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -58,8 +58,41 @@ namespace Wagering.Controllers
                     ModelState.AddModelError(error.Code, error.Description);
                 return BadRequest(ModelState);
             }
+            return Ok();
+        }
 
-            await _signInManager.SignInAsync(user, false);
+        public class LoginModel
+        {
+            [Required]
+            [StringLength(12, MinimumLength = 4)]
+            public string Username { get; set; }
+            [Required]
+            [StringLength(100, MinimumLength = 6)]
+            public string Password { get; set; }
+        }
+
+        [HttpPost("login")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> Login([FromBody]LoginModel login)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _signInManager.PasswordSignInAsync(login.Username, login.Password, true, false);
+
+            if (!result.Succeeded)
+            {
+                if (result.RequiresTwoFactor)
+                {
+
+                }
+                if (result.IsLockedOut)
+                {
+
+                }
+                ModelState.AddModelError("Invalid", "Invalid login attempt");
+                return BadRequest(ModelState);
+            }
             return Ok();
         }
     }

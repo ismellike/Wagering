@@ -5,10 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "css-build": "node-sass --omit-source-map-url ./theme/styles.scss ./theme/styles.css",
-    "css-watch": "npm run css-build -- --watch",
-    "start": "npm run css-watch"
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "axios": "^0.19.2",

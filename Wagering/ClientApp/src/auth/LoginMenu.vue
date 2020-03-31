@@ -19,7 +19,7 @@
             </v-list-item>
         </div>
         <div v-else>
-            <v-list-item :to="login" link>
+            <v-list-item to="/login" link>
                 <v-list-item-action>
                     <v-icon>mdi-login</v-icon>
                 </v-list-item-action>
