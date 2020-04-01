@@ -5,9 +5,9 @@ import {
 	LoginActions,
 	LogoutActions,
 	ApplicationPaths
-} from "@/auth/AuthConstants";
-import Login from "@/auth/Login";
-import Logout from "@/auth/Logout";
+} from "@/constants/authentication";
+import Login from "@/views/authentication/Login";
+import Logout from "@/views/authentication/Logout";
 import store from "@/store";
 
 Vue.use(Router);
@@ -92,16 +92,6 @@ const routes = [
 		name: "profile_view",
 		component: () => import("@/views/profiles/View.vue")
 	}, //Auth Routes
-	{
-		path: "/register",
-		name: "register",
-		component: () => import("@/views/auth/Register.vue")
-	},
-	{
-		path: "/login",
-		name: "login",
-		component: () => import("@/views/auth/Login.vue")
-	},
 	{
 		path: ApplicationPaths.Login,
 		component: Login,

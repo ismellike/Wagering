@@ -5,7 +5,7 @@
 import {
     ApplicationPaths,
     ApplicationName
-} from './AuthConstants'
+} from '../constants/authentication'
 
 export class AuthorizeService {
     _callbacks = [];

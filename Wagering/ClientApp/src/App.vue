@@ -88,7 +88,7 @@
 </template>
 
 <script>
-    import LoginMenu from "./auth/LoginMenu";
+    import LoginMenu from "@/components/LoginMenu.vue";
 
     export default {
         name: "App",
