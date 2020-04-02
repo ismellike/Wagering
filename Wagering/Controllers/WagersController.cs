@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -103,16 +104,7 @@ namespace Wagering.Controllers
                 MaximumWager = wager.MaximumWager,
                 IsPrivate = true,
                 Status = 0,
-                Hosts = new WagerHostBid[]
-                {
-                    new WagerHostBid
-                    {
-                        UserDisplayName = profile.DisplayName,
-                        Approved = false,
-                        IsOwner = true,
-                        Percentage = 100
-                    }
-                }
+                Hosts = wager.Hosts
             };
             await _context.Wagers.AddAsync(newWager);
             await _context.SaveChangesAsync();
@@ -143,35 +135,36 @@ namespace Wagering.Controllers
             return Ok(requests);
         }
 
-        [HttpPost("host/edit")]
+        [HttpPost("accept")]
         [Authorize]
-        public async Task<IActionResult> EditWager(Wager newWager)
+        public async Task<IActionResult> AcceptBid(int id)
         {
             //authorization
             var profile = await GetProfileAsync();
             if (profile == null)
                 return Unauthorized();
-            var wager = await _context.Wagers.Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync(x => x.Id == newWager.Id);
-            if (wager == null)
+            var bid = await _context.WagerBids.FirstOrDefaultAsync(x => x.Id == id);
+            if (bid == null)
                 return BadRequest("Wager was not found.");
-            if (!wager.Hosts.Any(x => x.UserDisplayName == profile.DisplayName))
+            bid.Approved = true;
+            _context.WagerBids.Update(bid);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost("decline")]
+        [Authorize]
+        public async Task<IActionResult> DeclineBid(int id)
+        {
+            //authorization
+            var profile = await GetProfileAsync();
+            if (profile == null)
                 return Unauthorized();
-
-            //reset all host and client approved to false
-            foreach (var host in wager.Hosts)
-                host.Approved = false;
-            foreach (var challenge in wager.Challenges)
-                foreach (var client in challenge.Challengers)
-                    client.Approved = false;
-            //set new wager
-            //need to set percentage ratings & other users
-            wager.Description = newWager.Description;
-            wager.MinimumWager = newWager.MinimumWager;
-            wager.MaximumWager = newWager.MaximumWager;
-            wager.IsPrivate = newWager.IsPrivate;
-
-            //save wager
-            _context.Wagers.Update(wager);
+            var bid = await _context.WagerBids.FirstOrDefaultAsync(x => x.Id == id);
+            if (bid == null)
+                return BadRequest("Wager was not found.");
+            bid.Approved = true;
+            _context.WagerBids.Update(bid);
             await _context.SaveChangesAsync();
             return Ok();
         }

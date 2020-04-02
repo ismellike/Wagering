@@ -57,8 +57,8 @@ namespace Wagering.Areas.Identity.Pages.Account
             [Required]
             [RegularExpression(Constants.NameRegex)]
             [StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
-            [Display(Name = "Display Name")]
-            public string DisplayName { get; set; }
+            [Display(Name = "Username")]
+            public string Username { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -80,60 +80,50 @@ namespace Wagering.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return Page();
+
+            var user = new ApplicationUser
             {
-                if (await _context.Profiles.AnyAsync(x => x.DisplayName == Input.DisplayName))
+                UserName = Input.Username,
+                Email = Input.Email,
+                Profile = new Profile
                 {
-                    ModelState.AddModelError(string.Empty, $"{Input.DisplayName} is already taken.");
-                    return Page();
+                    DisplayName = Input.Username,
+                    IsVerified = false
                 }
-
-                var user = new ApplicationUser
-                {
-                    UserName = Input.Email,
-                    Email = Input.Email,
-                    Profile = new Profile
-                    {
-                        DisplayName = Input.DisplayName,
-                        IsVerified = false
-                    }
-                };
-                var result = await _userManager.CreateAsync(user, Input.Password);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User created a new account with password.");
-
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
-                }
+            };
+            var result = await _userManager.CreateAsync(user, Input.Password);
+            if (!result.Succeeded)
+            {
                 foreach (var error in result.Errors)
-                {
                     ModelState.AddModelError(string.Empty, error.Description);
-                }
+                return Page();
             }
 
-            // If we got this far, something failed, redisplay form
-            return Page();
+            _logger.LogInformation("User created a new account with password.");
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = Url.Page(
+                "/Account/ConfirmEmail",
+                pageHandler: null,
+                values: new { area = "Identity", userId = user.Id, code },
+                protocol: Request.Scheme);
+
+            await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            if (_userManager.Options.SignIn.RequireConfirmedAccount)
+            {
+                return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
+            }
+            else
+            {
+                await _signInManager.SignInAsync(user, true);
+                return LocalRedirect(returnUrl);
+            }
         }
     }
 }

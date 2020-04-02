@@ -7,12 +7,18 @@
                    v-if="code == 1"
                    :to="{ name: 'wager_view', params: { game: wager.gameName, id: wager.id } }"
                    class="mr-2">View</v-btn>
-            <v-btn color="green"
-                   v-else-if="code == 2"
-                   :to="{ name: 'wager_edit', params: { id: wager.id } }"
-                   class="mr-2">
-                Edit
-            </v-btn>
+            <template v-else-if="code == 2">
+                <v-btn color="green"
+                       @click="accept"
+                       class="mr-2">
+                    Accept
+                </v-btn>
+                <v-btn color="red"
+                       @click="decline"
+                       class="mr-2">
+                    Decline
+                </v-btn>
+            </template>
             <v-menu>
                 <template v-slot:activator="{ on }">
                     <v-btn color="deep-purple" v-on="on">Hosts</v-btn>
@@ -94,6 +100,19 @@
             numDisplay(num) {
                 if (num == null) return "-";
                 return num;
+            },
+            accept() {
+                this.$axios.post("/api/wagers/accept", this.bidId()).then(response => {
+
+                });
+            },
+            decline() {
+
+            }
+        },
+        computed: {
+            bidId() {
+
             }
         }
     };

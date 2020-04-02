@@ -101,16 +101,15 @@
                 });
             },
             addUser() {
-                AuthService.getUser().then(user => {
-                    const accessToken = user && user.access_token;
-                    const name = user && user.name;
-                    if (name) {
+                AuthService.getUser().then(profile => {
+                    AuthService.getAccessToken().then(accessToken => {
+                        const name = profile && profile.name;
                         var payload = {
                             username: name,
                             token: accessToken
                         }
                         this.$store.dispatch("setLogin", payload);
-                    }
+                    });
                 }).catch(e => {
                     console.log(e);
                 });

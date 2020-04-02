@@ -10,11 +10,9 @@ namespace Wagering.Models
         public Wager Wager { get; set; }
         public string UserDisplayName { get; set; }
         public Profile User { get; set; }
-
         [Required]
         public byte Percentage { get; set; }
-        [Required]
-        public bool Approved { get; set; }
+        public bool? Approved { get; set; }
         public bool IsOwner { get; set; }
 
         public override string ToString()
