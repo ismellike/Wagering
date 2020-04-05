@@ -104,8 +104,19 @@ namespace Wagering.Controllers
                 MaximumWager = wager.MaximumWager,
                 IsPrivate = true,
                 Status = 0,
-                Hosts = wager.Hosts
+                Hosts = new List<WagerHostBid>()
             };
+
+            foreach (WagerHostBid host in wager.Hosts)
+            {
+                newWager.Hosts.Add(new WagerHostBid
+                {
+                    Approved = null,
+                    IsOwner = false,
+                    Percentage = host.Percentage,
+                    UserDisplayName = host.UserDisplayName,
+                });
+            }
             await _context.Wagers.AddAsync(newWager);
             await _context.SaveChangesAsync();
             return Ok(newWager.Id);
@@ -135,6 +146,7 @@ namespace Wagering.Controllers
             return Ok(requests);
         }
 
+        //if all wagerbids approved then trigger event for send
         [HttpPost("accept")]
         [Authorize]
         public async Task<IActionResult> AcceptBid(int id)
@@ -144,6 +156,8 @@ namespace Wagering.Controllers
             if (profile == null)
                 return Unauthorized();
             var bid = await _context.WagerBids.FirstOrDefaultAsync(x => x.Id == id);
+            if (bid.UserDisplayName != profile.DisplayName)
+                return Unauthorized();
             if (bid == null)
                 return BadRequest("Wager was not found.");
             bid.Approved = true;
@@ -152,6 +166,7 @@ namespace Wagering.Controllers
             return Ok();
         }
 
+        //decline then send notification to users
         [HttpPost("decline")]
         [Authorize]
         public async Task<IActionResult> DeclineBid(int id)
@@ -161,43 +176,13 @@ namespace Wagering.Controllers
             if (profile == null)
                 return Unauthorized();
             var bid = await _context.WagerBids.FirstOrDefaultAsync(x => x.Id == id);
+            if (bid.UserDisplayName != profile.DisplayName)
+                return Unauthorized();
             if (bid == null)
                 return BadRequest("Wager was not found.");
-            bid.Approved = true;
+            bid.Approved = false;
             _context.WagerBids.Update(bid);
             await _context.SaveChangesAsync();
-            return Ok();
-        }
-
-        [HttpPost("host/request")]
-        [Authorize]
-        public async Task<IActionResult> SendRequest(int wagerId, decimal amount)
-        {
-            var profile = await GetProfileAsync();
-            if (profile == null)
-                return Unauthorized();
-
-            //check if wager belongs to user
-            var wager = await _context.Wagers.FindAsync(wagerId);
-            if (wager == null)
-                return BadRequest("Wager was not found.");
-            if (!wager.Hosts.Any(x => x.UserDisplayName == profile.DisplayName))
-                return Unauthorized($"{profile.DisplayName} cannot request, because they are a host.");
-            //send request to user
-            //check for balance and hold
-            wager.Challenges.Add(new WagerChallenge
-            {
-                Challengers = new WagerChallengeBid[]
-                {
-                    new WagerChallengeBid{
-                    UserDisplayName = profile.DisplayName,
-                    Approved = false,
-                    Percentage = 100
-                    }
-                },
-                Date = DateTime.Now,
-                Amount = amount,
-            });
             return Ok();
         }
 
