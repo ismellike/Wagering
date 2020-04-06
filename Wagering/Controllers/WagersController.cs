@@ -91,9 +91,14 @@ namespace Wagering.Controllers
             //validate wager
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var profile = await GetProfileAsync();
+            var profile = await _context.GetProfileAsync(User);
             if (profile == null)
                 return Unauthorized();
+            if (wager.Hosts.Sum(x => x.Percentage) != 100)
+            {
+                ModelState.AddModelError("Percentage", "The hosts percentages do not add up to 100.");
+                return BadRequest(ModelState);
+            }
 
             Wager newWager = new Wager //prevents overposting
             {
@@ -102,20 +107,26 @@ namespace Wagering.Controllers
                 Description = wager.Description,
                 MinimumWager = wager.MinimumWager,
                 MaximumWager = wager.MaximumWager,
-                IsPrivate = true,
+                IsPrivate = wager.IsPrivate,
                 Status = 0,
                 Hosts = new List<WagerHostBid>()
             };
 
             foreach (WagerHostBid host in wager.Hosts)
             {
-                newWager.Hosts.Add(new WagerHostBid
+                WagerHostBid bid = new WagerHostBid
                 {
                     Approved = null,
                     IsOwner = false,
                     Percentage = host.Percentage,
                     UserDisplayName = host.UserDisplayName,
-                });
+                };
+                if (host.UserDisplayName == profile.DisplayName)
+                {
+                    bid.Approved = true;
+                    bid.IsOwner = true;
+                }
+                newWager.Hosts.Add(bid);
             }
             await _context.Wagers.AddAsync(newWager);
             await _context.SaveChangesAsync();
@@ -126,7 +137,7 @@ namespace Wagering.Controllers
         [Authorize]
         public async Task<IActionResult> ClientChallenges()
         {
-            var profile = await GetProfileAsync();
+            var profile = await _context.GetProfileAsync(User);
             if (profile == null)
                 return Unauthorized();
 
@@ -138,7 +149,7 @@ namespace Wagering.Controllers
         [Authorize]
         public async Task<IActionResult> HostWagers()
         {
-            var profile = await GetProfileAsync();
+            var profile = await _context.GetProfileAsync(User);
             if (profile == null)
                 return Unauthorized();
 
@@ -146,13 +157,13 @@ namespace Wagering.Controllers
             return Ok(requests);
         }
 
-        //if all wagerbids approved then trigger event for send
+        //if all wagerbids approved then trigger event for send status => 1
         [HttpPost("accept")]
         [Authorize]
         public async Task<IActionResult> AcceptBid(int id)
         {
             //authorization
-            var profile = await GetProfileAsync();
+            var profile = await _context.GetProfileAsync(User);
             if (profile == null)
                 return Unauthorized();
             var bid = await _context.WagerBids.FirstOrDefaultAsync(x => x.Id == id);
@@ -166,13 +177,13 @@ namespace Wagering.Controllers
             return Ok();
         }
 
-        //decline then send notification to users
+        //decline then send notification to users status => 2
         [HttpPost("decline")]
         [Authorize]
         public async Task<IActionResult> DeclineBid(int id)
         {
             //authorization
-            var profile = await GetProfileAsync();
+            var profile = await _context.GetProfileAsync(User);
             if (profile == null)
                 return Unauthorized();
             var bid = await _context.WagerBids.FirstOrDefaultAsync(x => x.Id == id);
@@ -184,12 +195,6 @@ namespace Wagering.Controllers
             _context.WagerBids.Update(bid);
             await _context.SaveChangesAsync();
             return Ok();
-        }
-
-        private async Task<Profile> GetProfileAsync()
-        {
-            var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            return await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == id);
         }
     }
 }

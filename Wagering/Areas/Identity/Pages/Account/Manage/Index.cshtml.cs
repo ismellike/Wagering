@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Wagering.Models;
@@ -10,14 +9,14 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
 {
     public partial class IndexModel : PageModel
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
         public IndexModel(
-            UserManager<ApplicationUser> userManager,
+            ApplicationDbContext context,
             SignInManager<ApplicationUser> signInManager)
         {
-            _userManager = userManager;
+            _context = context;
             _signInManager = signInManager;
         }
 
@@ -31,59 +30,53 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            [Display(Name = "Public Key")]
+            public string PublicKey { get; set; }
         }
 
-        private async Task LoadAsync(ApplicationUser user)
+        private void Load(Profile user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-            Username = userName;
+            Username = user.DisplayName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PublicKey = user.PublicKey
             };
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _context.GetProfileAsync(User.Identity.Name);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Unable to load user.");
             }
 
-            await LoadAsync(user);
+            Load(user);
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            var profile = await _context.GetProfileAsync(User.Identity.Name);
+            ApplicationUser user = _context.Users.Find(profile.UserId);
+            if (profile == null || user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Unable to load user.");
             }
 
             if (!ModelState.IsValid)
             {
-                await LoadAsync(user);
+                Load(profile);
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+            var key = profile.PublicKey;
+            if (Input.PublicKey != key)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
-                }
+                profile.PublicKey = Input.PublicKey;
+                _context.Profiles.Update(profile);
+                await _context.SaveChangesAsync();
             }
 
             await _signInManager.RefreshSignInAsync(user);

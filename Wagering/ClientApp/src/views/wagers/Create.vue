@@ -123,7 +123,7 @@
                 <v-card-text>
                     <ValidationObserver ref="observer">
                         <v-row>
-                            <v-col cols="12" sm="6">
+                            <v-col cols="12" sm="4" class="ml-auto">
                                 <ValidationProvider rules="less_than:@maxWager|min_amount"
                                                     vid="minWager"
                                                     name="Minimum Wager"
@@ -134,7 +134,7 @@
                                                   :error-messages="errors"></v-text-field>
                                 </ValidationProvider>
                             </v-col>
-                            <v-col cols="12" sm="6">
+                            <v-col cols="12" sm="4" class="mr-auto">
                                 <ValidationProvider rules="greater_than:@minWager|min_amount"
                                                     vid="maxWager"
                                                     name="Maximum Wager"
@@ -147,8 +147,11 @@
                             </v-col>
                         </v-row>
                         <v-row>
-                            <v-col>
+                            <v-col cols="12" sm="7" class="ml-auto">
                                 <v-textarea v-model="wager.description" label="Description"></v-textarea>
+                            </v-col>
+                            <v-col cols="12" sm="1" class="mr-auto">
+                                <v-switch>Private</v-switch>
                             </v-col>
                         </v-row>
                     </ValidationObserver>
@@ -175,6 +178,7 @@
                     minimumWager: null,
                     maximumWager: null,
                     description: null,
+                    isPrivate: false,
                     hosts: [
                         {
                             userDisplayName: this.$store.state.account.username,

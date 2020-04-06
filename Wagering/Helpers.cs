@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Wagering.Models;
 
 namespace Wagering
@@ -47,6 +50,17 @@ namespace Wagering
                 minuteComponent = $" {span.Minutes} minutes ";
 
             return $"{hourComponent}{minuteComponent}ago";
+        }
+
+        public static async Task<Profile> GetProfileAsync(this ApplicationDbContext context, ClaimsPrincipal User)
+        {
+            var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            return await context.Profiles.FirstOrDefaultAsync(x => x.UserId == id);
+        }
+
+        public static async Task<Profile> GetProfileAsync(this ApplicationDbContext context, string name)
+        {
+            return await context.Profiles.FirstOrDefaultAsync(x => x.DisplayName == name);
         }
     }
 }
