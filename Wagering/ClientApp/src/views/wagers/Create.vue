@@ -123,7 +123,7 @@
                 <v-card-text>
                     <ValidationObserver ref="observer">
                         <v-row>
-                            <v-col cols="12" sm="4" class="ml-auto">
+                            <v-col cols="12" sm="6" md="3">
                                 <ValidationProvider rules="less_than:@maxWager|min_amount"
                                                     vid="minWager"
                                                     name="Minimum Wager"
@@ -134,7 +134,7 @@
                                                   :error-messages="errors"></v-text-field>
                                 </ValidationProvider>
                             </v-col>
-                            <v-col cols="12" sm="4" class="mr-auto">
+                            <v-col cols="12" sm="6" md="3">
                                 <ValidationProvider rules="greater_than:@minWager|min_amount"
                                                     vid="maxWager"
                                                     name="Maximum Wager"
@@ -145,18 +145,14 @@
                                                   :error-messages="errors"></v-text-field>
                                 </ValidationProvider>
                             </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col cols="12" sm="7" class="ml-auto">
-                                <v-textarea v-model="wager.description" label="Description"></v-textarea>
-                            </v-col>
-                            <v-col cols="12" sm="1" class="mr-auto">
-                                <v-switch>Private</v-switch>
+                            <v-col cols="12" md="6">
+                                <v-textarea v-model="wager.description" label="Description" rows="1"></v-textarea>
                             </v-col>
                         </v-row>
                     </ValidationObserver>
                 </v-card-text>
                 <v-card-actions>
+                    <v-switch v-model="wager.isPrivate" label="Private"></v-switch>
                     <v-spacer />
                     <v-btn color="green" v-on:click="submit">Create</v-btn>
                 </v-card-actions>
@@ -309,7 +305,7 @@
             postWager() {
                 this.$axios.post("/api/wagers", this.wager).then(response => {
                     if (response.status == 200) {
-                        //send to host_panel
+                        //send to wager pending view
                     }
                 }).catch(e => {
                     this.errors = e.response.data;
