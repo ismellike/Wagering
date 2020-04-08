@@ -4,7 +4,7 @@
             <v-data-table :headers="headers" :items="wager.hosts" hide-default-footer>
                 <template v-slot:top>
                     <v-toolbar>
-                        <v-toolbar-title>User Manager</v-toolbar-title>
+                        <v-toolbar-title>Members</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-dialog v-model="newDialog" max-width="500px">
                             <template v-slot:activator="{ on }">

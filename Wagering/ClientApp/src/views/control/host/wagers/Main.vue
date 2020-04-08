@@ -20,7 +20,7 @@
         </v-tab-item>
         <v-tab-item>
             <v-container>
-                <!--pending-->
+                <!--confirmed-->
                 <v-row dense v-for="wager in confirmed" :key="wager.id">
                     <v-col>
                         <v-container>

@@ -47,9 +47,9 @@ const routes = [
 		]
 	},
 	{
-		path: "/host-panel/wagers/edit/:id",
-		name: "wager_edit",
-		component: () => import("@/views/control/host/wagers/Edit.vue")
+		path: "/host-panel/wagers/pending/:id",
+		name: "wager_pending",
+		component: () => import("@/views/control/host/wagers/Pending.vue")
 	},
 	{
 		path: "/client-panel",
