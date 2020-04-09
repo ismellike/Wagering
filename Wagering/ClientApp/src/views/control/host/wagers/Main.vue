@@ -54,23 +54,24 @@
             return {
                 pending: [],
                 confirmed: [],
-                completed: []
+                completed: [],
+                errors: []
             };
         },
         created() {
             this.$axios.get("/api/wagers/host").then(response => {
-                if (response.status == 200) {
-                    response.data.forEach(item => {
-                        if (item.status == 0) {
-                            this.pending.push(item);
-                        } else if (item.status == 1) {
-                            this.confirmed.push(item);
-                        }
-                        else if (item.status == 2) {
-                            this.completed.push(item);
-                        }
-                    });
-                }
+                response.data.forEach(item => {
+                    if (item.status == 0) {
+                        this.pending.push(item);
+                    } else if (item.status == 1) {
+                        this.confirmed.push(item);
+                    }
+                    else if (item.status == 2) {
+                        this.completed.push(item);
+                    }
+                });
+            }).catch(e => {
+                this.errors = e.response.data.splice();
             });
         }
     };

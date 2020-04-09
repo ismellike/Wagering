@@ -171,9 +171,12 @@ namespace Wagering.Controllers
                 return Unauthorized();
             if (bid == null)
                 return BadRequest("Wager was not found.");
-            bid.Approved = true;
-            _context.WagerBids.Update(bid);
-            await _context.SaveChangesAsync();
+            if (bid.Approved == null)
+            {
+                bid.Approved = true;
+                _context.WagerBids.Update(bid);
+                await _context.SaveChangesAsync();
+            }
             return Ok();
         }
 
@@ -191,9 +194,12 @@ namespace Wagering.Controllers
                 return Unauthorized();
             if (bid == null)
                 return BadRequest("Wager was not found.");
-            bid.Approved = false;
-            _context.WagerBids.Update(bid);
-            await _context.SaveChangesAsync();
+            if (bid.Approved == null)
+            {
+                bid.Approved = false;
+                _context.WagerBids.Update(bid);
+                await _context.SaveChangesAsync();
+            }
             return Ok();
         }
     }

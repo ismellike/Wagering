@@ -247,9 +247,9 @@
         methods: {
             getUsers() {
                 this.$axios.get("/api/profile/search/" + this.search.username).then(response => {
-                    if (response.status == 200) {
-                        this.search.users = response.data;
-                    }
+                    this.search.users = response.data;
+                }).catch(e => {
+                    this.errors = e.response.data.slice();
                 }).finally(() => {
                     this.search.loading = false;
                 });
@@ -304,11 +304,9 @@
             },
             postWager() {
                 this.$axios.post("/api/wagers", this.wager).then(response => {
-                    if (response.status == 200) {
                         //send to wager pending view
-                    }
                 }).catch(e => {
-                    this.errors = e.response.data;
+                    this.errors = e.response.data.splice();
                 });
             }
         }

@@ -35,6 +35,7 @@
         data() {
             return {
                 wager: {
+                    hosts: [],
                     description: null
                 },
                 headers: [
@@ -45,27 +46,39 @@
                     },
                     { text: 'Percentage', value: 'percentage' },
                     { text: 'Approved', value: 'approved' }
-                ]
+                ],
+                errors: []
             };
         },
         methods: {
             getData() {
                 this.$axios.get("/api/wagers/" + this.$route.params.id).then(result => {
-                    if (result.status == 200) {
-                        this.wager = result.data;
-                    }
+                    this.wager = result.data;
+                }).catch(e => {
+                    this.errors = e.response.data.splice();
                 });
             },
             accept() {
-
+                this.$axios.post("/api/wagers/accept", this.userBid.id).then(result => {
+                }).catch(e => {
+                    this.errors = e.response.data.splice();
+                });
             },
             decline() {
-
+                this.$axios.post("/api/wagers/decline", this.userBid.id).then(result => {
+                }).catch(e => {
+                    this.errors = e.response.data.splice();
+                });
             }
         },
         computed: {
+            userBid() {
+                return this.wager.hosts.find(host => {
+                    return host.userDisplayName === this.$store.state.account.username;
+                });
+            },
             hasAccepted() {
-                return false;
+                return this.userBid.approved;
             }
         },
         created() {

@@ -63,13 +63,11 @@
                 this.$axios
                     .get("/api/profile/" + this.name)
                     .then(response => {
-                        if (response.status == 200) {
-                            this.profile = response.data;
-                            this.error = null;
-                        }
+                        this.profile = response.data;
+                        this.error = null;
                     })
-                    .catch(() => {
-                        this.error = this.name + " is not a valid user.";
+                    .catch(e => {
+                        this.error = e.response.data.splice();
                     });
             },
             copyToClipboard() {

@@ -121,6 +121,9 @@
                 }
                 return response;
             }, function (err) {
+                if (err.response.status == 401) {
+                    window.location = "/authentication/login";
+                }
                 return Promise.reject(err);
             });
         }
