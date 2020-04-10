@@ -63,6 +63,40 @@
         <v-app-bar app color="deep-purple" dense clipped-right dark>
             <v-toolbar-title>Wagering.gg</v-toolbar-title>
             <v-spacer />
+            <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                    <v-badge :content="notifications.length"
+                             :value="notifications.length"
+                             color="green"
+                             overlap>
+                        <v-btn icon v-on="on" @click.stop="dialog = true">
+                            <v-icon>
+                                mdi-bell
+                            </v-icon>
+                        </v-btn>
+                    </v-badge>
+                </template>
+                <span>Notifications</span>
+            </v-tooltip>
+            <v-dialog v-model="dialog"
+                      max-width="290">
+                <v-card>
+                    <v-card-title>Notifications</v-card-title>
+
+                    <v-card-text>
+                        Show notifications here
+                    </v-card-text>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red"
+                               text
+                               @click="dialog = false">
+                            Clear
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         </v-app-bar>
 
@@ -98,10 +132,22 @@
         components: {
             LoginMenu
         },
-        data: () => ({
-            drawer: null
-        }),
+        data() {
+            return {
+                drawer: null,
+                notifications: [],
+                dialog: false
+            };
+        },
         methods: {
+            connectHub() {
+                this.$signalr.start();
+            },
+            receiveNotifications() {
+                this.$signalr.on("GetNotifications", (message) => {
+                    this.notifications.push(message);
+                });
+            }
         },
         created() {
             this.$vuetify.theme.dark = true;
@@ -130,7 +176,10 @@
                 return Promise.reject(err);
             });
 
-            //poll every x seconds for new notifications
+            if (this.$store.state.account.isAuthenticated) {
+                this.connectHub();
+                this.receiveNotifications();
+            }
         }
     };
 </script>

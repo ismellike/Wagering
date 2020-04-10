@@ -52,6 +52,7 @@ namespace Wagering
                 })
                 .AddIdentityServerJwt();
 
+            services.AddSignalR();
             services.AddMvc()
                 .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddSpaStaticFiles(configuration =>
@@ -86,6 +87,7 @@ namespace Wagering
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<Hubs.GroupHub>("/groupHub");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");

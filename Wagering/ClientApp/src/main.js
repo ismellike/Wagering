@@ -6,9 +6,14 @@ import axios from "axios";
 import "./registerServiceWorker";
 import vuetify from "./plugins/vuetify";
 import "./validation/validator";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 Vue.config.productionTip = false;
 Vue.prototype.$axios = axios;
+Vue.prototype.$signalr = new HubConnectionBuilder()
+	.withUrl("/groupHub")
+	.configureLogging(LogLevel.Information)
+	.build();
 
 new Vue({
 	store,
