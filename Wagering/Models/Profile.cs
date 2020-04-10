@@ -14,5 +14,6 @@ namespace Wagering.Models
         public string Input { get; set; }
         //Collection of ratings depending on game
         public ICollection<Rating> Ratings { get; set; }
+        public IList<Notification> Notifications { get; set; }
     }
 }

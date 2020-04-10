@@ -263,7 +263,6 @@
                             approved: false,
                             percentage: this.user.percentage
                         });
-                        //push to server
                     }
 
                     this.newDialog = false;
@@ -304,7 +303,7 @@
             },
             postWager() {
                 this.$axios.post("/api/wagers", this.wager).then(response => {
-                        //send to wager pending view
+                    this.$router.push({ name: "wager_pending", params: { id: response.data } });
                 }).catch(e => {
                     this.errors = e.response.data.splice();
                 });

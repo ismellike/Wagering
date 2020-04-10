@@ -49,7 +49,10 @@ const routes = [
 	{
 		path: "/host-panel/wagers/pending/:id",
 		name: "wager_pending",
-		component: () => import("@/views/control/host/wagers/Pending.vue")
+		component: () => import("@/views/control/host/wagers/Pending.vue"),
+		meta: {
+			requiresAuth: true
+		}
 	},
 	{
 		path: "/client-panel",

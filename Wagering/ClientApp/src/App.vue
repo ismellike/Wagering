@@ -101,8 +101,11 @@
         data: () => ({
             drawer: null
         }),
+        methods: {
+        },
         created() {
             this.$vuetify.theme.dark = true;
+
             this.$axios.interceptors.request.use(request => {
                 if (process.env.NODE_ENV == "development") {
                     console.log("REQUEST", request);
@@ -126,6 +129,8 @@
                 }
                 return Promise.reject(err);
             });
+
+            //poll every x seconds for new notifications
         }
     };
 </script>

@@ -51,7 +51,7 @@ namespace Wagering.Controllers
             if (Game == null)
                 return BadRequest($"{query.game} is not a valid game.");
 
-            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => !x.IsPrivate).Where(x => x.GameName == Game.Name);
+            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => !x.IsPrivate).Where(x => x.Status == 1).Where(x => x.GameName == Game.Name);
 
             if (!string.IsNullOrWhiteSpace(query.username))
                 wagerQuery = wagerQuery.Where(x => x.Hosts.Any(y => y.UserDisplayName.Contains(query.username)));
@@ -128,9 +128,27 @@ namespace Wagering.Controllers
                 }
                 newWager.Hosts.Add(bid);
             }
+
+            if (newWager.IsApproved())
+                SendToConfirmed(newWager);
+
             await _context.Wagers.AddAsync(newWager);
             await _context.SaveChangesAsync();
             return Ok(newWager.Id);
+        }
+
+        private void SendToConfirmed(Wager wager)
+        {
+            wager.Status = 1;
+        }
+
+        private void NotifyDecline(Wager wager)
+        {
+            _context.Wagers.Remove(wager);
+            foreach(WagerHostBid host in wager.Hosts)
+            {
+                //send notification to hosts
+            }
         }
 
         [HttpGet("client")]
@@ -166,7 +184,7 @@ namespace Wagering.Controllers
             var profile = await _context.GetProfileAsync(User);
             if (profile == null)
                 return Unauthorized();
-            var bid = await _context.WagerBids.FirstOrDefaultAsync(x => x.Id == id);
+            var bid = await _context.WagerBids.Include(x => x.Wager).ThenInclude(x => x.Hosts). FirstOrDefaultAsync(x => x.Id == id);
             if (bid.UserDisplayName != profile.DisplayName)
                 return Unauthorized();
             if (bid == null)
@@ -174,6 +192,8 @@ namespace Wagering.Controllers
             if (bid.Approved == null)
             {
                 bid.Approved = true;
+                if (bid.Wager.IsApproved())
+                    SendToConfirmed(bid.Wager);
                 _context.WagerBids.Update(bid);
                 await _context.SaveChangesAsync();
             }
@@ -189,7 +209,7 @@ namespace Wagering.Controllers
             var profile = await _context.GetProfileAsync(User);
             if (profile == null)
                 return Unauthorized();
-            var bid = await _context.WagerBids.FirstOrDefaultAsync(x => x.Id == id);
+            var bid = await _context.WagerBids.Include(x => x.Wager).FirstOrDefaultAsync(x => x.Id == id);
             if (bid.UserDisplayName != profile.DisplayName)
                 return Unauthorized();
             if (bid == null)
