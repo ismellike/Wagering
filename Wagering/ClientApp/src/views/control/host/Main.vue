@@ -5,7 +5,7 @@
     <v-container>
       <h1 class="text-center">Host Panel</h1>
     </v-container>
-    <v-tabs grow show-arrows>
+    <v-tabs grow show-arrows optional color="secondary">
       <v-tab to="/host-panel/wagers">Wagers</v-tab>
       <v-tab to="/host-panel/tournaments">Tournaments</v-tab>
       <v-tab to="/host-panel/leagues">Leagues</v-tab>

@@ -4,12 +4,12 @@
             <v-col cols="12" sm="10" md="8" class="mx-auto">
                 <v-data-table :headers="headers" :items="wager.hosts" hide-default-footer>
                     <template v-slot:top>
-                        <v-toolbar>
+                        <v-toolbar color="accent">
                             <v-toolbar-title>Members</v-toolbar-title>
                             <v-spacer></v-spacer>
                             <v-dialog v-model="newDialog" max-width="500px">
                                 <template v-slot:activator="{ on }">
-                                    <v-btn color="deep-purple" v-on="on">Add User</v-btn>
+                                    <v-btn color="secondary" v-on="on">Add User</v-btn>
                                 </template>
                                 <v-card>
                                     <v-card-title>
@@ -43,10 +43,10 @@
 
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
-                                        <v-btn color="deep-purple" @click="addUser">
+                                        <v-btn color="success" @click="addUser">
                                             Add
                                         </v-btn>
-                                        <v-btn @click="closeNew">Cancel</v-btn>
+                                        <v-btn color="error" @click="closeNew">Cancel</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
@@ -81,12 +81,14 @@
                     </template>
                     <template v-slot:item.actions="{ item }">
                         <v-icon small
+                                color="warning"
                                 class="mr-2"
                                 @click="editUser(item)">
                             mdi-pencil
                         </v-icon>
                         <v-icon v-if="!item.isOwner"
                                 small
+                                color="error"
                                 @click="deleteUser(item)">
                             mdi-delete
                         </v-icon>
@@ -100,21 +102,27 @@
                         </v-progress-circular>
                     </template>
                     <template v-slot:footer>
-                        <v-container>
-                            <v-row class="text-center">
-                                <v-col class="overline">
-                                    Total:
-                                    <v-progress-circular :value="getTotalPercentage">
-                                        {{ getTotalPercentage }}
-                                    </v-progress-circular>
-                                </v-col>
-                                <v-col>
-                                    <v-btn small text @click="normalize">
-                                        Normalize
-                                    </v-btn>
-                                </v-col>
-                            </v-row>
-                        </v-container>
+                        <v-simple-table>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td class="overline">
+                                            Total:
+                                        </td>
+                                        <td>
+                                            <v-progress-circular :color="circleColor" :value="totalPercentage" class="overline">
+                                                {{ totalPercentage }}
+                                            </v-progress-circular>
+                                        </td>
+                                        <td class="text-right">
+                                            <v-btn small outlined color="secondary" @click="normalize">
+                                                Normalize
+                                            </v-btn>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </v-simple-table>
                     </template>
                 </v-data-table>
             </v-col>
@@ -155,7 +163,7 @@
                     <v-card-actions>
                         <v-switch v-model="wager.isPrivate" label="Private"></v-switch>
                         <v-spacer />
-                        <v-btn color="green" v-on:click="submit">Create</v-btn>
+                        <v-btn color="success" v-on:click="submit">Create</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -238,12 +246,11 @@
             },
         },
         computed: {
-            getTotalPercentage() {
-                var s = 0;
-                this.wager.hosts.forEach(item => {
-                    s += parseInt(item.percentage);
-                });
-                return s;
+            totalPercentage() {
+                return this.wager.hosts.reduce((x, y) => x + (parseInt(y["percentage"]) || 0), 0);
+            },
+            circleColor() {
+                return this.totalPercentage == 100 ? "success" : "error";
             }
         },
         methods: {

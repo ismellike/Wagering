@@ -58,16 +58,16 @@
             </template>
         </v-navigation-drawer>
 
-        <v-app-bar app color="primary" dense clipped-right>
+        <v-app-bar app color="accent" dense clipped-right>
             <v-toolbar-title>Wagering.gg</v-toolbar-title>
             <v-spacer />
             <v-tooltip left>
                 <template v-slot:activator="{ on }">
                     <v-badge :content="notifications.length"
                              :value="notifications.length"
-                             color="green"
+                             color="info"
                              overlap>
-                        <v-btn icon v-on="on" @click.stop="dialog = true">
+                        <v-btn color="warning" icon v-on="on" @click.stop="dialog = true">
                             <v-icon>
                                 mdi-bell
                             </v-icon>
@@ -88,6 +88,7 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn text
+                               color="error"
                                @click="dialog = false">
                             Close
                         </v-btn>
@@ -147,8 +148,6 @@
             }
         },
         created() {
-            this.$vuetify.theme.dark = true;
-
             this.$axios.interceptors.request.use(request => {
                 if (process.env.NODE_ENV == "development") {
                     console.log("REQUEST", request);

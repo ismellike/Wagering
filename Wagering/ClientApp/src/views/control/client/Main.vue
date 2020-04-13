@@ -1,11 +1,11 @@
 <template>
-  <v-container fluid class="mb-auto">
+  <v-container class="mb-auto">
     <!--Need to change from tabs to nav bar-->
     <!--Split into wagers/tournaments/leagues-->
     <v-container>
       <h1 class="text-center">Client Panel</h1>
     </v-container>
-    <v-tabs grow optional>
+    <v-tabs grow show-arrows optional color="secondary">
       <v-tab to="/client-panel/wagers">Wagers</v-tab>
       <v-tab to="/client-panel/tournaments">Tournaments</v-tab>
       <v-tab to="/client-panel/leagues">Leagues</v-tab>

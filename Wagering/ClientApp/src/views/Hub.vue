@@ -2,14 +2,14 @@
   <v-container>
     <v-row dense>
       <v-col cols="12" sm="6" lg="4">
-        <v-card color="deep-purple">
+        <v-card color="accent">
           <v-card-title class="display-1">Fortnite</v-card-title>
           <v-card-actions>
-            <v-btn class="ma-2" :to="{ name: 'wagers', params: { game: 'fortnite' }}">
-              <v-icon dark left>mdi-coin</v-icon>Wagers
+            <v-btn color="secondary" class="ma-2" :to="{ name: 'wagers', params: { game: 'fortnite' }}">
+              <v-icon left>mdi-coin</v-icon>Wagers
             </v-btn>
-            <v-btn class="ma-2" :to="{ name: 'tournaments', params: { game: 'fortnite' }}">
-              <v-icon dark left>mdi-trophy</v-icon>Tournaments
+            <v-btn color="secondary" class="ma-2" :to="{ name: 'tournaments', params: { game: 'fortnite' }}">
+              <v-icon left>mdi-trophy</v-icon>Tournaments
             </v-btn>
           </v-card-actions>
         </v-card>

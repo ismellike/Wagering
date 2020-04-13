@@ -4,14 +4,14 @@
             <h1 class="text-center">Wagers | Page {{ query.page }}</h1>
         </v-container>
         <v-container class="text-right">
-            <v-btn :to="{ name:'wager_create', params:{game:query.game}}">
+            <v-btn color="secondary" :to="{ name:'wager_create', params:{game:query.game}}">
                 <v-icon left>mdi-plus-circle</v-icon>Create
             </v-btn>
         </v-container>
         <v-container>
             <v-expansion-panels focusable>
                 <v-expansion-panel>
-                    <v-expansion-panel-header>Filter</v-expansion-panel-header>
+                    <v-expansion-panel-header color="accent">Filter</v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <ValidationObserver ref="observer">
                             <v-row>
@@ -53,8 +53,8 @@
                             </v-row>
                             <v-row>
                                 <v-col class="text-right">
-                                    <v-btn color="green" v-on:click="submit" class="ma-1">Search</v-btn>
-                                    <v-btn color="red" v-on:click="clear" class="ma-1">Clear</v-btn>
+                                    <v-btn color="success" v-on:click="submit" class="ma-1">Search</v-btn>
+                                    <v-btn color="error" v-on:click="clear" class="ma-1">Clear</v-btn>
                                 </v-col>
                             </v-row>
                         </ValidationObserver>
@@ -80,6 +80,7 @@
                 </v-col>
             </v-row>
             <v-pagination v-model="query.page"
+                          color="secondary"
                           class="text-center"
                           :length="totalPages"
                           @next="goTo"
