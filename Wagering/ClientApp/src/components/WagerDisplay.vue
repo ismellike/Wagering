@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-toolbar dense color="accent">
-            <v-toolbar-title>{{ hostsString(4) }}</v-toolbar-title>
+            <v-toolbar-title>{{ hostsString }}</v-toolbar-title>
             <v-spacer />
             <v-btn color="secondary"
                    v-if="code == 1"
@@ -29,42 +29,7 @@
             </v-menu>
         </v-toolbar>
         <v-card-text>
-            <v-simple-table dense>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                Description
-                            </th>
-                            <th>
-                                Minimum Wager
-                            </th>
-                            <th>
-                                Maximum Wager
-                            </th>
-                            <th>
-                                Challenge Count
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                {{wager.description}}
-                            </td>
-                            <td>
-                                {{ moneyDisplay(wager.minimumWager) }}
-                            </td>
-                            <td>
-                                {{ moneyDisplay(wager.maximumWager) }}
-                            </td>
-                            <td>
-                                {{ wager.challengeCount }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </v-simple-table>
+            <WagerInfoDisplay :wager="wager" />
         </v-card-text>
         <v-card-actions>
             <v-spacer />
@@ -75,9 +40,13 @@
     </v-card>
 </template>
 <script>
+    import WagerInfoDisplay from "@/components/WagerInfoDisplay";
     export default {
+        components: {
+            WagerInfoDisplay
+        },
         props: {
-            data: {
+            wager: {
                 required: true
             },
             code: {
@@ -87,16 +56,16 @@
         },
         data() {
             return {
-                wager: this.data
+                cutoff: 4
             };
         },
-        methods: {
-            hostsString(cutoff) {
+        computed: {
+            hostsString() {
                 const length = this.wager.hosts.length;
-                if (length > cutoff) {
+                if (length > this.cutoff) {
                     return (
                         this.wager.hosts
-                            .splice(0, cutoff)
+                            .splice(0, this.cutoff)
                             .map(x => x.userDisplayName)
                             .join(", ") +
                         ", +" +
@@ -105,10 +74,6 @@
                     );
                 }
                 return this.wager.hosts.map(x => x.userDisplayName).join(", ");
-            },
-            moneyDisplay(num) {
-                if (num == null) return "-";
-                return "$"+num;
             }
         }
     };

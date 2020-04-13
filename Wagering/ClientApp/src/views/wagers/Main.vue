@@ -75,7 +75,7 @@
             <v-row dense v-for="wager in wagers" :key="wager.id">
                 <v-col>
                     <v-container>
-                        <WagerDisplay :data="wager" :code="1" />
+                        <WagerDisplay :wager="wager" :code="1" />
                     </v-container>
                 </v-col>
             </v-row>

@@ -2,68 +2,33 @@
     <v-container>
         <v-row>
             <v-col cols="12" sm="10" md="8" class="mx-auto">
-                <v-data-table :headers="headers" :items="wager.hosts" hide-default-footer>
-                    <template v-slot:top>
-                        <v-toolbar color="accent">
-                            <v-toolbar-title>Members</v-toolbar-title>
-                            <v-spacer></v-spacer>
-                            <template v-if="!hasAccepted">
-                                <v-btn color="success" @click="accept" class="mr-2">Accept</v-btn>
-                                <v-btn color="error" @click="decline">Decline</v-btn>
+                <v-card>
+                    <v-card-title>Members</v-card-title>
+                    <v-card-text>
+                        <v-data-table :headers="headers" :items="wager.hosts" hide-default-footer>
+                            <!--v-slot username prepend crown if is owner-->
+                            <template v-slot:item.approved="{ item }">
+                                <v-simple-checkbox v-model="item.approved" disabled></v-simple-checkbox>
                             </template>
-                        </v-toolbar>
-                    </template>
-                    <!--v-slot username prepend crown if is owner-->
-                    <template v-slot:item.approved="{ item }">
-                        <v-simple-checkbox v-model="item.approved" disabled></v-simple-checkbox>
-                    </template>
-                    <template v-slot:item.percentage="{ item }">
-                        <v-progress-circular :value="item.percentage" class="overline">
-                            {{ item.percentage }}
-                        </v-progress-circular>
-                    </template>
-                </v-data-table>
+                            <template v-slot:item.percentage="{ item }">
+                                <v-progress-circular :value="item.percentage" class="overline">
+                                    {{ item.percentage }}
+                                </v-progress-circular>
+                            </template>
+                        </v-data-table>
+                    </v-card-text>
+                    <v-card-actions v-if="!hasAccepted">
+                        <v-spacer />
+                        <v-btn color="success" @click="accept">Accept</v-btn>
+                        <v-btn color="error" @click="decline">Decline</v-btn>
+                    </v-card-actions>
+                </v-card>
             </v-col>
             <v-col cols="12" sm="10" md="8" class="mx-auto">
                 <v-card>
                     <v-card-title>Wager Settings</v-card-title>
                     <v-card-text>
-                        <v-simple-table>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            Description
-                                        </th>
-                                        <th>
-                                            Minimum Wager
-                                        </th>
-                                        <th>
-                                            Maximum Wager
-                                        </th>
-                                        <th>
-                                            Challenge Count
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            {{wager.description}}
-                                        </td>
-                                        <td>
-                                            {{ moneyDisplay(wager.minimumWager) }}
-                                        </td>
-                                        <td>
-                                            {{ moneyDisplay(wager.maximumWager) }}
-                                        </td>
-                                        <td>
-                                            {{ wager.challengeCount }}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </v-simple-table>
+                        <WagerInfoDisplay :wager="wager" />
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -71,7 +36,11 @@
     </v-container>
 </template>
 <script>
+    import WagerInfoDisplay from "@/components/WagerInfoDisplay";
     export default {
+        components: {
+            WagerInfoDisplay
+        },
         data() {
             return {
                 wager: {
@@ -109,10 +78,6 @@
                 }).catch(e => {
                     this.errors = e.response.data.splice();
                 });
-            },
-            moneyDisplay(num) {
-                if (num == null) return "-";
-                return "$" + num;
             }
         },
         computed: {

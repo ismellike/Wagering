@@ -24,7 +24,6 @@
                                                                 :search-input.sync="searchEvent"
                                                                 cache-items
                                                                 hide-no-data
-                                                                hide-details
                                                                 clearable
                                                                 label="Username"
                                                                 item-text="displayName"
@@ -32,11 +31,11 @@
                                                 </v-autocomplete>
                                             </v-col>
                                             <v-spacer />
-                                            <v-col cols="6" sm="3">
+                                            <v-col cols="7" sm="3">
                                                 <v-text-field v-model="user.percentage"
                                                               label="Percentage"
                                                               type="number"
-                                                              append-icon="mdi-percent-outline"></v-text-field>
+                                                              append-icon="mdi-percent"></v-text-field>
                                             </v-col>
                                         </v-row>
                                     </v-card-text>
@@ -61,19 +60,19 @@
                                                 <v-text-field disabled label="Username" :value="user.userDisplayName"></v-text-field>
                                             </v-col>
                                             <v-spacer />
-                                            <v-col cols="6" sm="3">
+                                            <v-col cols="7" sm="3">
                                                 <v-text-field v-model="user.percentage"
                                                               label="Percentage"
                                                               type="number"
-                                                              append-icon="mdi-percent-outline"></v-text-field>
+                                                              append-icon="mdi-percent"></v-text-field>
                                             </v-col>
                                         </v-row>
                                     </v-card-text>
 
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
-                                        <v-btn color="deep-purple" @click="saveUser">Save</v-btn>
-                                        <v-btn @click="closeEdit">Cancel</v-btn>
+                                        <v-btn color="success" @click="saveUser">Save</v-btn>
+                                        <v-btn color="error" @click="closeEdit">Cancel</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>

@@ -12,7 +12,7 @@
                 <v-row dense v-for="wager in pending" :key="wager.id">
                     <v-col>
                         <v-container>
-                            <WagerDisplay :data="wager" :code="2" />
+                            <WagerDisplay :wager="wager" :code="2" />
                         </v-container>
                     </v-col>
                 </v-row>
@@ -24,7 +24,7 @@
                 <v-row dense v-for="wager in confirmed" :key="wager.id">
                     <v-col>
                         <v-container>
-                            <WagerDisplay :data="wager" :code="2" />
+                            <WagerDisplay :wager="wager" :code="2" />
                         </v-container>
                     </v-col>
                 </v-row>
@@ -36,7 +36,7 @@
                 <v-row dense v-for="wager in completed" :key="wager.id">
                     <v-col>
                         <v-container>
-                            <WagerDisplay :data="wager" :code="2" />
+                            <WagerDisplay :wager="wager" :code="2" />
                         </v-container>
                     </v-col>
                 </v-row>
