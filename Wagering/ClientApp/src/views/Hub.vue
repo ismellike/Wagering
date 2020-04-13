@@ -2,7 +2,7 @@
   <v-container>
     <v-row dense>
       <v-col cols="12" sm="6" lg="4">
-        <v-card color="deep-purple" dark>
+        <v-card color="deep-purple">
           <v-card-title class="display-1">Fortnite</v-card-title>
           <v-card-actions>
             <v-btn class="ma-2" :to="{ name: 'wagers', params: { game: 'fortnite' }}">

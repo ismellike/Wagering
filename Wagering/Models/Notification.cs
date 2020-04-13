@@ -11,5 +11,7 @@ namespace Wagering.Models
         public DateTime Date { get; set; }
         public string Message { get; set; }
         public bool IsRead { get; set; }
+        //should be local format
+        public string Link { get; set; }
     }
 }

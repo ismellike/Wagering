@@ -1,11 +1,9 @@
 <template>
     <v-app id="app">
         <v-navigation-drawer v-model="drawer"
-                             color="grey darken-4"
                              clipped
                              app
                              right
-                             dark
                              height="100%">
             <v-list dense>
                 <v-list-item to="/" link>
@@ -60,7 +58,7 @@
             </template>
         </v-navigation-drawer>
 
-        <v-app-bar app color="deep-purple" dense clipped-right dark>
+        <v-app-bar app color="primary" dense clipped-right>
             <v-toolbar-title>Wagering.gg</v-toolbar-title>
             <v-spacer />
             <v-tooltip left>
@@ -89,10 +87,9 @@
 
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="red"
-                               text
+                        <v-btn text
                                @click="dialog = false">
-                            Clear
+                            Close
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -106,7 +103,7 @@
             </v-container>
         </v-content>
 
-        <v-footer absolute inset clipped-right app dark>
+        <v-footer inset clipped-right app>
             <v-btn href="https://discord.gg/HmmVMs2" target="_blank" icon>
                 <v-icon dense>mdi-discord</v-icon>
             </v-btn>

@@ -87,7 +87,7 @@ namespace Wagering
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<Hubs.GroupHub>("/groupHub");
+                endpoints.MapHub<Hubs.GroupHub>("/group-hub");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");

@@ -11,7 +11,7 @@ import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 Vue.config.productionTip = false;
 Vue.prototype.$axios = axios;
 Vue.prototype.$signalr = new HubConnectionBuilder()
-	.withUrl("/groupHub")
+	.withUrl("/group-hub")
 	.configureLogging(LogLevel.Information)
 	.build();
 
