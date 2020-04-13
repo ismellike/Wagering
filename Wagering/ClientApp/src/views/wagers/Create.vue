@@ -7,18 +7,19 @@
                         <v-toolbar color="accent">
                             <v-toolbar-title>Members</v-toolbar-title>
                             <v-spacer></v-spacer>
-                            <v-dialog v-model="newDialog" max-width="500px">
+                            <v-dialog v-model="dialog" max-width="500px">
                                 <template v-slot:activator="{ on }">
                                     <v-btn color="secondary" v-on="on">Add User</v-btn>
                                 </template>
                                 <v-card>
                                     <v-card-title>
-                                        Add User
+                                        {{ dialogTitle }}
                                     </v-card-title>
                                     <v-card-text>
                                         <v-row>
                                             <v-col cols="12" sm="6">
-                                                <v-autocomplete v-model="search.select"
+                                                <v-autocomplete v-if="index == -1"
+                                                                v-model="search.select"
                                                                 :loading="search.loading"
                                                                 :items="search.users"
                                                                 :search-input.sync="searchEvent"
@@ -29,6 +30,7 @@
                                                                 item-text="displayName"
                                                                 return-object>
                                                 </v-autocomplete>
+                                                <v-text-field disabled v-else label="Username" :value="user.userDisplayName"></v-text-field>
                                             </v-col>
                                             <v-spacer />
                                             <v-col cols="7" sm="3">
@@ -42,37 +44,10 @@
 
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
-                                        <v-btn color="success" @click="addUser">
-                                            Add
+                                        <v-btn color="success" @click="save">
+                                            Save
                                         </v-btn>
-                                        <v-btn color="error" @click="closeNew">Cancel</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
-                            <v-dialog v-model="editDialog" max-width="500px">
-                                <v-card>
-                                    <v-card-title>
-                                        Edit User
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <v-row>
-                                            <v-col cols="12" sm="6">
-                                                <v-text-field disabled label="Username" :value="user.userDisplayName"></v-text-field>
-                                            </v-col>
-                                            <v-spacer />
-                                            <v-col cols="7" sm="3">
-                                                <v-text-field v-model="user.percentage"
-                                                              label="Percentage"
-                                                              type="number"
-                                                              append-icon="mdi-percent"></v-text-field>
-                                            </v-col>
-                                        </v-row>
-                                    </v-card-text>
-
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn color="success" @click="saveUser">Save</v-btn>
-                                        <v-btn color="error" @click="closeEdit">Cancel</v-btn>
+                                        <v-btn color="error" @click="close">Cancel</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
@@ -215,8 +190,7 @@
 
                 },
                 index: -1,
-                newDialog: false,
-                editDialog: false,
+                dialog: false,
                 headers: [
                     {
                         text: 'Username',
@@ -250,6 +224,9 @@
             },
             circleColor() {
                 return this.totalPercentage == 100 ? "success" : "error";
+            },
+            dialogTitle() {
+                return this.index == -1 ? "Add User" : "Edit User";
             }
         },
         methods: {
@@ -262,6 +239,12 @@
                     this.search.loading = false;
                 });
             },
+            close() {
+                this.user = Object.assign({}, this.defaultUser);
+                this.dialog = false;
+                this.search.select = null;
+                this.index = -1;
+            },
             addUser() {
                 if (this.search.select) {
                     const username = this.search.select.displayName;
@@ -272,29 +255,24 @@
                             percentage: this.user.percentage
                         });
                     }
-
-                    this.newDialog = false;
-                    this.search.select = null;
                 }
             },
-            saveUser() {
-                Object.assign(this.wager.hosts[this.index], this.user);
-                this.closeEdit();
+            save() {
+                if (this.index > -1) {
+                    Object.assign(this.wager.hosts[this.index], this.user);
+                } else {
+                    this.addUser();
+                }
+                this.close();
             },
             editUser(item) {
                 this.index = this.wager.hosts.indexOf(item);
-                this.editDialog = true;
-                this.user = Object.assign({}, item)
+                this.user = Object.assign({}, item);
+                this.dialog = true;
             },
-            closeEdit() {
-                this.editDialog = false
-                setTimeout(() => {
-                    this.user = Object.assign({}, this.defaultUser)
-                    this.index = -1
-                }, 300);
-            },
-            closeNew() {
-                this.newDialog = false;
+            deleteUser(item) {
+                const index = this.wager.hosts.indexOf(item);
+                confirm('Are you sure you want to remove this user?') && this.wager.hosts.splice(index, 1)
             },
             normalize() {
                 const count = this.wager.hosts.length;
