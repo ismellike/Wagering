@@ -10,6 +10,7 @@ namespace Wagering.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private const int ResultSize = 5;
 
         public ProfileController(ApplicationDbContext context)
         {
@@ -29,7 +30,7 @@ namespace Wagering.Controllers
         [HttpGet("search/{query}")]
         public async Task<IActionResult> SearchProfile(string query)
         {
-            var profile = await _context.Profiles.Where(x => x.DisplayName.Contains(query)).Take(5).ToListAsync();
+            var profile = await _context.Profiles.Where(x => x.DisplayName.Contains(query)).Take(ResultSize).ToListAsync();
             return Ok(profile);
         }
     }

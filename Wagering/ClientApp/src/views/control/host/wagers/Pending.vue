@@ -74,13 +74,13 @@
                 });
             },
             accept() {
-                this.$axios.post("/api/wagers/accept", this.userBid.id).then(result => {
+                this.$axios.post("/api/bid/wager/accept", this.userBid.id).then(result => {
                 }).catch(e => {
                     this.errors = e.response.data.splice();
                 });
             },
             decline() {
-                this.$axios.post("/api/wagers/decline", this.userBid.id).then(result => {
+                this.$axios.post("/api/bid/wager/decline", this.userBid.id).then(result => {
                 }).catch(e => {
                     this.errors = e.response.data.splice();
                 });

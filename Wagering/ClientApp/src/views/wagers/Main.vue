@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-container>
-            <h1 class="text-center">Wagers | Page {{ query.page }}</h1>
+            <h1 class="text-center">Wagers</h1>
         </v-container>
         <v-container class="text-right">
             <v-btn color="secondary" :to="{ name:'wager_create', params:{game:query.game}}">
@@ -9,7 +9,7 @@
             </v-btn>
         </v-container>
         <v-container>
-            <v-expansion-panels focusable>
+            <v-expansion-panels>
                 <v-expansion-panel>
                     <v-expansion-panel-header color="accent">Filter</v-expansion-panel-header>
                     <v-expansion-panel-content>
