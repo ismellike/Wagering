@@ -134,6 +134,7 @@
             return {
                 drawer: null,
                 notifications: [],
+                errors: [],
                 dialog: false
             };
         },
@@ -142,9 +143,12 @@
                 this.$signalr.start();
             },
             receiveNotifications() {
-                this.$signalr.on("GetNotifications", (message) => {
+                this.$signalr.on("GetNotification", (message) => {
                     this.notifications.push(message);
                 });
+            },
+            addGroups() {
+                //get group ids then add to groups
             }
         },
         created() {
@@ -175,6 +179,7 @@
             if (this.$store.state.account.isAuthenticated) {
                 this.connectHub();
                 this.receiveNotifications();
+                this.addGroups();
             }
         }
     };

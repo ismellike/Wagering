@@ -13,6 +13,7 @@ Vue.prototype.$axios = axios;
 Vue.prototype.$signalr = new HubConnectionBuilder()
 	.withUrl("/group-hub")
 	.configureLogging(LogLevel.Information)
+	.withAutomaticReconnect()
 	.build();
 
 new Vue({
