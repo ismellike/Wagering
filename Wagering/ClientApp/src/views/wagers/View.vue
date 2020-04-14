@@ -1,7 +1,6 @@
 <template>
     <v-container>
-        <v-skeleton-loader v-if="wager == null" type="card" />
-        <div v-else>
+        <v-skeleton-loader :loading="loading" type="card" transition="scale-transition">
             <v-row dense>
                 <v-col cols="12">
                     <WagerDisplay :code="0" :data="wager" />
@@ -26,7 +25,7 @@
                     <ChallengeDisplay :data="challenge" />
                 </v-col>
             </v-row>
-        </div>
+        </v-skeleton-loader>
     </v-container>
 </template>
 <script>
@@ -43,6 +42,7 @@
                 id: this.$route.params.id,
                 game: this.$route.params.game,
                 isHost: false,
+                loading: true,
                 errors: []
             };
         },
@@ -50,6 +50,7 @@
             getWager() {
                 this.$axios.get("/api/wagers/" + this.id).then(response => {
                     this.wager = response.data;
+                    this.loading = false;
                     //check if user is part of hosts
                 }).catch(e => {
                     this.errors = e.response.data.splice();

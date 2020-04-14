@@ -62,31 +62,22 @@
                 </v-expansion-panel>
             </v-expansion-panels>
         </v-container>
-        <div v-if="isLoading">
-            <v-row dense v-for="i in 15" :key="i">
+        <v-container>
+            <v-row v-for="wager in wagers" :key="wager.id">
                 <v-col>
-                    <v-container>
-                        <v-skeleton-loader type="card" />
-                    </v-container>
-                </v-col>
-            </v-row>
-        </div>
-        <div v-else>
-            <v-row dense v-for="wager in wagers" :key="wager.id">
-                <v-col>
-                    <v-container>
+                    <v-skeleton-loader :loading="loading" type="card" transition="scale-transition">
                         <WagerDisplay :wager="wager" :code="1" />
-                    </v-container>
+                    </v-skeleton-loader>
                 </v-col>
             </v-row>
-            <v-pagination v-model="query.page"
-                          color="secondary"
-                          class="text-center"
-                          :length="totalPages"
-                          @next="goTo"
-                          @previous="goTo"
-                          @input="goTo"></v-pagination>
-        </div>
+        </v-container>
+        <v-pagination v-model="query.page"
+                      color="secondary"
+                      class="text-center"
+                      :length="totalPages"
+                      @next="goTo"
+                      @previous="goTo"
+                      @input="goTo"></v-pagination>
     </v-container>
 </template>
 <script>
@@ -117,7 +108,7 @@
                 wagers: [],
                 totalPages: 0,
                 showFilter: false,
-                isLoading: true,
+                loading: true,
                 errors: []
             };
         },
@@ -129,12 +120,12 @@
             },
             getWagers() {
                 //api call here
-                this.isLoading = true;
+                this.loading = true;
                 this.$axios.post("/api/wagers/search", this.query).then(response => {
                     this.totalPages = response.data.totalPages;
                     this.wagers = response.data.list.slice();
+                    this.loading = false;
                     this.errors = [];
-                    this.isLoading = false;
                 }).catch(e => {
                     this.errors = e.response.data.slice();
                 });
