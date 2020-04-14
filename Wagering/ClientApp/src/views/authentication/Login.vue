@@ -12,7 +12,6 @@
     </v-container>
 </template>
 <script>
-    /* eslint-disable no-case-declarations */
     import AuthService, { AuthenticationResultStatus } from "@/services/authentication";
     import {
         LoginActions,

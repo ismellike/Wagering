@@ -15,6 +15,7 @@ Vue.use(Router);
 const routes = [
 	{
 		path: "*",
+		name: "home",
 		component: Home
 	},
 	{
@@ -100,6 +101,14 @@ const routes = [
 		component: Login,
 		props: {
 			action: LoginActions.Login
+		},
+		beforeEnter: (to, from, next) => {
+			if (to.query.returnUrl == null && from.name != "home")
+				next({
+					path: ApplicationPaths.Login,
+					query: { returnUrl: window.location.href }
+				});
+			else next();
 		}
 	},
 	{
@@ -131,6 +140,14 @@ const routes = [
 		component: Login,
 		props: {
 			action: LoginActions.Register
+		},
+		beforeEnter: (to, from, next) => {
+			if (to.query.returnUrl == null && from.name != "home")
+				next({
+					path: ApplicationPaths.Register,
+					query: { returnUrl: window.location.href }
+				});
+			else next();
 		}
 	},
 	{
@@ -168,7 +185,8 @@ router.beforeEach((to, from, next) => {
 			next();
 		} else {
 			next({
-				path: ApplicationPaths.Login
+				path: ApplicationPaths.Login,
+				query: { returnUrl: from.path }
 			});
 		}
 	} else {
