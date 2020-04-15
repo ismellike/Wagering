@@ -103,7 +103,7 @@ const routes = [
 			action: LoginActions.Login
 		},
 		beforeEnter: (to, from, next) => {
-			if (to.query.returnUrl == null && from.name != "home")
+			if (to.query.returnUrl == null && to.name != from.name && from.name != "home")
 				next({
 					path: ApplicationPaths.Login,
 					query: { returnUrl: window.location.href }
@@ -142,7 +142,7 @@ const routes = [
 			action: LoginActions.Register
 		},
 		beforeEnter: (to, from, next) => {
-			if (to.query.returnUrl == null && from.name != "home")
+			if (to.query.returnUrl == null && to.name != from.name  && from.name != "home")
 				next({
 					path: ApplicationPaths.Register,
 					query: { returnUrl: window.location.href }
