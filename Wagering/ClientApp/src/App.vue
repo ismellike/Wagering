@@ -140,13 +140,17 @@
         },
         methods: {
             receiveNotifications() {
-                this.$signalr.start();
                 this.$signalr.on("GetNotification", (message) => {
                     this.notifications.push(message);
                 });
             },
             addGroups() {
-                //get group ids then add to groups
+                this.$axios.get("/api/group").then(result => {
+                    result.data.forEach(group => {
+                        console.log(group);
+                        this.$signalr.invoke("AddToGroup", group);
+                    });
+                });
             }
         },
         created() {
@@ -175,8 +179,10 @@
             });
 
             if (this.$store.state.account.isAuthenticated) {
-                this.receiveNotifications();
-                this.addGroups();
+                this.$signalr.start().then(() => {
+                    this.receiveNotifications();
+                    this.addGroups();
+                });
             }
         }
     };

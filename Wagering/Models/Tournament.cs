@@ -6,5 +6,10 @@ namespace Wagering.Models
     {
         [Column(TypeName = "decimal(18,7)")]
         public decimal Entry { get; set; }
+
+        public override string GroupName()
+        {
+            return $"tournament_{Id}";
+        }
     }
 }

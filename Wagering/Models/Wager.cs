@@ -33,5 +33,10 @@ namespace Wagering.Models
                 return false;
             return true;
         }
+
+        public override string GroupName()
+        {
+            return $"wager_{Id}";
+        }
     }
 }

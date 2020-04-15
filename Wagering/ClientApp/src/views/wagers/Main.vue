@@ -121,7 +121,7 @@
             getWagers() {
                 //api call here
                 this.loading = true;
-                this.$axios.post("/api/wagers/search", this.query).then(response => {
+                this.$axios.post("/api/wager/search", this.query).then(response => {
                     this.totalPages = response.data.totalPages;
                     this.wagers = response.data.list.slice();
                     this.loading = false;

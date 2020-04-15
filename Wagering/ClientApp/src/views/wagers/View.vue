@@ -48,7 +48,7 @@
         },
         methods: {
             getWager() {
-                this.$axios.get("/api/wagers/" + this.id).then(response => {
+                this.$axios.get("/api/wager/" + this.id).then(response => {
                     this.wager = response.data;
                     this.loading = false;
                     //check if user is part of hosts

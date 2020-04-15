@@ -288,7 +288,7 @@
                 });
             },
             postWager() {
-                this.$axios.post("/api/wagers", this.wager).then(response => {
+                this.$axios.post("/api/wager", this.wager).then(response => {
                     this.$router.push({ name: "wager_pending", params: { id: response.data } });
                 }).catch(e => {
                     this.errors = e.response.data.splice();
