@@ -139,10 +139,8 @@
             };
         },
         methods: {
-            connectHub() {
-                this.$signalr.start();
-            },
             receiveNotifications() {
+                this.$signalr.start();
                 this.$signalr.on("GetNotification", (message) => {
                     this.notifications.push(message);
                 });
@@ -177,7 +175,6 @@
             });
 
             if (this.$store.state.account.isAuthenticated) {
-                this.connectHub();
                 this.receiveNotifications();
                 this.addGroups();
             }

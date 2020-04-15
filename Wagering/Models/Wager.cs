@@ -1,31 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Wagering.Models
 {
-    public class Wager
+    public class Wager : Event
     {
-        public int Id { get; set; }
-        public string GameName { get; set; }
-        public Game Game { get; set; }
-
         public ICollection<WagerHostBid> Hosts { get; set; }
         public ICollection<WagerChallenge> Challenges { get; set; }
-
-        [Required]
-        [StringLength(50, MinimumLength = 10)]
-        public string Description { get; set; }
-        [Required]
-        public DateTime Date { get; set; }
         [Column(TypeName = "decimal(18,7)")]
         public decimal? MinimumWager { get; set; }
         [Column(TypeName = "decimal(18,7)")]
         public decimal? MaximumWager { get; set; }
-        public bool IsPrivate { get; set; }
-        //0-pending 1-confirmed 2-completed
-        public byte Status { get; set; }
 
         [NotMapped]
         public int ChallengeCount { get; set; }

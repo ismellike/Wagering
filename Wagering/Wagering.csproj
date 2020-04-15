@@ -19,6 +19,12 @@
     <Compile Remove="Migrations\20200410052046_Notifications.Designer.cs" />
     <Compile Remove="Migrations\20200410052543_Notifications.cs" />
     <Compile Remove="Migrations\20200410052543_Notifications.Designer.cs" />
+    <Compile Remove="Migrations\20200414233525_Event.cs" />
+    <Compile Remove="Migrations\20200414233525_Event.Designer.cs" />
+    <Compile Remove="Migrations\20200414233653_Event.cs" />
+    <Compile Remove="Migrations\20200414233653_Event.Designer.cs" />
+    <Compile Remove="Migrations\20200414233852_Event.cs" />
+    <Compile Remove="Migrations\20200414233852_Event.Designer.cs" />
   </ItemGroup>
 
 
