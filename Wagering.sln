@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29521.150
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wagering", "Wagering\Wagering.csproj", "{CACF90AC-9270-44E9-9108-D426DC3D2363}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wagering", "Wagering\Wagering.csproj", "{CACF90AC-9270-44E9-9108-D426DC3D2363}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wagering.Tests", "Tests\Wagering.Tests.csproj", "{15C9077B-71FC-48C2-8778-D07C24E2F76B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{1E5AF710-7268-4D69-B6EB-2D8715C56360}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{CACF90AC-9270-44E9-9108-D426DC3D2363}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CACF90AC-9270-44E9-9108-D426DC3D2363}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CACF90AC-9270-44E9-9108-D426DC3D2363}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15C9077B-71FC-48C2-8778-D07C24E2F76B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15C9077B-71FC-48C2-8778-D07C24E2F76B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15C9077B-71FC-48C2-8778-D07C24E2F76B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15C9077B-71FC-48C2-8778-D07C24E2F76B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E5AF710-7268-4D69-B6EB-2D8715C56360}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E5AF710-7268-4D69-B6EB-2D8715C56360}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E5AF710-7268-4D69-B6EB-2D8715C56360}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E5AF710-7268-4D69-B6EB-2D8715C56360}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
