@@ -289,7 +289,10 @@
             },
             postWager() {
                 this.$axios.post("/api/wager", this.wager).then(response => {
-                    this.$router.push({ name: "wager_pending", params: { id: response.data } });
+                    this.$signalr.invoke("AddToGroup", response.data.group);
+                    this.$signalr.invoke("AddUsersToGroup", response.data.group, response.data.users);
+                    this.$signalr.invoke("NotifyGroup", response.data.group, { message: this.$store.state.account.username + " created a new wager with you.", isRead: false, link: "/host-panel/wagers/pending/7" });
+                    this.$router.push({ name: "wager_pending", params: { id: response.data.id } });
                 }).catch(e => {
                     this.errors = e.response.data.splice();
                 });

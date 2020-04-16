@@ -24,6 +24,12 @@ namespace Wagering.Controllers
             public int? maximumWager;
             public int? playerCount;
         }
+        public struct WagerResult
+        {
+            public int Id { get; set; }
+            public string Group { get; set; }
+            public IEnumerable<string> Users { get; set; }
+        }
 
         public WagerController(ApplicationDbContext context)
         {
@@ -138,7 +144,12 @@ namespace Wagering.Controllers
 
             await _context.Wagers.AddAsync(newWager);
             await _context.SaveChangesAsync();
-            return Ok(newWager.Id);
+            return Ok(new WagerResult
+            {
+                Id = newWager.Id,
+                Group = newWager.GroupName(),
+                Users = newWager.Hosts.Select(x => x.UserDisplayName).Where(x=> x != profile.DisplayName)
+            });
         }
     }
 }

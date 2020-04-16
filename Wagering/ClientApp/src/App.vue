@@ -66,7 +66,8 @@
                     <v-badge :content="notifications.length"
                              :value="notifications.length"
                              color="info"
-                             overlap>
+                             offset-y="22"
+                             offset-x="20">
                         <v-btn color="warning" icon v-on="on" @click.stop="dialog = true">
                             <v-icon>
                                 mdi-bell
@@ -82,7 +83,19 @@
                     <v-card-title>Notifications</v-card-title>
 
                     <v-card-text>
-                        Show notifications here
+                        <v-list two-line>
+                            <v-list-item :to="notification.link" v-for="notification in notifications">
+                                <v-list-item-content>
+                                    <v-list-item-title>
+                                        {{ notification.message }}
+                                    </v-list-item-title>
+                                    <v-list-item-subtitle>{{ notification.date }} </v-list-item-subtitle>
+                                </v-list-item-content>
+                                <v-list-item-icon>
+                                    <v-icon color="error">mdi-trash</v-icon>
+                                </v-list-item-icon>
+                            </v-list-item>
+                        </v-list>
                     </v-card-text>
 
                     <v-card-actions>
@@ -122,6 +135,7 @@
 <script>
     import LoginMenu from "@/components/LoginMenu.vue";
     import AuthService from "@/services/authentication";
+    import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
     export default {
         name: "App",
@@ -141,17 +155,33 @@
         },
         methods: {
             receiveNotifications() {
-                this.$signalr.on("GetNotification", (message) => {
-                    this.notifications.push(message);
+                this.$signalr.on("GetNotification", (notification) => {
+                    this.notifications.push(notification);
+                });
+            },
+            receiveGroups() {
+                this.$signalr.on("ReceiveGroup", (group) => {
+                    console.log("Added to group " + group);
+                    this.$signalr.invoke("AddToGroup", group);
                 });
             },
             addGroups() {
                 this.$axios.get("/api/group").then(result => {
                     result.data.forEach(group => {
-                        console.log(group);
                         this.$signalr.invoke("AddToGroup", group);
                     });
                 });
+            },
+            getNotifications() {
+                this.$axios.get("/api/notification").then(result => {
+                    result.data.forEach(notification => {
+                        this.notifications.push(notification);
+                    });
+                });
+            },
+            listen() {
+                this.receiveNotifications();
+                this.receiveGroups();
             }
         },
         created() {
@@ -191,17 +221,24 @@
                 return response;
             }, function (err) {
                 if (err.response.status == 401) {
-                    window.location = "/authentication/login";
+                    if (window.location != "/authentication/login")
+                        window.location = "/authentication/login";
                 }
                 return Promise.reject(err);
             });
         },
         mounted() {
-            if (this.$store.state.account.isAuthenticated && !this.$route.path.includes("logout")) {
+            if (this.$store.state.account.isAuthenticated && !this.$route.path.includes("authentication")) {
+                this.$signalr = new HubConnectionBuilder()
+                    .withUrl("/group-hub", { accessTokenFactory: () => this.$store.state.account.token })
+                    .configureLogging(LogLevel.Information)
+                    .withAutomaticReconnect()
+                    .build();
                 this.$signalr.start().then(() => {
-                    this.receiveNotifications();
+                    this.listen();
                     this.addGroups();
                 });
+                this.getNotifications();
             }
         }
     };
