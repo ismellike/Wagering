@@ -121,6 +121,7 @@
 
 <script>
     import LoginMenu from "@/components/LoginMenu.vue";
+    import AuthService from "@/services/authentication";
 
     export default {
         name: "App",
@@ -154,6 +155,23 @@
             }
         },
         created() {
+            if (this.$store.state.account.isAuthenticated) {
+                AuthService.getAccessToken().then(accessToken => {
+                    if (accessToken) {
+                        if (accessToken != this.$store.state.account.token) {
+                            var payload = {
+                                username: this.$store.state.account.username,
+                                token: accessToken
+                            }
+                            this.$store.dispatch("setLogin", payload);
+                        }
+                    }
+                    else {
+                        this.$store.dispatch("setLogout");
+                    }
+                });
+            }
+
             this.$axios.interceptors.request.use(request => {
                 if (process.env.NODE_ENV == "development") {
                     console.log("REQUEST", request);
@@ -177,8 +195,9 @@
                 }
                 return Promise.reject(err);
             });
-
-            if (this.$store.state.account.isAuthenticated) {
+        },
+        mounted() {
+            if (this.$store.state.account.isAuthenticated && !this.$route.path.includes("logout")) {
                 this.$signalr.start().then(() => {
                     this.receiveNotifications();
                     this.addGroups();
