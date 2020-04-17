@@ -197,7 +197,7 @@
             }
         },
         created() {
-            if (this.$store.state.account.isAuthenticated) {
+            if (this.$store.state.account.isAuthenticated && !this.$route.path.includes("authentication")) {
                 AuthService.getAccessToken().then(accessToken => {
                     if (accessToken) {
                         if (accessToken != this.$store.state.account.token) {
@@ -212,41 +212,7 @@
                         this.$store.dispatch("setLogout");
                     }
                 });
-            }
 
-            this.$axios.interceptors.request.use(request => {
-                if (process.env.NODE_ENV == "development") {
-                    console.log("REQUEST", request);
-                }
-                if (this.$store.state.account.isAuthenticated) {
-                    request.headers.Authorization = `Bearer ${this.$store.state.account.token}`;
-                }
-                return request;
-            }, function (err) {
-                if (process.env.NODE_ENV == "development") {
-                    console.log("ERROR", err);
-                }
-                return Promise.reject(err);
-            });
-
-            this.$axios.interceptors.response.use(response => {
-                if (process.env.NODE_ENV == "development") {
-                    console.log("RESPONSE", response);
-                }
-                return response;
-            }, function (err) {
-                if (process.env.NODE_ENV == "development") {
-                    console.log("ERROR", err);
-                }
-                if (err.response.status == 401) {
-                    if (!window.location.href.includes("authentication"))
-                        window.location = "/authentication/login";
-                }
-                return Promise.reject(err);
-            });
-        },
-        mounted() {
-            if (this.$store.state.account.isAuthenticated && !this.$route.path.includes("authentication")) {
                 this.$microsoft.signalr = new HubConnectionBuilder()
                     .withUrl("/group-hub", { accessTokenFactory: () => this.$store.state.account.token })
                     .configureLogging(LogLevel.Information)

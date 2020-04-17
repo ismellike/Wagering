@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Wagering.Models;
 
@@ -28,7 +27,7 @@ namespace Wagering.Hubs
         public async Task AddUsersToGroup(string name, string[] usernames, Notification notification)
         {
             foreach (string username in usernames)
-                foreach(var connectionId in _connections.GetConnections(username))
+                foreach (var connectionId in _connections.GetConnections(username))
                     await Clients.Client(connectionId).SendAsync("ReceiveGroup", name, notification);
         }
 

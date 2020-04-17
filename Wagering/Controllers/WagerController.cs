@@ -148,7 +148,7 @@ namespace Wagering.Controllers
             {
                 Id = newWager.Id,
                 Group = newWager.GroupName(),
-                Users = newWager.Hosts.Select(x => x.UserDisplayName).Where(x=> x != profile.DisplayName)
+                Users = newWager.Hosts.Select(x => x.UserDisplayName).Where(x => x != profile.DisplayName)
             });
         }
     }

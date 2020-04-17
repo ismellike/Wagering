@@ -44,10 +44,12 @@
                     this.processLoginCallback();
                     break;
                 case LoginActions.LoginFailed:
-                    const params = new URLSearchParams(window.location.search);
-                    const error = params.get(QueryParameterNames.Message);
-                    this.message = error;
-                    break;
+                    {
+                        let params = new URLSearchParams(window.location.search);
+                        let error = params.get(QueryParameterNames.Message);
+                        this.message = error;
+                        break;
+                    }
                 case LoginActions.Profile:
                     this.redirectToProfile();
                     break;
