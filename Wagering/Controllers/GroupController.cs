@@ -27,7 +27,7 @@ namespace Wagering.Controllers
             if (profile == null)
                 return Unauthorized();
             List<string> groups = new List<string>();
-            groups.AddRange(await _context.Wagers.Include(x => x.Hosts).Where(x => x.Hosts.Any(y => y.UserDisplayName == profile.DisplayName)).Select(x => x.GroupName()).ToListAsync());
+            groups.AddRange(await _context.Wagers.Include(x => x.Hosts).Where(x => x.Hosts.Any(y => y.ProfileDisplayName == profile.DisplayName)).Select(x => x.GroupName()).ToListAsync());
             return Ok(groups);
         }
     }

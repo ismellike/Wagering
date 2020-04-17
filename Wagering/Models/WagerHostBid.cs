@@ -2,22 +2,17 @@
 
 namespace Wagering.Models
 {
-    public class WagerHostBid
+    public class WagerHostBid : Bid
     {
-        public int Id { get; set; }
-
         public int WagerId { get; set; }
         public Wager Wager { get; set; }
-        public string UserDisplayName { get; set; }
-        public Profile User { get; set; }
         [Required]
         public byte Percentage { get; set; }
-        public bool? Approved { get; set; }
         public bool IsOwner { get; set; }
 
         public override string ToString()
         {
-            return User.DisplayName;
+            return ProfileDisplayName;
         }
     }
 }

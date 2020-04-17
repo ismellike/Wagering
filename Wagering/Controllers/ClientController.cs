@@ -25,7 +25,7 @@ namespace Wagering.Controllers
             if (profile == null)
                 return Unauthorized();
 
-            var requests = await _context.Challenges.Include(x => x.Challengers).Include(x => x.Wager).Where(x => x.Challengers.Any(x => x.UserDisplayName == profile.DisplayName)).ToListAsync();
+            var requests = await _context.Challenges.Include(x => x.Challengers).Include(x => x.Wager).Where(x => x.Challengers.Any(x => x.ProfileDisplayName == profile.DisplayName)).ToListAsync();
             return Ok(requests);
         }
     }

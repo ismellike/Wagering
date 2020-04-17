@@ -3,9 +3,9 @@
         <v-card-text class="text-center">
             <v-btn v-for="challenger in challenge.challengers"
                    :key="challenger.id"
-                   :to="{ name:'profile_view', params:{name:challenger.userDisplayName}}"
+                   :to="{ name:'profile_view', params:{name:challenger.profileDisplayName}}"
                    color="deep-purple"
-                   class="ma-1">{{ challenger.userDisplayName }}</v-btn>
+                   class="ma-1">{{ challenger.profileDisplayName }}</v-btn>
         </v-card-text>
         <v-card-actions>
             <v-row dense>

@@ -21,38 +21,24 @@ namespace Wagering.Controllers
 
         private async Task Confirm(int wagerId)
         {
-            var wager = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == wagerId);
+            var wager = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.Profile).FirstOrDefaultAsync(x => x.Id == wagerId);
             if (wager == null)
                 return;
             wager.Status = 1;
-            Notify(wager, "Your wager has been confirmed.", $"/host-panel/pending/{wagerId}");
+           // Notify(wager, "Your wager has been confirmed.", $"/host-panel/pending/{wagerId}");
             _context.Wagers.Update(wager);
         }
 
         private async Task Decline(int wagerId, string name)
         {
-            var wager = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == wagerId);
+            var wager = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.Profile).FirstOrDefaultAsync(x => x.Id == wagerId);
             if (wager == null)
                 return;
             wager.Status = 2;
-            Notify(wager, $"{name} has declined your wager.", $"/host-panel/pending/{wagerId}");
+           // Notify(wager, $"{name} has declined your wager.", $"/host-panel/pending/{wagerId}");
             _context.Wagers.Update(wager);
         }
 
-        private void Notify(Wager wager, string message, string link)
-        {
-            DateTime time = DateTime.Now;
-            foreach (WagerHostBid host in wager.Hosts)
-            {
-                host.User.Notifications.Add(new Notification
-                {
-                    Date = time,
-                    IsRead = false,
-                    Message = message,
-                    Link = link
-                });
-            }
-        }
 
         [HttpPost("wager/accept")]
         public async Task<IActionResult> AcceptBid(int id)
@@ -67,7 +53,7 @@ namespace Wagering.Controllers
                 ModelState.AddModelError("Not Found", "The wager bid was not found");
                 return BadRequest(ModelState);
             }
-            if (bid.UserDisplayName != profile.DisplayName)
+            if (bid.ProfileDisplayName != profile.DisplayName)
                 return Unauthorized();
             if (bid.Approved == null)
             {
@@ -89,7 +75,7 @@ namespace Wagering.Controllers
             if (profile == null)
                 return Unauthorized();
             var bid = await _context.WagerBids.FirstOrDefaultAsync(x => x.Id == id);
-            if (bid.UserDisplayName != profile.DisplayName)
+            if (bid.ProfileDisplayName != profile.DisplayName)
                 return Unauthorized();
             if (bid == null)
             {

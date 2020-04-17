@@ -72,7 +72,7 @@ namespace Wagering
                     GameName = "Fortnite",
                     GamesPlayed = 0,
                     Id = id,
-                    UserDisplayName = username,
+                    ProfileDisplayName = username,
                     Value = Constants.Rating.Initial
                 });
             }
@@ -87,7 +87,7 @@ namespace Wagering
                         WagerId = id,
                         Approved = true,
                         Percentage = (byte)(100 / (i % 7 + 1)),
-                        UserDisplayName = profiles[x].DisplayName
+                        ProfileDisplayName = profiles[x].DisplayName
                     });
                 }
                 if (i % 2 == 0)
@@ -107,7 +107,7 @@ namespace Wagering
                                 ChallengeId = challengeId,
                                 Approved = true,
                                 Percentage = (byte)(100 / (i % 7 + 1)),
-                                UserDisplayName = profiles[x].DisplayName
+                                ProfileDisplayName = profiles[x].DisplayName
                             });
                         challengeId--;
                         date = date.AddMinutes(5);
@@ -118,6 +118,7 @@ namespace Wagering
                     Date = date,
                     IsPrivate = false,
                     GameName = "Fortnite",
+                    Status = 1,
                     Description = "This is a description for wager " + id
                 });
                 date = date.AddMinutes(1);

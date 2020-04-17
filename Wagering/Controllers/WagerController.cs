@@ -58,10 +58,10 @@ namespace Wagering.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => !x.IsPrivate).Where(x => x.Status == 1).Where(x => x.GameName == Game.Name);
+            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.Profile).Where(x => !x.IsPrivate).Where(x => x.Status == 1).Where(x => x.GameName == Game.Name);
 
             if (!string.IsNullOrWhiteSpace(query.username))
-                wagerQuery = wagerQuery.Where(x => x.Hosts.Any(y => y.UserDisplayName.Contains(query.username)));
+                wagerQuery = wagerQuery.Where(x => x.Hosts.Any(y => y.ProfileDisplayName.Contains(query.username)));
             if (query.playerCount.HasValue)
                 wagerQuery = wagerQuery.Where(x => x.Hosts.Count == query.playerCount);
             if (query.minimumWager.HasValue)
@@ -81,7 +81,7 @@ namespace Wagering.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetWager(int id)
         {
-            var wager = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
+            var wager = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.Profile).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.Profile).FirstOrDefaultAsync(x => x.Id == id);
             if (wager == null)
             {
                 ModelState.AddModelError("Not Found", "Wager was not found");
@@ -129,9 +129,9 @@ namespace Wagering.Controllers
                     Approved = null,
                     IsOwner = false,
                     Percentage = host.Percentage,
-                    UserDisplayName = host.UserDisplayName,
+                    ProfileDisplayName = host.ProfileDisplayName,
                 };
-                if (host.UserDisplayName == profile.DisplayName)
+                if (host.ProfileDisplayName == profile.DisplayName)
                 {
                     bid.Approved = true;
                     bid.IsOwner = true;
@@ -148,7 +148,7 @@ namespace Wagering.Controllers
             {
                 Id = newWager.Id,
                 Group = newWager.GroupName(),
-                Users = newWager.Hosts.Select(x => x.UserDisplayName).Where(x => x != profile.DisplayName)
+                Users = newWager.Hosts.Select(x => x.ProfileDisplayName).Where(x => x != profile.DisplayName)
             });
         }
     }

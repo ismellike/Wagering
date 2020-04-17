@@ -30,7 +30,7 @@
                                                                 item-text="displayName"
                                                                 return-object>
                                                 </v-autocomplete>
-                                                <v-text-field disabled v-else label="Username" :value="user.userDisplayName"></v-text-field>
+                                                <v-text-field disabled v-else label="Username" :value="user.profileDisplayName"></v-text-field>
                                             </v-col>
                                             <v-spacer />
                                             <v-col cols="7" sm="3">
@@ -161,7 +161,7 @@
                     isPrivate: false,
                     hosts: [
                         {
-                            userDisplayName: this.$store.state.account.username,
+                            profileDisplayName: this.$store.state.account.username,
                             approved: true,
                             percentage: 100,
                             isOwner: true
@@ -177,13 +177,13 @@
                     timer: null
                 },
                 user: {
-                    userDisplayName: '',
+                    profileDisplayName: '',
                     approved: false,
                     percentage: 50,
                     isOwner: false
                 },
                 defaultUser: {
-                    userDisplayName: '',
+                    profileDisplayName: '',
                     approved: false,
                     percentage: 50,
                     isOwner: false
@@ -195,7 +195,7 @@
                     {
                         text: 'Username',
                         align: 'start',
-                        value: 'userDisplayName',
+                        value: 'profileDisplayName',
                     },
                     { text: 'Percentage', value: 'percentage' },
                     { text: 'Approved', value: 'approved' },
@@ -248,9 +248,9 @@
             addUser() {
                 if (this.search.select) {
                     const username = this.search.select.displayName;
-                    if (!this.wager.hosts.some(x => { return x.userDisplayName == username })) {
+                    if (!this.wager.hosts.some(x => { return x.profileDisplayName == username })) {
                         this.wager.hosts.push({
-                            userDisplayName: username,
+                            profileDisplayName: username,
                             approved: false,
                             percentage: this.user.percentage
                         });
