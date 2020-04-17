@@ -78,22 +78,31 @@
                 <span>Notifications</span>
             </v-tooltip>
             <v-dialog v-model="dialog"
-                      max-width="290">
+                      max-width="500">
                 <v-card>
                     <v-card-title>Notifications</v-card-title>
 
                     <v-card-text>
                         <v-list two-line>
-                            <v-list-item :to="notification.link" v-for="notification in notifications">
+                            <v-list-item v-for="(notification, i) in notifications" :key="i">
                                 <v-list-item-content>
                                     <v-list-item-title>
                                         {{ notification.message }}
                                     </v-list-item-title>
-                                    <v-list-item-subtitle>{{ notification.date }} </v-list-item-subtitle>
+                                    <v-list-item-subtitle>{{ $timeAgo.format(notification.date) }} </v-list-item-subtitle>
                                 </v-list-item-content>
-                                <v-list-item-icon>
-                                    <v-icon color="error">mdi-trash</v-icon>
-                                </v-list-item-icon>
+                                <v-list-item-action>
+                                    <template>
+                                        <v-btn icon @click="deleteNotification(i)">
+                                            <v-icon color="error">mdi-delete</v-icon>
+                                        </v-btn>
+                                        <v-btn icon :to="notification.link">
+                                            <v-icon>
+                                                mdi-subdirectory-arrow-right
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                </v-list-item-action>
                             </v-list-item>
                         </v-list>
                     </v-card-text>
@@ -155,20 +164,23 @@
         },
         methods: {
             receiveNotifications() {
-                this.$signalr.on("GetNotification", (notification) => {
+                this.$microsoft.signalr.on("GetNotification", (notification) => {
                     this.notifications.push(notification);
                 });
             },
+            deleteNotification(index) {
+                this.notifications.splice(index, 1);
+            },
             receiveGroups() {
-                this.$signalr.on("ReceiveGroup", (group) => {
-                    console.log("Added to group " + group);
-                    this.$signalr.invoke("AddToGroup", group);
+                this.$microsoft.signalr.on("ReceiveGroup", (name, notification) => {
+                    this.notifications.push(notification);
+                    this.$microsoft.signalr.invoke("AddToGroup", name);
                 });
             },
             addGroups() {
                 this.$axios.get("/api/group").then(result => {
                     result.data.forEach(group => {
-                        this.$signalr.invoke("AddToGroup", group);
+                        this.$microsoft.signalr.invoke("AddToGroup", group);
                     });
                 });
             },
@@ -211,6 +223,9 @@
                 }
                 return request;
             }, function (err) {
+                if (process.env.NODE_ENV == "development") {
+                    console.log("ERROR", err);
+                }
                 return Promise.reject(err);
             });
 
@@ -220,8 +235,11 @@
                 }
                 return response;
             }, function (err) {
+                if (process.env.NODE_ENV == "development") {
+                    console.log("ERROR", err);
+                }
                 if (err.response.status == 401) {
-                    if (window.location != "/authentication/login")
+                    if (!window.location.href.includes("authentication"))
                         window.location = "/authentication/login";
                 }
                 return Promise.reject(err);
@@ -229,12 +247,12 @@
         },
         mounted() {
             if (this.$store.state.account.isAuthenticated && !this.$route.path.includes("authentication")) {
-                this.$signalr = new HubConnectionBuilder()
+                this.$microsoft.signalr = new HubConnectionBuilder()
                     .withUrl("/group-hub", { accessTokenFactory: () => this.$store.state.account.token })
                     .configureLogging(LogLevel.Information)
                     .withAutomaticReconnect()
                     .build();
-                this.$signalr.start().then(() => {
+                this.$microsoft.signalr.start().then(() => {
                     this.listen();
                     this.addGroups();
                 });

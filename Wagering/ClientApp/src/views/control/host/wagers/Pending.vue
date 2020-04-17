@@ -36,6 +36,9 @@
                     </v-card>
                 </v-skeleton-loader>
             </v-col>
+            <v-col cols="12" sm="10" md="8" class="mx-auto">
+                <v-btn color="success" @click="sendNotification">Send Notification</v-btn>
+            </v-col>
         </v-row>
     </v-container>
 </template>
@@ -84,6 +87,9 @@
                 }).catch(e => {
                     this.errors = e.response.data.splice();
                 });
+            },
+            sendNotification() {
+                this.$microsoft.signalr.invoke("NotifyGroup", "wager_" + this.$route.params.id, { message: this.$store.state.account.username + " sent a group notification.", isRead: false, link: "/host-panel/wagers/pending/" + this.$route.params.id });
             }
         },
         computed: {

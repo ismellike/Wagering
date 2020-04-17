@@ -66,7 +66,6 @@
                         case AuthenticationResultStatus.Redirect:
                             break;
                         case AuthenticationResultStatus.Success:
-                            this.addUser();
                             this.navigateToReturnUrl(returnUrl);
                             break;
                         case AuthenticationResultStatus.Fail:

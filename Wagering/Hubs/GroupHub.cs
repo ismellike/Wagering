@@ -15,7 +15,7 @@ namespace Wagering.Hubs
 
         public override Task OnConnectedAsync()
         {
-            string name = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string name = Context.User.FindFirst("name").Value;
             _connections.Add(name, Context.ConnectionId);
             return base.OnConnectedAsync();
         }
@@ -25,16 +25,15 @@ namespace Wagering.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, name);
         }
 
-        public async Task AddUsersToGroup(string name, string[] usernames)
+        public async Task AddUsersToGroup(string name, string[] usernames, Notification notification)
         {
             foreach (string username in usernames)
                 foreach(var connectionId in _connections.GetConnections(username))
-                    await Clients.User(connectionId).SendAsync("ReceiveGroup", name);
+                    await Clients.Client(connectionId).SendAsync("ReceiveGroup", name, notification);
         }
 
         public async Task NotifyGroup(string name, Notification notification)
         {
-            notification.Date = DateTime.Now;
             await Clients.OthersInGroup(name).SendAsync("GetNotification", notification);
         }
 
@@ -45,7 +44,7 @@ namespace Wagering.Hubs
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            string name = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string name = Context.User.FindFirst("name").Value;
             _connections.Remove(name, Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
         }

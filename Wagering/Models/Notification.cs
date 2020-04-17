@@ -8,7 +8,7 @@ namespace Wagering.Models
         public int ProfileId { get; set; }
         public Profile Profile { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now;
         public string Message { get; set; }
         public bool IsRead { get; set; }
         //should be local format

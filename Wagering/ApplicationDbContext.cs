@@ -1,4 +1,5 @@
-﻿using IdentityServer4.EntityFramework.Options;
+﻿using IdentityServer4.EntityFramework.Extensions;
+using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -10,6 +11,7 @@ namespace Wagering
 {
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
+        IOptions<OperationalStoreOptions> Options { get; set; }
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Wager> Wagers { get; set; }
         public DbSet<WagerChallenge> Challenges { get; set; }
@@ -23,10 +25,13 @@ namespace Wagering
             DbContextOptions options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
+            Options = operationalStoreOptions;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.ConfigurePersistedGrantContext(Options.Value);
+
             List<Profile> profiles = new List<Profile>();
             List<ApplicationUser> users = new List<ApplicationUser>();
             List<Wager> wagers = new List<Wager>();

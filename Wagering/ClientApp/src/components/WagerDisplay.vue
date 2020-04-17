@@ -51,21 +51,18 @@
             },
             code: {
                 type: Number,
-                default: true
+                default: 0
             }
-        },
-        data() {
-            return {
-                cutoff: 4
-            };
         },
         computed: {
             hostsString() {
+                const cutoff = 4;
                 const length = this.wager.hosts.length;
-                if (length > this.cutoff) {
+                const hosts = this.wager.hosts.slice();
+                if (length > cutoff) {
                     return (
-                        this.wager.hosts
-                            .splice(0, this.cutoff)
+                        hosts
+                            .splice(0, cutoff)
                             .map(x => x.userDisplayName)
                             .join(", ") +
                         ", +" +
@@ -73,7 +70,7 @@
                         " more..."
                     );
                 }
-                return this.wager.hosts.map(x => x.userDisplayName).join(", ");
+                return hosts.map(x => x.userDisplayName).join(", ");
             }
         }
     };

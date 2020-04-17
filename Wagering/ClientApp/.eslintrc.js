@@ -3,9 +3,11 @@ module.exports = {
   env: {
     node: true
   },
-  extends: ["plugin:vue/essential", "eslint:recommended", "@vue/prettier"],
+    extends: ["plugin:vue/essential", "eslint:recommended"],
+  parser: "vue-eslint-parser",
   parserOptions: {
-    parser: "babel-eslint"
+      parser: "babel-eslint",
+      sourceType: "module"
   },
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
