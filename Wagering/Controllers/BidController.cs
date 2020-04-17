@@ -62,13 +62,13 @@ namespace Wagering.Controllers
             if (profile == null)
                 return Unauthorized();
             var bid = await _context.WagerBids.Include(x => x.Wager).ThenInclude(x => x.Hosts).FirstOrDefaultAsync(x => x.Id == id);
-            if (bid.UserDisplayName != profile.DisplayName)
-                return Unauthorized();
             if (bid == null)
             {
                 ModelState.AddModelError("Not Found", "The wager bid was not found");
                 return BadRequest(ModelState);
             }
+            if (bid.UserDisplayName != profile.DisplayName)
+                return Unauthorized();
             if (bid.Approved == null)
             {
                 bid.Approved = true;

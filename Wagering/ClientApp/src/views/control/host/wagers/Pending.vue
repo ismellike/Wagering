@@ -77,25 +77,27 @@
                 });
             },
             accept() {
-                this.$axios.post("/api/bid/wager/accept", this.userBid.id).then(result => {
+                this.$axios.post("/api/bid/wager/accept", this.userBid.id).then(() => {
+                    this.$microsoft.signalr.invoke("NotifyGroup", "wager_" + this.$route.params.id, { message: this.$store.state.account.username + " has accepted the wager.", isRead: false, link: this.$route.path});
                 }).catch(e => {
                     this.errors = e.response.data.splice();
                 });
             },
             decline() {
-                this.$axios.post("/api/bid/wager/decline", this.userBid.id).then(result => {
+                this.$axios.post("/api/bid/wager/decline", this.userBid.id).then(() => {
+                    this.$microsoft.signalr.invoke("NotifyGroup", "wager_" + this.$route.params.id, { message: this.$store.state.account.username + " has declined the wager.", isRead: false, link: this.$route.path });
                 }).catch(e => {
                     this.errors = e.response.data.splice();
                 });
             },
             sendNotification() {
-                this.$microsoft.signalr.invoke("NotifyGroup", "wager_" + this.$route.params.id, { message: this.$store.state.account.username + " sent a group notification.", isRead: false, link: "/host-panel/wagers/pending/" + this.$route.params.id });
+                this.$microsoft.signalr.invoke("NotifyGroup", "wager_" + this.$route.params.id, { message: this.$store.state.account.username + " sent a group notification.", isRead: false, link: this.$route.path });
             }
         },
         computed: {
             userBid() {
                 return this.wager.hosts.find(host => {
-                    return host.userDisplayName === this.$store.state.account.username;
+                    return host.userDisplayName == this.$store.state.account.username;
                 });
             },
             hasAccepted() {

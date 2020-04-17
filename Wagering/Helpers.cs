@@ -29,29 +29,6 @@ namespace Wagering
             return nullResult;
         }
 
-        public static string ToTime(this DateTime date)
-        {
-            TimeSpan span = DateTime.Now - date;
-
-            if (span.TotalMinutes <= 1)
-                return "Just now";
-
-            string hourComponent;
-            string minuteComponent = string.Empty;
-            int hour = (int)span.TotalHours;
-
-            if (hour == 1)
-                hourComponent = "1 hour";
-            else
-                hourComponent = $"{hour} hours";
-            if (span.Minutes == 1)
-                minuteComponent = " 1 minute ";
-            else if (span.Minutes != 0)
-                minuteComponent = $" {span.Minutes} minutes ";
-
-            return $"{hourComponent}{minuteComponent}ago";
-        }
-
         public static async Task<Profile> GetProfileAsync(this ApplicationDbContext context, ClaimsPrincipal User)
         {
             var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;

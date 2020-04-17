@@ -34,7 +34,7 @@
         <v-card-actions>
             <v-spacer />
             <span class="caption">
-                {{wager.timeAgo}}
+                {{ $timeAgo.format(new Date(wager.date)) }}
             </span>
         </v-card-actions>
     </v-card>

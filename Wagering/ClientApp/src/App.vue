@@ -65,7 +65,7 @@
                 <template v-slot:activator="{ on }">
                     <v-badge :content="notifications.length"
                              :value="notifications.length"
-                             color="info"
+                             color="error"
                              offset-y="22"
                              offset-x="20">
                         <v-btn color="warning" icon v-on="on" @click.stop="dialog = true">
@@ -89,7 +89,7 @@
                                     <v-list-item-title>
                                         {{ notification.message }}
                                     </v-list-item-title>
-                                    <v-list-item-subtitle>{{ $timeAgo.format(notification.date) }} </v-list-item-subtitle>
+                                    <v-list-item-subtitle>{{ $timeAgo.format(new Date(notification.date)) }} </v-list-item-subtitle>
                                 </v-list-item-content>
                                 <v-list-item-action>
                                     <template>

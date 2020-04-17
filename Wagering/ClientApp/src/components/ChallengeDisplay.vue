@@ -18,9 +18,7 @@
                     <v-card>
                         <v-card-text class="subtitle-2 text-center">
                             <v-badge color="green" icon="mdi-check" :value="challenge.isAccepted">
-                                {{
-                  challenge.timeAgo
-                                }}
+                                {{ $timeAgo.format(new Date(challenge.date)) }}
                             </v-badge>
                         </v-card-text>
                     </v-card>

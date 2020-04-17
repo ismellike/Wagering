@@ -21,12 +21,6 @@ namespace Wagering.Models
         public decimal Amount { get; set; }
         public bool IsAccepted { get; set; }
 
-        [NotMapped]
-        public string TimeAgo
-        {
-            get { return Date.ToTime(); }
-        }
-
         public bool IsApproved()
         {
             foreach (WagerChallengeBid bid in Challengers)
