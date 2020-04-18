@@ -154,12 +154,18 @@ namespace Wagering.Controllers
             if (newWager.IsApproved())
                 newWager.Status = 1;
 
+            newWager.Notifications.Add(new EventNotification
+            {
+                Message = $"{user.UserName} created the wager.",
+                Date = DateTime.Now
+            });
             await _context.Wagers.AddAsync(newWager);
             await _context.SaveChangesAsync();
+
             return Ok(new WagerResult
             {
                 Id = newWager.Id,
-                Group = newWager.GroupName(),
+                Group = newWager.GroupName,
                 Users = newWager.Hosts.Select(x => x.UserId).Where(x => x != user.Id)
             });
         }

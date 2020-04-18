@@ -60,7 +60,7 @@ namespace Wagering.Controllers
             {
                 bid.Approved = true;
                 if (bid.Wager.IsApproved())
-                    await Confirm(bid.WagerId);
+                    await Confirm(bid.WagerId); //add event notification
                 _context.WagerBids.Update(bid);
                 await _context.SaveChangesAsync();
             }

@@ -169,6 +169,7 @@
                 });
             },
             deleteNotification(index) {
+                //add to list to be sent to server when dialog closed
                 this.notifications.splice(index, 1);
             },
             receiveGroups() {
@@ -178,9 +179,9 @@
                 });
             },
             addGroups() {
-                this.$axios.get("/api/group").then(result => {
-                    result.data.forEach(group => {
-                        this.$microsoft.signalr.invoke("AddToGroup", group);
+                this.$axios.get("/api/event").then(result => {
+                    result.data.forEach(event => {
+                        this.$microsoft.signalr.invoke("AddToGroup", event.groupName);
                     });
                 });
             },

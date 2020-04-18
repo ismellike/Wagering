@@ -12,9 +12,12 @@ namespace Wagering.Models
             throw new System.NotImplementedException();
         }
 
-        public override string GroupName()
+        public override string GroupName
         {
-            return $"tournament_{Id}";
+            get
+            {
+                return $"tournament_{Id}";
+            }
         }
     }
 }

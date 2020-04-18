@@ -12,25 +12,25 @@ namespace Wagering.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class GroupController : ControllerBase
+    public class EventController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public GroupController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public EventController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetGroups()
+        public async Task<IActionResult> GetEvents()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
                 return Unauthorized();
-            List<string> groups = new List<string>();
-            groups.AddRange(await _context.Wagers.Include(x => x.Hosts).Where(x => x.Hosts.Any(y => y.UserId == user.Id)).Select(x => x.GroupName()).ToListAsync());
+            List<Event> groups = new List<Event>();
+            groups.AddRange(await _context.Wagers.Include(x => x.Hosts).Where(x => x.Hosts.Any(y => y.UserId == user.Id)).ToListAsync());
             return Ok(groups);
         }
     }

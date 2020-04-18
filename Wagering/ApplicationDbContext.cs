@@ -15,7 +15,8 @@ namespace Wagering
         public DbSet<WagerResult> Results { get; set; }
         public DbSet<WagerHostBid> WagerBids { get; set; }
         public DbSet<Game> Games { get; set; }
-        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<EventNotification> EventNotifications { get; set; }
+        public DbSet<PersonalNotification> PersonalNotifications { get; set; }
         public DbSet<Tournament> Tournaments { get; set; }
 
         public ApplicationDbContext(

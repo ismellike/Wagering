@@ -28,9 +28,12 @@ namespace Wagering.Models
             return true;
         }
 
-        public override string GroupName()
+        public override string GroupName
         {
-            return $"wager_{Id}";
+            get
+            {
+                return $"wager_{Id}";
+            }
         }
     }
 }

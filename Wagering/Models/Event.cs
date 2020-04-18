@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Wagering.Models
@@ -15,7 +16,8 @@ namespace Wagering.Models
         [Required]
         public DateTime Date { get; set; }
         public bool IsPrivate { get; set; }
+        public IList<EventNotification> Notifications { get; set; }
 
-        public abstract string GroupName();
+        public abstract string GroupName { get; }
     }
 }

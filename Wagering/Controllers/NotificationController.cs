@@ -23,13 +23,20 @@ namespace Wagering.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetNotifications()
+        [HttpGet("personal")]
+        public async Task<IActionResult> GetPersonalNotifications()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
                 return Unauthorized();
-            var notifications = await _context.Notifications.Where(x => x.UserId == user.Id).Take(ResultSize).ToListAsync();
+            var notifications = await _context.PersonalNotifications.Where(x => x.UserId == user.Id).Take(ResultSize).ToListAsync();
+            return Ok(notifications);
+        }
+
+        [HttpGet("event/wager/{id}")]
+        public async Task<IActionResult> GetEventNotifications(int id)
+        {
+            var notifications = await _context.EventNotifications.Where(x => x.WagerId == id).ToListAsync();
             return Ok(notifications);
         }
     }

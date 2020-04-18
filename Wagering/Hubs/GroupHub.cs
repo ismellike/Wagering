@@ -23,14 +23,14 @@ namespace Wagering.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, name);
         }
 
-        public async Task AddUsersToGroup(string name, string[] usernames, Notification notification)
+        public async Task AddUsersToGroup(string name, string[] ids, PersonalNotification notification)
         {
-            foreach (string username in usernames)
-                foreach (var connectionId in _connections.GetConnections(username))
+            foreach (string id in ids)
+                foreach (var connectionId in _connections.GetConnections(id))
                     await Clients.Client(connectionId).SendAsync("ReceiveGroup", name, notification);
         }
 
-        public async Task NotifyGroup(string name, Notification notification)
+        public async Task NotifyGroup(string name, PersonalNotification notification)
         {
             await Clients.OthersInGroup(name).SendAsync("GetNotification", notification);
         }
