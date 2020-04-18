@@ -27,10 +27,10 @@
                                                                 hide-no-data
                                                                 clearable
                                                                 label="Username"
-                                                                item-text="displayName"
+                                                                item-text="userName"
                                                                 return-object>
                                                 </v-autocomplete>
-                                                <v-text-field disabled v-else label="Username" :value="user.profileDisplayName"></v-text-field>
+                                                <v-text-field disabled v-else label="Username" :value="user.userName"></v-text-field>
                                             </v-col>
                                             <v-spacer />
                                             <v-col cols="7" sm="3">
@@ -161,7 +161,7 @@
                     isPrivate: false,
                     hosts: [
                         {
-                            profileDisplayName: this.$store.state.account.username,
+                            userName: this.$store.state.account.username,
                             approved: true,
                             percentage: 100,
                             isOwner: true
@@ -170,20 +170,22 @@
                 },
                 search: {
                     users: [],
-                    username: null,
+                    userName: null,
                     interval: 500,
                     loading: false,
                     select: null,
                     timer: null
                 },
                 user: {
-                    profileDisplayName: '',
+                    userName: null,
+                    userId: null,
                     approved: false,
                     percentage: 50,
                     isOwner: false
                 },
                 defaultUser: {
-                    profileDisplayName: '',
+                    userName: null,
+                    userId: null,
                     approved: false,
                     percentage: 50,
                     isOwner: false
@@ -195,7 +197,7 @@
                     {
                         text: 'Username',
                         align: 'start',
-                        value: 'profileDisplayName',
+                        value: 'userName',
                     },
                     { text: 'Percentage', value: 'percentage' },
                     { text: 'Approved', value: 'approved' },
@@ -207,8 +209,8 @@
         watch: {
             searchEvent(val) {
                 clearTimeout(this.search.timer);
-                if (val && val.trim() && val !== this.search.select && this.search.username != val) {
-                    this.search.username = val;
+                if (val && val.trim() && val !== this.search.select && this.search.userName != val) {
+                    this.search.userName = val;
                     this.search.loading = true;
                     this.search.timer = setTimeout(this.getUsers, this.search.interval);
                 }
@@ -231,7 +233,7 @@
         },
         methods: {
             getUsers() {
-                this.$axios.get("/api/profile/search/" + this.search.username).then(response => {
+                this.$axios.get("/api/user/search/" + this.search.userName).then(response => {
                     this.search.users = response.data;
                 }).catch(e => {
                     this.errors = e.response.data.slice();
@@ -247,10 +249,10 @@
             },
             addUser() {
                 if (this.search.select) {
-                    const username = this.search.select.displayName;
-                    if (!this.wager.hosts.some(x => { return x.profileDisplayName == username })) {
+                    if (!this.wager.hosts.some(x => { return x.userName == name })) {
                         this.wager.hosts.push({
-                            profileDisplayName: username,
+                            userName: this.search.select.userName,
+                            userId: this.search.select.id,
                             approved: false,
                             percentage: this.user.percentage
                         });

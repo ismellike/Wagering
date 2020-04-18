@@ -14,8 +14,7 @@ namespace Wagering.Hubs
 
         public override Task OnConnectedAsync()
         {
-            string name = Context.User.FindFirst("name").Value;
-            _connections.Add(name, Context.ConnectionId);
+            _connections.Add(Context.UserIdentifier, Context.ConnectionId);
             return base.OnConnectedAsync();
         }
 
@@ -43,8 +42,7 @@ namespace Wagering.Hubs
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            string name = Context.User.FindFirst("name").Value;
-            _connections.Remove(name, Context.ConnectionId);
+            _connections.Remove(Context.UserIdentifier, Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
         }
     }

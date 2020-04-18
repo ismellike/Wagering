@@ -5,8 +5,8 @@ namespace Wagering.Models
     public class Notification
     {
         public int Id { get; set; }
-        public int ProfileId { get; set; }
-        public Profile Profile { get; set; }
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
 
         public DateTime Date { get; set; } = DateTime.Now;
         public string Message { get; set; }

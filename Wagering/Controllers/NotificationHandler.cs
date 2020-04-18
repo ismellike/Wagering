@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Wagering.Models;
 
 namespace Wagering.Controllers
@@ -13,9 +14,26 @@ namespace Wagering.Controllers
             _context = context;
         }
 
-        public void SendNotifications(IList<Bid> bids)
+        public async Task SendNotifications(IList<Bid> bids, Notification notification)
         {
-            DateTime time = DateTime.Now;
+            List<Notification> notifications = new List<Notification>();
+            DateTime date = DateTime.Now;
+            foreach (Bid bid in bids)
+            {
+                if (bid.User == null)
+                    continue;
+                notifications.Add(new Notification
+                {
+                    UserId = bid.UserId,
+                    Message = notification.Message,
+                    Date = date,
+                    IsRead = false,
+                    Link = notification.Link
+                });
+            }
+
+            _context.Notifications.AddRange(notifications);
+            await _context.SaveChangesAsync();
         }
     }
 }

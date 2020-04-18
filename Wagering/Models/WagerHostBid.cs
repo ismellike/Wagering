@@ -9,10 +9,5 @@ namespace Wagering.Models
         [Required]
         public byte Percentage { get; set; }
         public bool IsOwner { get; set; }
-
-        public override string ToString()
-        {
-            return ProfileDisplayName;
-        }
     }
 }

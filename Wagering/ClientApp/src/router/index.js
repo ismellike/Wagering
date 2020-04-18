@@ -92,9 +92,9 @@ const routes = [
 		component: () => import("@/views/wagers/View.vue")
 	},
 	{
-		path: "/profiles/:name",
-		name: "profile_view",
-		component: () => import("@/views/profiles/View.vue")
+		path: "/users/:name",
+		name: "user_view",
+		component: () => import("@/views/users/View.vue")
 	}, //Auth Routes
 	{
 		path: ApplicationPaths.Login,

@@ -1,18 +1,18 @@
 <template>
     <v-container>
-        <div v-if="profile == null">
-            <p v-if="error!=null" class="display-1">{{error}}</p>
+        <div v-if="user == null">
+            <p v-if="error!=null" class="display-1">{{ error }}</p>
             <v-skeleton-loader v-else type="card" />
         </div>
         <div v-else>
             <v-card>
                 <v-card-title class="mt-2">
-                    <v-badge :value="profile.isVerified" icon="mdi-check-decagram">
+                    <v-badge :value="user.isVerified" icon="mdi-check-decagram">
                         <v-avatar color="grey darken-3">
                             <v-icon>mdi-account</v-icon>
                         </v-avatar>
                     </v-badge>
-                    <div class="ml-4">{{ profile.displayName }}</div>
+                    <div class="ml-4">{{ user.userName }}</div>
                 </v-card-title>
                 <v-card-text>
                     <v-card color="grey darken-3">
@@ -23,12 +23,12 @@
                                 <v-icon>mdi-content-copy</v-icon>
                             </v-btn>
                         </v-card-title>
-                        <v-card-text class="title">{{ profile.publicKey }}</v-card-text>
+                        <v-card-text class="title">{{ user.publicKey }}</v-card-text>
                     </v-card>
                 </v-card-text>
                 <v-card-actions>
                     <v-data-table class="ml-auto mr-auto" :headers="headers" hide-default-footer
-                                  :items="profile.ratings"></v-data-table>
+                                  :items="user.ratings"></v-data-table>
                 </v-card-actions>
             </v-card>
             <v-snackbar v-model="showCopy" :timeout="2000">
@@ -43,7 +43,7 @@
         data() {
             return {
                 name: this.$route.params.name,
-                profile: null,
+                user: null,
                 error: null,
                 showCopy: false,
                 rating: 3,
@@ -59,11 +59,11 @@
             };
         },
         methods: {
-            getProfile() {
+            getUser() {
                 this.$axios
-                    .get("/api/profile/" + this.name)
+                    .get("/api/user/" + this.name)
                     .then(response => {
-                        this.profile = response.data;
+                        this.user = response.data;
                         this.error = null;
                     })
                     .catch(e => {
@@ -73,7 +73,7 @@
             copyToClipboard() {
                 this.showCopy = true;
                 const el = document.createElement("textarea");
-                el.value = this.profile.publicKey;
+                el.value = this.user.publicKey;
                 document.body.appendChild(el);
                 el.select();
                 document.execCommand("copy");
@@ -81,7 +81,7 @@
             }
         },
         created() {
-            this.getProfile();
+            this.getUser();
         }
     };
 </script>

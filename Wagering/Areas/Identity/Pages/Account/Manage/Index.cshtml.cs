@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Wagering.Controllers;
 using Wagering.Models;
 
 namespace Wagering.Areas.Identity.Pages.Account.Manage
@@ -11,13 +10,16 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
     public partial class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
         public IndexModel(
             ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager)
         {
             _context = context;
+            _userManager = userManager;
             _signInManager = signInManager;
         }
 
@@ -35,9 +37,9 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
             public string PublicKey { get; set; }
         }
 
-        private void Load(Profile user)
+        private void Load(ApplicationUser user)
         {
-            Username = user.DisplayName;
+            Username = user.UserName;
 
             Input = new InputModel
             {
@@ -47,7 +49,7 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _context.GetProfileAsync(User.Identity.Name);
+            var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user.");
@@ -59,24 +61,23 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var profile = await _context.GetProfileAsync(User.Identity.Name);
-            ApplicationUser user = _context.Users.Find(profile.UserId);
-            if (profile == null || user == null)
+            ApplicationUser user = await _userManager.GetUserAsync(User);
+            if (user == null)
             {
                 return NotFound($"Unable to load user.");
             }
 
             if (!ModelState.IsValid)
             {
-                Load(profile);
+                Load(user);
                 return Page();
             }
 
-            var key = profile.PublicKey;
+            var key = user.PublicKey;
             if (Input.PublicKey != key)
             {
-                profile.PublicKey = Input.PublicKey;
-                _context.Profiles.Update(profile);
+                user.PublicKey = Input.PublicKey;
+                _context.Users.Update(user);
                 await _context.SaveChangesAsync();
             }
 

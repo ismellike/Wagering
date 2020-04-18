@@ -58,7 +58,7 @@
                     {
                         text: 'Username',
                         align: 'start',
-                        value: 'profileDisplayName',
+                        value: 'user.userName',
                     },
                     { text: 'Percentage', value: 'percentage' },
                     { text: 'Approved', value: 'approved' }
@@ -97,7 +97,7 @@
         computed: {
             userBid() {
                 return this.wager.hosts.find(host => {
-                    return host.profileDisplayName == this.$store.state.account.username;
+                    return host.user.userName == this.$store.state.account.username;
                 });
             },
             hasAccepted() {

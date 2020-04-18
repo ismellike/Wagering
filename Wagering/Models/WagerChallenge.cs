@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Wagering.Models
 {
-    public class WagerChallenge
+    public class WagerChallenge : Approvable
     {
         public int Id { get; set; }
 
@@ -21,10 +21,13 @@ namespace Wagering.Models
         public decimal Amount { get; set; }
         public bool IsAccepted { get; set; }
 
-        public bool IsApproved()
+        public override bool IsApproved()
         {
+            if (Status == 1)
+                return true;
+
             foreach (WagerChallengeBid bid in Challengers)
-                if (bid.Approved == false)
+                if (bid.Approved == null || bid.Approved == false)
                     return false;
             if (Challengers.Count == 0)
                 return false;

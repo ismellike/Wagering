@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,6 +14,7 @@ namespace Wagering.Controllers
     [ApiController]
     public class WagerController : ControllerBase
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
         private const int ResultSize = 15;
         public struct Query
@@ -31,8 +33,9 @@ namespace Wagering.Controllers
             public IEnumerable<string> Users { get; set; }
         }
 
-        public WagerController(ApplicationDbContext context)
+        public WagerController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
+            _userManager = userManager;
             _context = context;
         }
 
@@ -58,10 +61,8 @@ namespace Wagering.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.Profile).Where(x => !x.IsPrivate).Where(x => x.Status == 1).Where(x => x.GameName == Game.Name);
+            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => !x.IsPrivate).Where(x => x.Status == 1).Where(x => x.GameName == Game.Name);
 
-            if (!string.IsNullOrWhiteSpace(query.username))
-                wagerQuery = wagerQuery.Where(x => x.Hosts.Any(y => y.ProfileDisplayName.Contains(query.username)));
             if (query.playerCount.HasValue)
                 wagerQuery = wagerQuery.Where(x => x.Hosts.Count == query.playerCount);
             if (query.minimumWager.HasValue)
@@ -81,7 +82,7 @@ namespace Wagering.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetWager(int id)
         {
-            var wager = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.Profile).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.Profile).FirstOrDefaultAsync(x => x.Id == id);
+            var wager = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
             if (wager == null)
             {
                 ModelState.AddModelError("Not Found", "Wager was not found");
@@ -101,12 +102,23 @@ namespace Wagering.Controllers
             //validate wager
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var profile = await _context.GetProfileAsync(User);
-            if (profile == null)
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user == null)
                 return Unauthorized();
+
             if (wager.Hosts.Sum(x => x.Percentage) != 100)
             {
                 ModelState.AddModelError("Percentage", "The hosts percentages do not add up to 100.");
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                wager.Hosts.Single(x => x.IsOwner && x.UserId == null).UserId = user.Id;
+            }
+            catch
+            {
+                ModelState.AddModelError("Wrong Owner", "Cannot request for someone else to be the owner.");
                 return BadRequest(ModelState);
             }
 
@@ -129,9 +141,9 @@ namespace Wagering.Controllers
                     Approved = null,
                     IsOwner = false,
                     Percentage = host.Percentage,
-                    ProfileDisplayName = host.ProfileDisplayName,
+                    UserId = host.UserId,
                 };
-                if (host.ProfileDisplayName == profile.DisplayName)
+                if (host.UserId == user.Id)
                 {
                     bid.Approved = true;
                     bid.IsOwner = true;
@@ -148,7 +160,7 @@ namespace Wagering.Controllers
             {
                 Id = newWager.Id,
                 Group = newWager.GroupName(),
-                Users = newWager.Hosts.Select(x => x.ProfileDisplayName).Where(x => x != profile.DisplayName)
+                Users = newWager.Hosts.Select(x => x.UserId).Where(x => x != user.Id)
             });
         }
     }

@@ -15,7 +15,6 @@ namespace Wagering.Tests
             Context.Users.Add(new ApplicationUser
             {
                 UserName = "user0",
-                Profile = new Profile { DisplayName = "user0" }
             });
             Context.SaveChanges();
         }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Wagering.Models
 {
-    public abstract class Event
+    public abstract class Event : Approvable
     {
         public int Id { get; set; }
         public string GameName { get; set; }
@@ -15,7 +15,6 @@ namespace Wagering.Models
         [Required]
         public DateTime Date { get; set; }
         public bool IsPrivate { get; set; }
-        public byte Status { get; set; }
 
         public abstract string GroupName();
     }

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
@@ -57,8 +56,8 @@ namespace Wagering.Areas.Identity.Pages.Account
             [Required]
             [RegularExpression(Constants.NameRegex)]
             [StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
-            [Display(Name = "Display Name")]
-            public string DisplayName { get; set; }
+            [Display(Name = "Username")]
+            public string Username { get; set; }
         }
 
         public IActionResult OnGetAsync()
@@ -129,21 +128,11 @@ namespace Wagering.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                if (await _context.Profiles.AnyAsync(x => x.DisplayName == Input.DisplayName))
-                {
-                    ModelState.AddModelError(string.Empty, $"{Input.DisplayName} is already taken.");
-                    return Page();
-                }
-
                 var user = new ApplicationUser
                 {
-                    UserName = Input.Email,
+                    UserName = Input.Username,
                     Email = Input.Email,
-                    Profile = new Profile
-                    {
-                        DisplayName = Input.DisplayName,
-                        IsVerified = false
-                    }
+                    IsVerified = false
                 };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)

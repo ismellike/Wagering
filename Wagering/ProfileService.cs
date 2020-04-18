@@ -19,14 +19,11 @@ namespace Wagering
 
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
-            //>Processing
             var user = await _userManager.GetUserAsync(context.Subject);
-
             var claims = new List<Claim>
             {
-                new Claim("name", user.UserName),
+                new Claim("name", user.UserName)
             };
-
             context.IssuedClaims.AddRange(claims);
         }
 

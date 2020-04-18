@@ -15,13 +15,13 @@ namespace Wagering.Models
         [NotMapped]
         public int ChallengeCount { get; set; }
 
-        public bool IsApproved()
+        public override bool IsApproved()
         {
             if (Status == 1)
                 return true;
 
             foreach (WagerHostBid bid in Hosts)
-                if (bid.Approved == false)
+                if (bid.Approved == null || bid.Approved == false)
                     return false;
             if (Hosts.Count == 0)
                 return false;

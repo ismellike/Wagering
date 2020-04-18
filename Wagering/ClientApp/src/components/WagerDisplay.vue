@@ -21,8 +21,8 @@
                     <v-list-item v-for="host in wager.hosts" :key="host.id">
                         <v-list-item-title>
                             <v-btn color="secondary"
-                                   :to="{ name:'profile_view', params:{name:host.profileDisplayName}}"
-                                   class="ma-1">{{ host.profileDisplayName }}</v-btn>
+                                   :to="{ name:'user_view', params:{name:host.user.userName}}"
+                                   class="ma-1">{{ host.user.userName }}</v-btn>
                         </v-list-item-title>
                     </v-list-item>
                 </v-list>
@@ -59,18 +59,20 @@
                 const cutoff = 4;
                 const length = this.wager.hosts.length;
                 const hosts = this.wager.hosts.slice();
+                if (length == 0)
+                    return null;
                 if (length > cutoff) {
                     return (
                         hosts
                             .splice(0, cutoff)
-                            .map(x => x.profileDisplayName)
+                            .map(x => x.user.userName)
                             .join(", ") +
                         ", +" +
                         (length - cutoff + 1) +
                         " more..."
                     );
                 }
-                return hosts.map(x => x.profileDisplayName).join(", ");
+                return hosts.map(x => x = x.user.userName).join(", ");
             }
         }
     };
