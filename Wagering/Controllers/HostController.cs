@@ -28,8 +28,7 @@ namespace Wagering.Controllers
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
                 return Unauthorized();
-
-            var requests = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).Where(x => x.Hosts.Any(x => x.UserId == user.Id)).ToListAsync();
+            var requests = await _context.WagerBids.Include(x => x.Wager).ThenInclude(x => x.Challenges).ThenInclude(x => x.Challengers).Where(x => x.UserId == user.Id).ToListAsync();
             return Ok(requests);
         }
     }

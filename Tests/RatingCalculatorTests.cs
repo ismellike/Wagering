@@ -1,4 +1,5 @@
-﻿using Wagering.Models;
+﻿using Wagering.Handlers;
+using Wagering.Models;
 using Xunit;
 
 namespace Wagering.Tests

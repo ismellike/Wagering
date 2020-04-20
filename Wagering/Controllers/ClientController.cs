@@ -29,8 +29,8 @@ namespace Wagering.Controllers
             if (user == null)
                 return Unauthorized();
 
-            var requests = await _context.Challenges.Include(x => x.Challengers).Include(x => x.Wager).Where(x => x.Challengers.Any(x => x.UserId == user.Id)).ToListAsync();
-            return Ok(requests);
+            //look through challengebids
+            return Ok();
         }
     }
 }

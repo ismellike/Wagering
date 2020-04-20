@@ -1,8 +1,9 @@
 ﻿using System;
+using Wagering.Models;
 
-namespace Wagering.Models
+namespace Wagering.Handlers
 {
-    public static class RatingCalculator
+    public static class RatingHandler
     {
         public static decimal GetNewRating(this Rating r1, Rating r2, bool isWin)
         {

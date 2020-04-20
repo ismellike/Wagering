@@ -12,7 +12,6 @@ namespace Wagering
         IOptions<OperationalStoreOptions> Options { get; set; }
         public DbSet<Wager> Wagers { get; set; }
         public DbSet<WagerChallenge> Challenges { get; set; }
-        public DbSet<WagerResult> Results { get; set; }
         public DbSet<WagerHostBid> WagerBids { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<EventNotification> EventNotifications { get; set; }
