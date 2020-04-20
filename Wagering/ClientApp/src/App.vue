@@ -40,7 +40,14 @@
                     </v-list-item-action>
 
                     <v-list-item-content>
-                        <v-list-item-title>Host Panel</v-list-item-title>
+                        <v-list-item-title>
+                            <v-badge :content="notifications.length"
+                                     :value="notifications.length"
+                                     color="error"
+                                     overlap>
+                                Host Panel
+                            </v-badge>
+                        </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item v-if="this.$store.state.account.isAuthenticated" to="/client-panel" link>
@@ -67,7 +74,7 @@
                              :value="notifications.length"
                              color="error"
                              offset-y="22"
-                             offset-x="20">
+                             offset-x="22">
                         <v-btn color="warning" icon v-on="on" @click.stop="dialog = true">
                             <v-icon>
                                 mdi-bell
@@ -159,7 +166,9 @@
                 drawer: null,
                 notifications: [],
                 errors: [],
-                dialog: false
+                dialog: false,
+                hostCount: 0,
+                clientCount: 0
             };
         },
         methods: {
@@ -179,10 +188,11 @@
                 });
             },
             addGroups() {
-                this.$axios.get("/api/event").then(result => {
-                    result.data.forEach(event => {
-                        this.$microsoft.signalr.invoke("AddToGroup", event.groupName);
+                this.$axios.get("/api/event/host").then(result => {
+                    result.hostGroups.forEach(group => {
+                        this.$microsoft.signalr.invoke("AddToGroup", group);
                     });
+                    this.hostCount = result.hostGroups.length;
                 });
             },
             getNotifications() {

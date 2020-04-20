@@ -3,7 +3,7 @@
         <v-container>
             <h1 class="text-center">Wagers</h1>
         </v-container>
-        <v-container class="text-right">
+        <v-container v-if="$store.state.account.isAuthenticated" class="text-right">
             <v-btn color="secondary" :to="{ name:'wager_create', params:{game:query.game}}">
                 <v-icon left>mdi-plus-circle</v-icon>Create
             </v-btn>

@@ -24,14 +24,15 @@ namespace Wagering.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEvents()
+        public async Task<IActionResult> GetEventGroups()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
                 return Unauthorized();
-            List<Event> groups = new List<Event>();
-            groups.AddRange(await _context.Wagers.Include(x => x.Hosts).Where(x => x.Hosts.Any(y => y.UserId == user.Id)).ToListAsync());
-            return Ok(groups);
+            List<string> hostGroups = new List<string>();
+            List<string> clientGroups = new List<string>();
+            hostGroups.AddRange(await _context.Wagers.Include(x => x.Hosts).Where(x => x.Hosts.Any(y => y.UserId == user.Id)).Select(x => x.GroupName).ToListAsync());
+            return Ok(new { hostGroups, clientGroups });
         }
     }
 }

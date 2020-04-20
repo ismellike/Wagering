@@ -82,7 +82,7 @@ namespace Wagering.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetWager(int id)
         {
-            var wager = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
+            var wager = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).Include(x => x.Notifications).FirstOrDefaultAsync(x => x.Id == id);
             if (wager == null)
             {
                 ModelState.AddModelError("Not Found", "Wager was not found");
@@ -122,16 +122,25 @@ namespace Wagering.Controllers
                 return BadRequest(ModelState);
             }
 
+            DateTime date = DateTime.Now;
             Wager newWager = new Wager //prevents overposting
             {
                 GameName = wager.GameName,
-                Date = DateTime.Now,
+                Date = date,
                 Description = wager.Description,
                 MinimumWager = wager.MinimumWager,
                 MaximumWager = wager.MaximumWager,
                 IsPrivate = wager.IsPrivate,
                 Status = 0,
-                Hosts = new List<WagerHostBid>()
+                Hosts = new List<WagerHostBid>(),
+                Notifications = new List<EventNotification>()
+                {
+                    new EventNotification 
+                    {
+                        Message = $"{user.UserName} created the wager.",
+                        Date = date
+                    }
+                }
             };
 
             foreach (WagerHostBid host in wager.Hosts)
@@ -154,11 +163,6 @@ namespace Wagering.Controllers
             if (newWager.IsApproved())
                 newWager.Status = 1;
 
-            newWager.Notifications.Add(new EventNotification
-            {
-                Message = $"{user.UserName} created the wager.",
-                Date = DateTime.Now
-            });
             await _context.Wagers.AddAsync(newWager);
             await _context.SaveChangesAsync();
 
