@@ -61,7 +61,7 @@ namespace Wagering.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            IQueryable<Wager> wagerQuery = _context.Wagers.Include(x => x.Game).Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => !x.IsPrivate).Where(x => x.Status == 1).Where(x => x.GameName == Game.Name);
+            IQueryable<Wager> wagerQuery = _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => !x.IsPrivate).Where(x => x.Status == 1).Where(x => x.GameName == Game.Name);
 
             if (query.playerCount.HasValue)
                 wagerQuery = wagerQuery.Where(x => x.Hosts.Count == query.playerCount);
@@ -70,11 +70,8 @@ namespace Wagering.Controllers
             if (query.maximumWager.HasValue)
                 wagerQuery = wagerQuery.Where(x => x.MaximumWager == null || (x.MinimumWager.HasValue && x.MinimumWager < query.maximumWager) || (x.MaximumWager.HasValue && x.MaximumWager < query.maximumWager));
 
-            PaginatedList<Wager> wagers = await PaginatedList<Wager>.CreateAsync(wagerQuery.OrderByDescending(x => x.Date), query.page, ResultSize);
-
-            foreach (Wager wager in wagers.List)
-                wager.ChallengeCount = await _context.Challenges.Where(x => x.WagerId == wager.Id).CountAsync();
-
+            PaginatedList<Wager> wagers = await PaginatedList<Wager>.CreateAsync(wagerQuery.OrderByDescending(x => x.Date).Select(x => new Wager(x) { ChallengeCount = x.Challenges.Count }), query.page, ResultSize);
+            
             return Ok(wagers);
         }
 
@@ -82,7 +79,7 @@ namespace Wagering.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetWager(int id)
         {
-            var wager = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).Include(x => x.Notifications).FirstOrDefaultAsync(x => x.Id == id);
+            var wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).Include(x => x.Notifications).FirstOrDefaultAsync(x => x.Id == id);
             if (wager == null)
             {
                 ModelState.AddModelError("Not Found", "Wager was not found");

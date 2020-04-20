@@ -36,17 +36,19 @@
                 </v-list-item>
                 <v-list-item v-if="this.$store.state.account.isAuthenticated" to="/host-panel" link>
                     <v-list-item-action>
-                        <v-icon>mdi-clipboard</v-icon>
+                        <v-badge :content="notifications.length"
+                                 :value="notifications.length"
+                                 color="error"
+                                 overlap>
+                            <v-icon>
+                                mdi-clipboard
+                            </v-icon>
+                        </v-badge>
                     </v-list-item-action>
 
                     <v-list-item-content>
                         <v-list-item-title>
-                            <v-badge :content="notifications.length"
-                                     :value="notifications.length"
-                                     color="error"
-                                     overlap>
-                                Host Panel
-                            </v-badge>
+                            Host Panel
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -188,15 +190,15 @@
                 });
             },
             addGroups() {
-                this.$axios.get("/api/event/host").then(result => {
-                    result.hostGroups.forEach(group => {
+                this.$axios.get("/api/event").then(result => {
+                    result.data.hostGroups.forEach(group => {
                         this.$microsoft.signalr.invoke("AddToGroup", group);
                     });
-                    this.hostCount = result.hostGroups.length;
+                    this.hostCount = result.data.hostGroups.length;
                 });
             },
             getNotifications() {
-                this.$axios.get("/api/notification").then(result => {
+                this.$axios.get("/api/notification/personal").then(result => {
                     result.data.forEach(notification => {
                         this.notifications.push(notification);
                     });
@@ -233,7 +235,7 @@
                     this.listen();
                     this.addGroups();
                 });
-                this.getNotifications();
+                this.getNotifications(); //get all information in 1 http request
             }
         }
     };

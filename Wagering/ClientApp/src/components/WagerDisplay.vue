@@ -57,10 +57,10 @@
         computed: {
             hostsString() {
                 const cutoff = 4;
+                if (this.wager == null || this.wager.hosts == null)
+                    return null;
                 const length = this.wager.hosts.length;
                 const hosts = this.wager.hosts.slice();
-                if (length == 0)
-                    return null;
                 if (length > cutoff) {
                     return (
                         hosts

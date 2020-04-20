@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Wagering.Models;
@@ -21,15 +22,18 @@ namespace Wagering.Controllers
             _userManager = userManager;
             _context = context;
         }
-
+        
         [HttpGet("wagers")]
         public async Task<IActionResult> HostWagers()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
                 return Unauthorized();
-            var requests = await _context.WagerBids.Include(x => x.Wager).ThenInclude(x => x.Challenges).ThenInclude(x => x.Challengers).Where(x => x.UserId == user.Id).ToListAsync();
-            return Ok(requests);
+            List<Wager> wagers = await _context.Wagers.Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => x.Hosts.Any(y => y.UserId == user.Id)).Select(x => new Wager(x)
+            {
+                ChallengeCount = x.Challenges.Count
+            }).ToListAsync();
+            return Ok(wagers);
         }
     }
 }
