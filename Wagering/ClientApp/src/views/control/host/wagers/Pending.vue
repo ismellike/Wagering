@@ -69,7 +69,7 @@
         },
         methods: {
             getData() {
-                this.$axios.get("/api/wager/" + this.$route.params.id).then(result => {
+                this.$axios.get("/api/wager/host/" + this.$route.params.id).then(result => {
                     this.wager = result.data;
                     this.loading = false;
                 }).catch(e => {

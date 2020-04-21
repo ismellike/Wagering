@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Wagering.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly IMemoryCache _cache;
         private const int ResultSize = 15;
         public struct Query
         {
@@ -33,10 +35,11 @@ namespace Wagering.Controllers
             public IEnumerable<string> Users { get; set; }
         }
 
-        public WagerController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public WagerController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IMemoryCache cache)
         {
             _userManager = userManager;
             _context = context;
+            _cache = cache;
         }
 
         //POST: api/wagers/search
@@ -71,7 +74,7 @@ namespace Wagering.Controllers
                 wagerQuery = wagerQuery.Where(x => x.MaximumWager == null || (x.MinimumWager.HasValue && x.MinimumWager < query.maximumWager) || (x.MaximumWager.HasValue && x.MaximumWager < query.maximumWager));
 
             PaginatedList<Wager> wagers = await PaginatedList<Wager>.CreateAsync(wagerQuery.OrderByDescending(x => x.Date).Select(x => new Wager(x) { ChallengeCount = x.Challenges.Count }), query.page, ResultSize);
-            
+
             return Ok(wagers);
         }
 
@@ -79,13 +82,48 @@ namespace Wagering.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetWager(int id)
         {
-            var wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).Include(x => x.Notifications).FirstOrDefaultAsync(x => x.Id == id);
+            var wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).FirstOrDefaultAsync(x => x.Id == id);
+            wager.ChallengeCount = wager.Challenges.Count;
             if (wager == null)
             {
                 ModelState.AddModelError("Not Found", "Wager was not found");
                 return BadRequest(ModelState);
             }
-            wager.ChallengeCount = wager.Challenges.Count();
+            return Ok(wager);
+        }
+
+        [HttpGet("host")]
+        public async Task<IActionResult> HostWagers()
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user == null)
+                return Unauthorized();
+            List<Wager> wagers = await _context.Wagers.AsNoTracking().Where(x => x.Hosts.Any(y => y.UserId == user.Id)).Include(x => x.Hosts).ThenInclude(x => x.User).Select(x => new Wager(x)
+            {
+                ChallengeCount = x.Challenges.Count
+            }).ToListAsync();
+            return Ok(wagers);
+        }
+
+        [HttpGet("host/{id}")]
+        public async Task<IActionResult> GetHostWager(int id)
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user == null)
+                return Unauthorized();
+
+            var wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).Include(x => x.Notifications).FirstOrDefaultAsync(x => x.Id == id);
+            wager.ChallengeCount = wager.Challenges.Count;
+            if (wager == null)
+            {
+                ModelState.AddModelError("Not Found", "The wager was not found.");
+                return BadRequest(ModelState);
+            }
+            if (!wager.Hosts.Any(x => x.UserId == user.Id))
+            {
+                ModelState.AddModelError("Not Host", "You are not a host of this wager.");
+                return BadRequest(ModelState);
+            }
             return Ok(wager);
         }
 
@@ -132,7 +170,7 @@ namespace Wagering.Controllers
                 Hosts = new List<WagerHostBid>(),
                 Notifications = new List<EventNotification>()
                 {
-                    new EventNotification 
+                    new EventNotification
                     {
                         Message = $"{user.UserName} created the wager.",
                         Date = date
@@ -163,6 +201,7 @@ namespace Wagering.Controllers
             await _context.Wagers.AddAsync(newWager);
             await _context.SaveChangesAsync();
 
+            _cache.CreateEntry(newWager);
             return Ok(new WagerResult
             {
                 Id = newWager.Id,

@@ -59,7 +59,7 @@
             };
         },
         created() {
-            this.$axios.get("/api/host/wagers").then(response => {
+            this.$axios.get("/api/wager/host").then(response => {
                 response.data.forEach(item => {
                     if (item.status == 0) {
                         this.pending.push(item);
