@@ -117,12 +117,7 @@ namespace Wagering.Controllers
                 wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).Include(x => x.Notifications).FirstOrDefaultAsync(x => x.Id == id);
                 wager.ChallengeCount = wager.Challenges.Count;
 
-                var cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    SlidingExpiration = TimeSpan.FromSeconds(3)
-                };
-
-                _cache.Set(id, wager, cacheEntryOptions);
+                _cache.Set(id, wager, TimeSpan.FromSeconds(20));
             }
 
             if (wager == null)
@@ -212,7 +207,7 @@ namespace Wagering.Controllers
             await _context.Wagers.AddAsync(newWager);
             await _context.SaveChangesAsync();
 
-            _cache.Set(newWager.Id, newWager);
+            _cache.Set(newWager.Id, newWager, TimeSpan.FromSeconds(20));
             return Ok(new WagerResult
             {
                 Id = newWager.Id,
