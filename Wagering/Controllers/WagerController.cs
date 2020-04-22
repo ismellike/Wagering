@@ -112,8 +112,19 @@ namespace Wagering.Controllers
             if (user == null)
                 return Unauthorized();
 
-            var wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).Include(x => x.Notifications).FirstOrDefaultAsync(x => x.Id == id);
-            wager.ChallengeCount = wager.Challenges.Count;
+            if (!_cache.TryGetValue(id, out Wager wager))
+            {
+                wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).Include(x => x.Notifications).FirstOrDefaultAsync(x => x.Id == id);
+                wager.ChallengeCount = wager.Challenges.Count;
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    SlidingExpiration = TimeSpan.FromSeconds(3)
+                };
+
+                _cache.Set(id, wager, cacheEntryOptions);
+            }
+
             if (wager == null)
             {
                 ModelState.AddModelError("Not Found", "The wager was not found.");
@@ -201,7 +212,7 @@ namespace Wagering.Controllers
             await _context.Wagers.AddAsync(newWager);
             await _context.SaveChangesAsync();
 
-            _cache.CreateEntry(newWager);
+            _cache.Set(newWager.Id, newWager);
             return Ok(new WagerResult
             {
                 Id = newWager.Id,
