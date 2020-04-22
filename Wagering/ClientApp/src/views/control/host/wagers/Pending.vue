@@ -29,9 +29,24 @@
             <v-col cols="12" sm="10" md="8" class="mx-auto">
                 <v-skeleton-loader :loading="loading" type="card" transition="scale-transition">
                     <v-card>
-                        <v-card-title>Wager Settings</v-card-title>
+                        <v-card-title>Wager</v-card-title>
                         <v-card-text>
                             <WagerInfoDisplay :wager="wager" />
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer />
+                            <span class="caption">
+                                {{ $timeAgo.format(new Date(wager.date)) }}
+                            </span>
+                        </v-card-actions>
+                    </v-card>
+                </v-skeleton-loader>
+            </v-col>
+            <v-col cols="12" sm="10" md="8" class="mx-auto">
+                <v-skeleton-loader :loading="loading" type="card" transition="scale-transition">
+                    <v-card>
+                        <v-card-title>Challenges</v-card-title>
+                        <v-card-text>
                         </v-card-text>
                     </v-card>
                 </v-skeleton-loader>

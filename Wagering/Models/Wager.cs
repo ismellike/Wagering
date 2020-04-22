@@ -11,25 +11,7 @@ namespace Wagering.Models
         public decimal? MinimumWager { get; set; }
         [Column(TypeName = "decimal(18,7)")]
         public decimal? MaximumWager { get; set; }
-
-        [NotMapped]
         public int ChallengeCount { get; set; }
-
-        public Wager() { }
-        public Wager(Wager wager)
-        {
-            Hosts = wager.Hosts;
-            Challenges = wager.Challenges;
-            MinimumWager = wager.MinimumWager;
-            MaximumWager = wager.MaximumWager;
-            Date = wager.Date;
-            Description = wager.Description;
-            Game = wager.Game;
-            GameName = wager.GameName;
-            Id = wager.Id;
-            IsPrivate = wager.IsPrivate;
-            Notifications = wager.Notifications;
-        }
 
         public override bool IsApproved()
         {

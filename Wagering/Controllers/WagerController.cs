@@ -28,12 +28,6 @@ namespace Wagering.Controllers
             public int? maximumWager;
             public int? playerCount;
         }
-        public struct WagerResult
-        {
-            public int Id { get; set; }
-            public string Group { get; set; }
-            public IEnumerable<string> Users { get; set; }
-        }
 
         public WagerController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IMemoryCache cache)
         {
@@ -73,9 +67,8 @@ namespace Wagering.Controllers
             if (query.maximumWager.HasValue)
                 wagerQuery = wagerQuery.Where(x => x.MaximumWager == null || (x.MinimumWager.HasValue && x.MinimumWager < query.maximumWager) || (x.MaximumWager.HasValue && x.MaximumWager < query.maximumWager));
 
-            PaginatedList<Wager> wagers = await PaginatedList<Wager>.CreateAsync(wagerQuery.OrderByDescending(x => x.Date).Select(x => new Wager(x) { ChallengeCount = x.Challenges.Count }), query.page, ResultSize);
-
-            return Ok(wagers);
+            PaginatedList<Wager> results = await PaginatedList<Wager>.CreateAsync(wagerQuery.OrderByDescending(x => x.Date), query.page, ResultSize);
+            return Ok(results);
         }
 
         // GET: api/wagers/{id}
@@ -83,7 +76,6 @@ namespace Wagering.Controllers
         public async Task<IActionResult> GetWager(int id)
         {
             var wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).FirstOrDefaultAsync(x => x.Id == id);
-            wager.ChallengeCount = wager.Challenges.Count;
             if (wager == null)
             {
                 ModelState.AddModelError("Not Found", "Wager was not found");
@@ -98,11 +90,8 @@ namespace Wagering.Controllers
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
                 return Unauthorized();
-            List<Wager> wagers = await _context.Wagers.AsNoTracking().Where(x => x.Hosts.Any(y => y.UserId == user.Id)).Include(x => x.Hosts).ThenInclude(x => x.User).Select(x => new Wager(x)
-            {
-                ChallengeCount = x.Challenges.Count
-            }).ToListAsync();
-            return Ok(wagers);
+            List<Wager> results = await _context.Wagers.AsNoTracking().Where(x => x.Hosts.Any(y => y.UserId == user.Id)).Include(x => x.Hosts).ThenInclude(x => x.User).ToListAsync();
+            return Ok(results);
         }
 
         [HttpGet("host/{id}")]
@@ -114,9 +103,7 @@ namespace Wagering.Controllers
 
             if (!_cache.TryGetValue(id, out Wager wager))
             {
-                wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).Include(x => x.Notifications).FirstOrDefaultAsync(x => x.Id == id);
-                wager.ChallengeCount = wager.Challenges.Count;
-
+                wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
                 _cache.Set(id, wager, TimeSpan.FromSeconds(20));
             }
 
@@ -174,6 +161,7 @@ namespace Wagering.Controllers
                 IsPrivate = wager.IsPrivate,
                 Status = 0,
                 Hosts = new List<WagerHostBid>(),
+                ChallengeCount = 0,
                 Notifications = new List<EventNotification>()
                 {
                     new EventNotification
@@ -208,12 +196,7 @@ namespace Wagering.Controllers
             await _context.SaveChangesAsync();
 
             _cache.Set(newWager.Id, newWager, TimeSpan.FromSeconds(20));
-            return Ok(new WagerResult
-            {
-                Id = newWager.Id,
-                Group = newWager.GroupName,
-                Users = newWager.Hosts.Select(x => x.UserId).Where(x => x != user.Id)
-            });
+            return Ok(newWager);
         }
     }
 }

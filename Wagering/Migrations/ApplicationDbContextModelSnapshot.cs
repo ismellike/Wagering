@@ -459,6 +459,9 @@ namespace Wagering.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("ChallengeCount")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -540,9 +543,6 @@ namespace Wagering.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserUserName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ChallengeId");
@@ -570,9 +570,6 @@ namespace Wagering.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserUserName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("WagerId")
                         .HasColumnType("int");

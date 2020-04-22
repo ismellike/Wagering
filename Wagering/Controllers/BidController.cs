@@ -15,6 +15,7 @@ namespace Wagering.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly ErrorMessages _errorMessages = new ErrorMessages { Name = "wager bid" };
 
         public BidController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
@@ -60,23 +61,33 @@ namespace Wagering.Controllers
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
-                return Unauthorized();
-            var bid = await _context.WagerBids.Include(x => x.Wager).ThenInclude(x => x.Hosts).FirstOrDefaultAsync(x => x.Id == id);
-            if (bid == null)
             {
-                ModelState.AddModelError("Not Found", "The wager bid was not found");
+                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
                 return BadRequest(ModelState);
             }
+
+            var bid = await _context.WagerBids.Include(x => x.Wager).ThenInclude(x => x.Hosts).FirstOrDefaultAsync(x => x.Id == id);
             if (bid.UserId != user.Id)
-                return Unauthorized();
-            if (bid.Approved == null)
             {
-                bid.Approved = true;
-                if (bid.Wager.IsApproved())
-                    await Confirm(bid.WagerId, user.UserName);
-                _context.WagerBids.Update(bid);
-                await _context.SaveChangesAsync();
+                ModelState.AddModelError("User", _errorMessages.NotCorresponding);
+                return BadRequest(ModelState);
             }
+            if (bid == null)
+            {
+                ModelState.AddModelError("Not Found", _errorMessages.NotFound);
+                return BadRequest(ModelState);
+            }
+            if (bid.Approved != null)
+            {
+                ModelState.AddModelError("Sent", _errorMessages.AlreadySent);
+                return BadRequest(ModelState);
+            }
+
+            bid.Approved = true;
+            if (bid.Wager.IsApproved())
+                await Confirm(bid.WagerId, user.UserName);
+            _context.WagerBids.Update(bid);
+            await _context.SaveChangesAsync();
             return Ok();
         }
 
@@ -86,22 +97,31 @@ namespace Wagering.Controllers
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
-                return Unauthorized();
-            var bid = await _context.WagerBids.FirstOrDefaultAsync(x => x.Id == id);
-            if (bid.UserId != user.Id)
-                return Unauthorized();
-            if (bid == null)
             {
-                ModelState.AddModelError("Not Found", "The wager bid was not found");
+                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
                 return BadRequest(ModelState);
             }
-            if (bid.Approved == null)
+
+            var bid = await _context.WagerBids.FirstOrDefaultAsync(x => x.Id == id);
+            if (bid.UserId != user.Id)
             {
-                bid.Approved = false;
-                _context.WagerBids.Update(bid);
-                await Decline(bid.WagerId, user.UserName);
-                await _context.SaveChangesAsync();
+                ModelState.AddModelError("User", _errorMessages.NotCorresponding);
+                return BadRequest(ModelState);
             }
+            if (bid == null)
+            {
+                ModelState.AddModelError("Not Found", _errorMessages.NotFound);
+                return BadRequest(ModelState);
+            }
+            if (bid.Approved != null)
+            {
+                ModelState.AddModelError("Sent", _errorMessages.AlreadySent);
+                return BadRequest(ModelState);
+            }
+            bid.Approved = false;
+            _context.WagerBids.Update(bid);
+            await Decline(bid.WagerId, user.UserName);
+            await _context.SaveChangesAsync();
             return Ok();
         }
     }

@@ -6,9 +6,9 @@
       <h1 class="text-center">Client Panel</h1>
     </v-container>
     <v-tabs grow show-arrows optional color="secondary">
-      <v-tab to="/client-panel/wagers">Wagers</v-tab>
-      <v-tab to="/client-panel/tournaments">Tournaments</v-tab>
-      <v-tab to="/client-panel/leagues">Leagues</v-tab>
+      <v-tab to="/client/wagers">Wagers</v-tab>
+      <v-tab to="/client/tournaments">Tournaments</v-tab>
+      <v-tab to="/client/leagues">Leagues</v-tab>
     </v-tabs>
     <router-view></router-view>
   </v-container>

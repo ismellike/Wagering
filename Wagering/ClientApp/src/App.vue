@@ -34,33 +34,35 @@
                         <v-list-item-title>The Hub</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item v-if="this.$store.state.account.isAuthenticated" to="/host-panel" link>
-                    <v-list-item-action>
-                        <v-badge :content="notifications.length"
-                                 :value="notifications.length"
-                                 color="error"
-                                 overlap>
-                            <v-icon>
-                                mdi-clipboard
-                            </v-icon>
-                        </v-badge>
-                    </v-list-item-action>
+                <template v-if="this.$store.state.account.isAuthenticated">
+                    <v-list-item to="/host" link>
+                        <v-list-item-action>
+                            <v-badge :content="notifications.length"
+                                     :value="notifications.length"
+                                     color="error"
+                                     overlap>
+                                <v-icon>
+                                    mdi-clipboard
+                                </v-icon>
+                            </v-badge>
+                        </v-list-item-action>
 
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            Host Panel
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item v-if="this.$store.state.account.isAuthenticated" to="/client-panel" link>
-                    <v-list-item-action>
-                        <v-icon>mdi-clipboard-multiple</v-icon>
-                    </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                Host Panel
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item to="/client" link>
+                        <v-list-item-action>
+                            <v-icon>mdi-clipboard-multiple</v-icon>
+                        </v-list-item-action>
 
-                    <v-list-item-content>
-                        <v-list-item-title>Client Panel</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+                        <v-list-item-content>
+                            <v-list-item-title>Client Panel</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </template>
             </v-list>
             <template v-slot:append>
                 <LoginMenu />

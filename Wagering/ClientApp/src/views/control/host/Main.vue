@@ -6,9 +6,9 @@
       <h1 class="text-center">Host Panel</h1>
     </v-container>
     <v-tabs grow show-arrows optional color="secondary">
-      <v-tab to="/host-panel/wagers">Wagers</v-tab>
-      <v-tab to="/host-panel/tournaments">Tournaments</v-tab>
-      <v-tab to="/host-panel/leagues">Leagues</v-tab>
+      <v-tab to="/host/wagers">Wagers</v-tab>
+      <v-tab to="/host/tournaments">Tournaments</v-tab>
+      <v-tab to="/host/leagues">Leagues</v-tab>
     </v-tabs>
     <router-view></router-view>
   </v-container>

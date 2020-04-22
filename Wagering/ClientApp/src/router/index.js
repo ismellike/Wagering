@@ -27,7 +27,7 @@ const routes = [
 		component: () => import("@/views/Hub.vue")
 	},
 	{
-		path: "/host-panel",
+		path: "/host",
 		component: () => import("@/views/control/host/Main.vue"),
 		meta: {
 			requiresAuth: true
@@ -48,7 +48,7 @@ const routes = [
 		]
 	},
 	{
-		path: "/host-panel/wagers/pending/:id",
+		path: "/host/wagers/pending/:id",
 		name: "wager_pending",
 		component: () => import("@/views/control/host/wagers/Pending.vue"),
 		meta: {
@@ -56,7 +56,7 @@ const routes = [
 		}
 	},
 	{
-		path: "/client-panel",
+		path: "/client",
 		component: () => import("@/views/control/client/Main.vue"),
 		meta: {
 			requiresAuth: true

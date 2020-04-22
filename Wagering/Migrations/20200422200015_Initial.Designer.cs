@@ -10,8 +10,8 @@ using Wagering;
 namespace Wagering.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200418022721_Approvable")]
-    partial class Approvable
+    [Migration("20200422200015_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -315,6 +315,34 @@ namespace Wagering.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Wagering.Models.EventNotification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TournamentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WagerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TournamentId");
+
+                    b.HasIndex("WagerId");
+
+                    b.ToTable("EventNotifications");
+                });
+
             modelBuilder.Entity("Wagering.Models.Game", b =>
                 {
                     b.Property<string>("Name")
@@ -326,9 +354,16 @@ namespace Wagering.Migrations
                     b.HasKey("Name");
 
                     b.ToTable("Games");
+
+                    b.HasData(
+                        new
+                        {
+                            Name = "Fortnite",
+                            Url = "fortnite"
+                        });
                 });
 
-            modelBuilder.Entity("Wagering.Models.Notification", b =>
+            modelBuilder.Entity("Wagering.Models.PersonalNotification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -354,7 +389,7 @@ namespace Wagering.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("PersonalNotifications");
                 });
 
             modelBuilder.Entity("Wagering.Models.Rating", b =>
@@ -425,6 +460,9 @@ namespace Wagering.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ChallengeCount")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -538,47 +576,13 @@ namespace Wagering.Migrations
                     b.Property<int>("WagerId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WagerResultId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
                     b.HasIndex("WagerId");
 
-                    b.HasIndex("WagerResultId");
-
                     b.ToTable("WagerBids");
-                });
-
-            modelBuilder.Entity("Wagering.Models.WagerResult", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(24,18)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("GameName")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool?>("Result")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameName");
-
-                    b.ToTable("Results");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -632,7 +636,18 @@ namespace Wagering.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Wagering.Models.Notification", b =>
+            modelBuilder.Entity("Wagering.Models.EventNotification", b =>
+                {
+                    b.HasOne("Wagering.Models.Tournament", "Tournament")
+                        .WithMany("Notifications")
+                        .HasForeignKey("TournamentId");
+
+                    b.HasOne("Wagering.Models.Wager", "Wager")
+                        .WithMany("Notifications")
+                        .HasForeignKey("WagerId");
+                });
+
+            modelBuilder.Entity("Wagering.Models.PersonalNotification", b =>
                 {
                     b.HasOne("Wagering.Models.ApplicationUser", "User")
                         .WithMany("Notifications")
@@ -697,17 +712,6 @@ namespace Wagering.Migrations
                         .HasForeignKey("WagerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Wagering.Models.WagerResult", null)
-                        .WithMany("Members")
-                        .HasForeignKey("WagerResultId");
-                });
-
-            modelBuilder.Entity("Wagering.Models.WagerResult", b =>
-                {
-                    b.HasOne("Wagering.Models.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameName");
                 });
 #pragma warning restore 612, 618
         }
