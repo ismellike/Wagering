@@ -11,6 +11,7 @@ namespace Wagering.Controllers
     {
         private readonly ApplicationDbContext _context;
         private const int ResultSize = 5;
+        private readonly ErrorMessages _errorMessages = new ErrorMessages { Name = "user" };
 
         public UserController(ApplicationDbContext context)
         {
@@ -23,7 +24,10 @@ namespace Wagering.Controllers
             name = name.ToUpper();
             var user = await _context.Users.Include(x => x.Ratings).FirstOrDefaultAsync(x => x.NormalizedUserName == name);
             if (user == null)
-                return NotFound();
+            {
+                ModelState.AddModelError("Not found", _errorMessages.NotFound);
+                return BadRequest(ModelState);
+            }
             return Ok(user);
         }
 

@@ -28,7 +28,10 @@ namespace Wagering.Controllers
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
-                return Unauthorized();
+            {
+                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
+                return BadRequest(ModelState);
+            }
             List<string> hostGroups = new List<string>();
             List<string> clientGroups = new List<string>();
             hostGroups.AddRange(await _context.WagerBids.Include(x => x.Wager).Where(x => x.UserId == user.Id).Where(x => x.Wager.Status <= 1).Select(x => x.Wager.GroupName).ToListAsync());

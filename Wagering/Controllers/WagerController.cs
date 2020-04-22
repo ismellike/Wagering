@@ -19,6 +19,7 @@ namespace Wagering.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _cache;
         private const int ResultSize = 15;
+        private readonly ErrorMessages _errorMessages = new ErrorMessages { Name = "wager" };
         public struct Query
         {
             public string game;
@@ -78,7 +79,7 @@ namespace Wagering.Controllers
             var wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).FirstOrDefaultAsync(x => x.Id == id);
             if (wager == null)
             {
-                ModelState.AddModelError("Not Found", "Wager was not found");
+                ModelState.AddModelError("Not Found", _errorMessages.NotFound);
                 return BadRequest(ModelState);
             }
             return Ok(wager);
@@ -89,7 +90,10 @@ namespace Wagering.Controllers
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
-                return Unauthorized();
+            {
+                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
+                return BadRequest(ModelState);
+            }
             List<Wager> results = await _context.Wagers.AsNoTracking().Where(x => x.Hosts.Any(y => y.UserId == user.Id)).Include(x => x.Hosts).ThenInclude(x => x.User).ToListAsync();
             return Ok(results);
         }
@@ -99,7 +103,10 @@ namespace Wagering.Controllers
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
-                return Unauthorized();
+            {
+                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
+                return BadRequest(ModelState);
+            }
 
             if (!_cache.TryGetValue(id, out Wager wager))
             {
@@ -109,7 +116,7 @@ namespace Wagering.Controllers
 
             if (wager == null)
             {
-                ModelState.AddModelError("Not Found", "The wager was not found.");
+                ModelState.AddModelError("Not Found", _errorMessages.NotFound);
                 return BadRequest(ModelState);
             }
             if (!wager.Hosts.Any(x => x.UserId == user.Id))

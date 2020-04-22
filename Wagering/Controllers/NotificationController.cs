@@ -28,7 +28,10 @@ namespace Wagering.Controllers
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
-                return Unauthorized();
+            {
+                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
+                return BadRequest(ModelState);
+            }
             var notifications = await _context.PersonalNotifications.Where(x => x.UserId == user.Id).Take(ResultSize).ToListAsync();
             return Ok(notifications);
         }
