@@ -106,7 +106,7 @@ const routes = [
 			action: LoginActions.Login
 		},
 		beforeEnter: (to, from, next) => {
-			if (to.query.returnUrl == null && !from.path.includes("authentication") && from.name != "home")
+			if (to.query.returnUrl == null && !window.location.href.includes("authentication") && from.name != "home")
 				next({
 					path: ApplicationPaths.Login,
 					query: { returnUrl: window.location.href }
@@ -145,7 +145,7 @@ const routes = [
 			action: LoginActions.Register
 		},
 		beforeEnter: (to, from, next) => {
-			if (to.query.returnUrl == null && !from.path.includes("authentication") && from.name != "home")
+			if (to.query.returnUrl == null && !window.location.href.includes("authentication") && from.name != "home")
 				next({
 					path: ApplicationPaths.Register,
 					query: { returnUrl: window.location.href }

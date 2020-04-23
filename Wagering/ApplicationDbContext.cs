@@ -30,7 +30,6 @@ namespace Wagering
             builder.ConfigurePersistedGrantContext(Options.Value);
             Game[] games = new Game[] { new Game { Name = "Fortnite", Url = "fortnite" } };
             builder.Entity<Game>().HasData(games);
-            //need to fix many to many relationships creating a joining table
             base.OnModelCreating(builder);
         }
     }
