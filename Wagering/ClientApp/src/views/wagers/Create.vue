@@ -294,7 +294,8 @@
                     this.$microsoft.signalr.invoke("AddToGroup", response.data.groupName);
                     let users = response.data.hosts.filter(x => !x.isOwner).map(x => x.userId);
                     this.$microsoft.signalr.invoke("AddUsersToGroup", response.data.groupName, users, { message: this.$store.state.account.username + " created a new wager with you.", isRead: false, link: "/host/wagers/pending/" + response.data.id });
-                    this.$router.push({ name: "wager_pending", params: { id: response.data.id } });
+                    let path_name = response.data.status == 1 ? "wager_confirmed" : "wager_pending";
+                    this.$router.push({ name: path_name, params: { id: response.data.id } });
                 }).catch(e => {
                     console.log(e);
                     this.errors = e.response.data.splice();
