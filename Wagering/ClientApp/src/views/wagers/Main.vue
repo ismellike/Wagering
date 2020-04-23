@@ -69,7 +69,7 @@
                         <WagerDisplay :wager="wager">
                             <template v-slot:button>
                                 <v-btn color="secondary"
-                                       :to="{ name: 'wager_view', params: { game: wager.gameName, id: wager.id } }">View</v-btn>
+                                       :to="{ name: 'wager_view', params: { game: wager.gameName, id: wager.id } }" class="mr-2">View</v-btn>
                             </template>
                         </WagerDisplay>
                     </v-skeleton-loader>
