@@ -353,3 +353,4 @@ MigrationBackup/
 .ionide/
 *.production
 Wagering/appsettings.Development.json
+Wagering/appsettings.Production.json
