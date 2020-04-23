@@ -56,6 +56,14 @@ const routes = [
 		}
 	},
 	{
+		path: "/host/wagers/confirmed/:id",
+		name: "wager_confirmed",
+		component: () => import("@/views/control/host/wagers/Confirmed.vue"),
+		meta: {
+			requiresAuth: true
+		}
+	},
+	{
 		path: "/client",
 		component: () => import("@/views/control/client/Main.vue"),
 		meta: {

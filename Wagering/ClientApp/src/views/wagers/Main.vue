@@ -66,7 +66,12 @@
             <v-row v-for="wager in wagers" :key="wager.id">
                 <v-col>
                     <v-skeleton-loader :loading="loading" type="card" transition="scale-transition">
-                        <WagerDisplay :wager="wager" :code="1" />
+                        <WagerDisplay :wager="wager">
+                            <template v-slot:button>
+                                <v-btn color="secondary"
+                                       :to="{ name: 'wager_view', params: { game: wager.gameName, id: wager.id } }">View</v-btn>
+                            </template>
+                        </WagerDisplay>
                     </v-skeleton-loader>
                 </v-col>
             </v-row>

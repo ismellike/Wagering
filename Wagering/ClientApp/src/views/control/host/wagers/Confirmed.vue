@@ -18,11 +18,6 @@
                                 </template>
                             </v-data-table>
                         </v-card-text>
-                        <v-card-actions v-if="!hasAccepted">
-                            <v-spacer />
-                            <v-btn color="success" @click="accept">Accept</v-btn>
-                            <v-btn color="error" @click="decline">Decline</v-btn>
-                        </v-card-actions>
                     </v-card>
                 </v-skeleton-loader>
             </v-col>
@@ -39,6 +34,16 @@
                                 {{ $timeAgo.format(new Date(wager.date)) }}
                             </span>
                         </v-card-actions>
+                    </v-card>
+                </v-skeleton-loader>
+            </v-col>
+            <v-col cols="12" sm="10" md="8" class="mx-auto">
+                <v-skeleton-loader :loading="loading" type="card" transition="scale-transition">
+                    <v-card>
+                        <v-card-title>Challenges</v-card-title>
+                        <v-card-text>
+
+                        </v-card-text>
                     </v-card>
                 </v-skeleton-loader>
             </v-col>
@@ -78,34 +83,9 @@
                 }).catch(e => {
                     this.errors = e.response.data.splice();
                 });
-            },
-            accept() {
-                this.$axios.post("/api/bid/wager/accept", this.userBid.id).then(() => {
-                    this.$microsoft.signalr.invoke("NotifyGroup", "wager_" + this.$route.params.id, { message: this.$store.state.account.username + " has accepted the wager.", isRead: false, link: this.$route.path});
-                }).catch(e => {
-                    this.errors = e.response.data.splice();
-                });
-            },
-            decline() {
-                this.$axios.post("/api/bid/wager/decline", this.userBid.id).then(() => {
-                    this.$microsoft.signalr.invoke("NotifyGroup", "wager_" + this.$route.params.id, { message: this.$store.state.account.username + " has declined the wager.", isRead: false, link: this.$route.path });
-                }).catch(e => {
-                    this.errors = e.response.data.splice();
-                });
             }
         },
         computed: {
-            userBid() {
-                return this.wager.hosts.find(host => {
-                    return host.user.userName == this.$store.state.account.username;
-                });
-            },
-            hasAccepted() {
-                const user = this.userBid;
-                if (!user)
-                    return false;
-                return user.approved;
-            }
         },
         created() {
             this.getData();

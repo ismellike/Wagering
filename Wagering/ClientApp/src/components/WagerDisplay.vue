@@ -3,17 +3,8 @@
         <v-toolbar dense color="accent">
             <v-toolbar-title>{{ hostsString }}</v-toolbar-title>
             <v-spacer />
-            <v-btn color="secondary"
-                   v-if="code == 1"
-                   :to="{ name: 'wager_view', params: { game: wager.gameName, id: wager.id } }"
-                   class="mr-2">View</v-btn>
-            <v-btn color="secondary"
-                   v-else-if="code == 2"
-                   :to="{ name: 'wager_pending', params: { id: wager.id } }"
-                   class="mr-2">
-                View
-            </v-btn>
-            <v-menu>
+            <slot name="button"></slot>
+            <v-menu v-if="!ignoreHosts">
                 <template v-slot:activator="{ on }">
                     <v-btn color="info" v-on="on">Hosts</v-btn>
                 </template>
@@ -49,9 +40,9 @@
             wager: {
                 required: true
             },
-            code: {
-                type: Number,
-                default: 0
+            ignoreHosts: {
+                type: Boolean,
+                default: false
             }
         },
         computed: {
