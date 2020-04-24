@@ -30,7 +30,7 @@
 </template>
 <script>
     import WagerDisplay from "@/components/WagerDisplay";
-    import ChallengeDisplay from "@/components/ChallengeDisplay";
+    import ChallengeDisplay from "@/components/WagerChallengeDisplay";
     export default {
         components: {
             WagerDisplay,

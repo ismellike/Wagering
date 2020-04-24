@@ -1,34 +1,30 @@
 <template>
     <v-card>
-        <v-toolbar dense color="accent">
-            <v-toolbar-title>{{ hostsString(wager.hosts) }}</v-toolbar-title>
+        <toolbar dense color="accent">
+            <v-toolbar-title>{{ hostsString(challenge.hosts) }}</v-toolbar-title>
             <v-spacer />
             <slot name="button"></slot>
-            <HostsMenu v-if="!ignoreHosts" :hosts="wager.hosts" />
-        </v-toolbar>
+            <HostsMenu v-if="!ignoreHosts" :hosts="challenge.hosts" />
+        </toolbar>
         <v-card-text>
-            <WagerInfoDisplay :wager="wager" />
         </v-card-text>
         <v-card-actions>
-            <v-spacer />
             <span class="caption">
-                {{ $timeAgo.format(new Date(wager.date)) }}
+                {{ $timeAgo.format(new Date(challenge.date)) }}
             </span>
         </v-card-actions>
     </v-card>
 </template>
 <script>
-    import WagerInfoDisplay from "@/components/WagerInfoDisplay";
-    import HostsMenu from "@/components/HostsMenu";
     import HostsMixin from "@/mixins/HostsString.js";
+    import HostsMenu from "@/components/HostsMenu";
     export default {
         components: {
-            WagerInfoDisplay,
             HostsMenu
         },
         mixins: [HostsMixin],
         props: {
-            wager: {
+            challenge: {
                 required: true
             },
             ignoreHosts: {
