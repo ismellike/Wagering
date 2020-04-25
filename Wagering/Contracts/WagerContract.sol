@@ -1,49 +1,16 @@
 pragma solidity ^0.6.4;
-
-
-contract ERC20Interface {
-    function totalSupply() public pure returns (uint256);
-
-    function balanceOf(address tokenOwner)
-        public
-        pure
-        returns (uint256 balance);
-
-    function allowance(address tokenOwner, address spender)
-        public
-        pure
-        returns (uint256 remaining);
-
-    function transfer(address to, uint256 tokens) public returns (bool success);
-
-    function approve(address spender, uint256 tokens)
-        public
-        returns (bool success);
-
-    function transferFrom(address from, address to, uint256 tokens)
-        public
-        returns (bool success);
-
-    event Transfer(address indexed from, address indexed to, uint256 tokens);
-    event Approval(
-        address indexed tokenOwner,
-        address indexed spender,
-        uint256 tokens
-    );
-}
+import "./IERC20.sol";
 
 
 contract WagerContract {
     enum State {Active, Completed, Canceled}
-    //percentage 0 - 100
-    //teams 0, 1, 2, ... 255
     struct Bid {
-        address payable _address;
-        uint8 percentage;
-        uint8 team;
+        address payable _address; //160
+        uint8 percentage; //168
+        uint8 team; //176
     }
     address payable owner = msg.sender;
-    ERC20Interface usdc = ERC20Interface(
+    IERC20 public constant usdc = IERC20(
         0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
     );
     uint8 teamCount = 0;
@@ -51,7 +18,6 @@ contract WagerContract {
     Bid[][] public bids;
 
     modifier onlyOwner {
-        //wagering.gg is owner
         require(msg.sender == owner, "Only contract owner can call this.");
         _;
     }
