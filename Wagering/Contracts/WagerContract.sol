@@ -3,17 +3,26 @@ import "./IERC20.sol";
 
 
 contract WagerContract {
-    enum State {Active, Completed, Canceled}
     struct Bid {
-        address payable _address; //160
-        uint8 percentage; //168
-        uint8 team; //176
+        uint8 _team; //8
+        uint8 _receivable; //16
+        uint64 _paid; //80
+        address payable _address; //240
+    }
+    struct State {
+        uint8 _payable; //8
+        uint8 _receivable; //16
+        uint8 _totalPayable; //24
+        uint8 _totalReceivable; //32
+        uint8 _length; //40
+        uint56 _bidAmount; //96
+        address payable _address; //256
     }
     address payable owner = msg.sender;
     IERC20 public constant usdc = IERC20(
         0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
     );
-    uint8 teamCount = 0;
+    uint256 teamCount = 0;
     uint256 prizePool = 0;
     Bid[][] public bids;
 
@@ -24,20 +33,61 @@ contract WagerContract {
 
     function addTeam(
         address payable[] memory _addresses,
-        uint8[] memory _percentages,
+        uint256[] memory _payables,
+        uint256[] memory _receivables,
         uint256 _amount
     ) public onlyOwner {
-        uint256 length = _addresses.length;
-        require(length == _percentages.length, "Array lengths must be equal.");
-        for (uint256 i = 0; i < length; i++) {
+        State memory state;
+        state._length = uint8(_addresses.length);
+        require(
+            state._length == _payables.length,
+            "Array lengths must be equal."
+        );
+        require(
+            state._length == _receivables.length,
+            "Array lengths must be equal."
+        );
+        for (uint256 i = 0; i < state._length; i++) {
+            state._receivable = uint8(_receivables[i]);
             require(
-                _amount < usdc.balanceOf(_addresses[i]),
+                state._receivable <= 100,
+                "Single percentage cannot be greater than 100."
+            );
+            state._totalReceivable += state._receivable;
+            require(
+                state._totalReceivable <= 100,
+                "Total percentage cannot be greater than 100."
+            );
+            state._payable = uint8(_payables[i]);
+            require(
+                state._payable <= 100,
+                "Single percentage cannot be greater than 100."
+            );
+            state._totalPayable += state._payable;
+            require(
+                state._totalPayable <= 100,
+                "Total percentage cannot be greater than 100."
+            );
+            state._bidAmount = uint56((_amount * state._payable) / 100);
+            state._address = _addresses[i];
+            require(
+                usdc.balanceOf(state._address) >= state._bidAmount,
                 "Insufficient balances in a user."
             );
+            //allow state._address bidAmount
             bids[teamCount].push(
-                Bid(_addresses[i], _percentages[i], teamCount)
+                Bid(
+                    uint8(teamCount),
+                    state._receivable,
+                    state._bidAmount,
+                    state._address
+                )
             );
         }
+        require(
+            state._totalPayable == 100,
+            "Total percentage must be equal to 100."
+        );
         teamCount++;
         prizePool += _amount;
     }
