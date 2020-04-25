@@ -1,6 +1,38 @@
 pragma solidity ^0.6.4;
 
 
+contract ERC20Interface {
+    function totalSupply() public pure returns (uint256);
+
+    function balanceOf(address tokenOwner)
+        public
+        pure
+        returns (uint256 balance);
+
+    function allowance(address tokenOwner, address spender)
+        public
+        pure
+        returns (uint256 remaining);
+
+    function transfer(address to, uint256 tokens) public returns (bool success);
+
+    function approve(address spender, uint256 tokens)
+        public
+        returns (bool success);
+
+    function transferFrom(address from, address to, uint256 tokens)
+        public
+        returns (bool success);
+
+    event Transfer(address indexed from, address indexed to, uint256 tokens);
+    event Approval(
+        address indexed tokenOwner,
+        address indexed spender,
+        uint256 tokens
+    );
+}
+
+
 contract WagerContract {
     enum State {Active, Completed, Canceled}
     //percentage 0 - 100
@@ -11,8 +43,12 @@ contract WagerContract {
         uint8 team;
     }
     address payable owner = msg.sender;
-    Bid[] public bids;
-    uint256 public totalTeams;
+    ERC20Interface usdc = ERC20Interface(
+        0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    );
+    uint8 teamCount = 0;
+    uint256 prizePool = 0;
+    Bid[][] public bids;
 
     modifier onlyOwner {
         //wagering.gg is owner
@@ -20,23 +56,35 @@ contract WagerContract {
         _;
     }
 
-    constructor(
+    function addTeam(
         address payable[] memory _addresses,
         uint8[] memory _percentages,
-        uint8[] memory _teams,
-        uint256 _totalTeams
-    ) public {
-        require(_totalTeams > 1, "At least 2 teams must participate.");
+        uint256 _amount
+    ) public onlyOwner {
         uint256 length = _addresses.length;
-        totalTeams = _totalTeams;
         require(length == _percentages.length, "Array lengths must be equal.");
-        require(length == _teams.length, "Array lengths must be equal.");
         for (uint256 i = 0; i < length; i++) {
             require(
-                _teams[i] >= _totalTeams,
-                "A team is not within the total teams count."
+                _amount < usdc.balanceOf(_addresses[i]),
+                "Insufficient balances in a user."
             );
-            bids.push(Bid(_addresses[i], _percentages[i], _teams[i]));
+            bids[teamCount].push(
+                Bid(_addresses[i], _percentages[i], teamCount)
+            );
+        }
+        teamCount++;
+        prizePool += _amount;
+    }
+
+    function complete(uint256 _winningTeam) public payable onlyOwner {
+        require(
+            _winningTeam < teamCount,
+            "Winning team must be within total teams count"
+        );
+        uint256 length = bids[_winningTeam].length;
+        //owner.transfer(prizePool * .1); give 10%
+        for (uint256 i = 0; i < length; i++) {
+            //bids[_winningTeam][i]._address.transfer(); transfer x%
         }
     }
 
