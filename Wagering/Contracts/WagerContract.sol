@@ -24,7 +24,7 @@ contract WagerContract {
     );
     uint256 teamCount = 0;
     uint256 prizePool = 0;
-    Bid[][] public bids;
+    mapping(uint256 => Bid[]) public bids;
 
     modifier onlyOwner {
         require(msg.sender == owner, "Only contract owner can call this.");
@@ -37,6 +37,7 @@ contract WagerContract {
         uint256[] memory _receivables,
         uint256 _amount
     ) public onlyOwner {
+        require(_amount > 0, "Amount must be greater than zero.");
         State memory state;
         state._length = uint8(_addresses.length);
         require(
@@ -72,7 +73,15 @@ contract WagerContract {
             state._address = _addresses[i];
             require(
                 usdc.balanceOf(state._address) >= state._bidAmount,
-                "Insufficient balances in a user."
+                "Insufficient balances of a user."
+            );
+            require(
+                usdc.transferFrom(
+                    state._address,
+                    address(this),
+                    state._bidAmount
+                ),
+                "Transaction could not be completed."
             );
             //allow state._address bidAmount
             bids[teamCount].push(
@@ -92,13 +101,21 @@ contract WagerContract {
         prizePool += _amount;
     }
 
-    function complete(uint256 _winningTeam) public payable onlyOwner {
+    function complete(uint256 _winningTeam, bool _verified)
+        public
+        payable
+        onlyOwner
+    {
         require(
             _winningTeam < teamCount,
-            "Winning team must be within total teams count"
+            "Winning team must be within team count."
         );
         uint256 length = bids[_winningTeam].length;
-        //owner.transfer(prizePool * .1); give 10%
+        uint256 pool = (prizePool * (_verified ? 93 : 90)) / 100;
+        require(
+            usdc.transferFrom(address(this), owner, pool),
+            "Transaction could not be completed."
+        );
         for (uint256 i = 0; i < length; i++) {
             //bids[_winningTeam][i]._address.transfer(); transfer x%
         }
