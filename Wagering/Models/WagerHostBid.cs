@@ -1,14 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Wagering.Models
+﻿namespace Wagering.Models
 {
-    public class WagerHostBid : Bid
+    public class WagerHostBid : WagerBid
     {
         public int WagerId { get; set; }
         public Wager Wager { get; set; }
-
-        [Required]
-        public byte Percentage { get; set; }
-        public bool IsOwner { get; set; }
     }
 }

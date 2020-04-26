@@ -141,9 +141,14 @@ namespace Wagering.Controllers
             if (user == null)
                 return Unauthorized();
 
-            if (wager.Hosts.Sum(x => x.Percentage) != 100)
+            if (wager.Hosts.Sum(x => x.ReceivablePt) != 100)
             {
-                ModelState.AddModelError("Percentage", "The hosts percentages do not add up to 100.");
+                ModelState.AddModelError("Receivable", "The hosts receivable percentages do not add up to 100.");
+                return BadRequest(ModelState);
+            }
+            if (wager.Hosts.Sum(x => x.PayablePt) != 100)
+            {
+                ModelState.AddModelError("Payable", "The hosts payable percentages do not add up to 100.");
                 return BadRequest(ModelState);
             }
 
@@ -185,7 +190,8 @@ namespace Wagering.Controllers
                 {
                     Approved = null,
                     IsOwner = false,
-                    Percentage = host.Percentage,
+                    ReceivablePt = host.ReceivablePt,
+                    PayablePt = host.PayablePt,
                     UserId = host.UserId,
                 };
                 if (host.UserId == user.Id)
