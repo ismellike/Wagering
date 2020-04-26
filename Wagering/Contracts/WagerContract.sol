@@ -1,8 +1,10 @@
 pragma solidity ^0.6.4;
 import "./IERC20.sol";
+import "./SafeMath.sol";
 
 
 contract WagerContract {
+    using SafeMath for uint256;
     struct Bid {
         uint8 _team; //8
         uint8 _receivable; //16
@@ -24,6 +26,7 @@ contract WagerContract {
     );
     uint256 teamCount = 0;
     uint256 prizePool = 0;
+    bool closed = false;
     mapping(uint256 => Bid[]) public bids;
 
     modifier onlyOwner {
@@ -31,12 +34,18 @@ contract WagerContract {
         _;
     }
 
+    modifier notClosed {
+        require(closed == false, "Contract is already closed.");
+        _;
+    }
+
+    ///Add a team to the bids.
     function addTeam(
         address payable[] memory _addresses,
         uint256[] memory _payables,
         uint256[] memory _receivables,
         uint256 _amount
-    ) public onlyOwner {
+    ) public onlyOwner notClosed {
         require(_amount > 0, "Amount must be greater than zero.");
         State memory state;
         state._length = uint8(_addresses.length);
@@ -69,7 +78,9 @@ contract WagerContract {
                 state._totalPayable <= 100,
                 "Total percentage cannot be greater than 100."
             );
-            state._bidAmount = uint56((_amount * state._payable) / 100);
+            state._bidAmount = uint56(
+                SafeMath.div(SafeMath.mul(_amount, state._payable), 100)
+            );
             state._address = _addresses[i];
             require(
                 usdc.balanceOf(state._address) >= state._bidAmount,
@@ -101,25 +112,74 @@ contract WagerContract {
         prizePool += _amount;
     }
 
+    ///Complete the wager with a winning team.
     function complete(uint256 _winningTeam, bool _verified)
         public
         payable
         onlyOwner
+        notClosed
     {
         require(
             _winningTeam < teamCount,
             "Winning team must be within team count."
         );
         uint256 length = bids[_winningTeam].length;
-        uint256 pool = (prizePool * (_verified ? 93 : 90)) / 100;
-        require(
-            usdc.transferFrom(address(this), owner, pool),
-            "Transaction could not be completed."
+        uint256 pool = SafeMath.div(
+            SafeMath.mul(prizePool, (_verified ? 93 : 90)),
+            100
         );
         for (uint256 i = 0; i < length; i++) {
-            //bids[_winningTeam][i]._address.transfer(); transfer x%
+            uint256 poolPortion = SafeMath.div(
+                SafeMath.mul(pool, bids[_winningTeam][i]._receivable),
+                100
+            );
+            require(
+                usdc.transferFrom(
+                    address(this),
+                    bids[_winningTeam][i]._address,
+                    poolPortion
+                ),
+                "Transaction could not be completed."
+            );
         }
+        require(
+            usdc.transferFrom(
+                address(this),
+                owner,
+                usdc.balanceOf(address(this))
+            ),
+            "Transaction could not be completed."
+        );
+        closed = true;
     }
 
-    function cancel() public payable onlyOwner {}
+    ///Return all funds to users.
+    function cancel() public payable onlyOwner notClosed {
+        for (uint256 i = 0; i < teamCount; i++) {
+            uint256 length = bids[i].length;
+            for (uint256 j = 0; j < length; j++) {
+                uint256 amount = SafeMath.div(
+                    SafeMath.mul(bids[i][j]._paid, 95),
+                    100
+                );
+                require(
+                    usdc.transferFrom(
+                        address(this),
+                        bids[i][j]._address,
+                        amount
+                    ),
+                    "Transaction could not be completed."
+                );
+            }
+        }
+        require(
+            usdc.transferFrom(
+                address(this),
+                owner,
+                usdc.balanceOf(address(this))
+            ),
+            "Transaction could not be completed."
+        );
+        closed = true;
+    }
 }
