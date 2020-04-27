@@ -6,12 +6,13 @@ import axios from "./services/axios";
 import "./registerServiceWorker";
 import vuetify from "./plugins/vuetify";
 import "./validation/validator"; 
-import TimeAgo from "./services/timeAgo";
+import VueTimeago from 'vue-timeago'
 
+Vue.use(VueTimeago);
 Vue.config.productionTip = false;
 Vue.prototype.$axios = axios;
 Vue.prototype.$microsoft = { signalr: null };
-Vue.prototype.$timeAgo = new TimeAgo("en-US");
+
 
 new Vue({
 	store,

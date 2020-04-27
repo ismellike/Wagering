@@ -11,9 +11,7 @@
         </v-card-text>
         <v-card-actions>
             <v-spacer />
-            <span class="caption">
-                {{ $timeAgo.format(new Date(wager.date)) }}
-            </span>
+            <timeago class="caption" since="wager.date" :auto-update="60" />
         </v-card-actions>
     </v-card>
 </template>

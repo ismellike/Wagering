@@ -9,9 +9,7 @@
         <v-card-text>
         </v-card-text>
         <v-card-actions>
-            <span class="caption">
-                {{ $timeAgo.format(new Date(challenge.date)) }}
-            </span>
+            <timeago class="caption" since="challenge.date" :auto-update="60"></timeago>
         </v-card-actions>
     </v-card>
 </template>
