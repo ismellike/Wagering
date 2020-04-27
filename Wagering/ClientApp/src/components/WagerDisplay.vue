@@ -11,7 +11,7 @@
         </v-card-text>
         <v-card-actions>
             <v-spacer />
-            <timeago class="caption" since="wager.date" :auto-update="60" />
+            <timeago class="caption" datetime="wager.date" autoUpdate />
         </v-card-actions>
     </v-card>
 </template>

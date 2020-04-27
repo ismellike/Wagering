@@ -9,7 +9,7 @@
         <v-card-text>
         </v-card-text>
         <v-card-actions>
-            <timeago class="caption" since="challenge.date" :auto-update="60"></timeago>
+            <timeago class="caption" datetime="challenge.date" autoUpdate></timeago>
         </v-card-actions>
     </v-card>
 </template>

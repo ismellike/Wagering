@@ -100,7 +100,7 @@
                                     <v-list-item-title>
                                         {{ notification.message }}
                                     </v-list-item-title>
-                                    <v-list-item-subtitle><timeago since="notification.date" :auto-update="60" /></v-list-item-subtitle>
+                                    <v-list-item-subtitle><timeago datetime="notification.date" autoUpdate /></v-list-item-subtitle>
                                 </v-list-item-content>
                                 <v-list-item-action>
                                     <template>
