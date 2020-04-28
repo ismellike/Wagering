@@ -66,12 +66,12 @@
             <v-row v-for="wager in wagers" :key="wager.id">
                 <v-col>
                     <v-skeleton-loader :loading="loading" type="card" transition="scale-transition">
-                        <WagerDisplay :wager="wager">
+                        <wager-display :wager="wager">
                             <template v-slot:button>
                                 <v-btn color="secondary"
                                        :to="{ name: 'wager_view', params: { game: wager.gameName, id: wager.id } }" class="mr-2">View</v-btn>
                             </template>
-                        </WagerDisplay>
+                        </wager-display>
                     </v-skeleton-loader>
                 </v-col>
             </v-row>
@@ -86,12 +86,12 @@
     </v-container>
 </template>
 <script>
-    import WagerDisplay from "@/components/WagerDisplay";
+    import WagerDisplay from "@/components/Wager/WagerDisplay";
     import { ValidationObserver } from "vee-validate";
 
     export default {
         components: {
-            WagerDisplay,
+            "wager-display": WagerDisplay,
             ValidationObserver
         },
         data() {

@@ -12,6 +12,8 @@ namespace Wagering.Models
         [Column(TypeName = "decimal(18,7)")]
         public decimal? MaximumWager { get; set; }
         public int ChallengeCount { get; set; }
+        public IList<WagerRule> Rules { get; set; }
+        public IList<WagerNotification> Notifications { get; set; }
 
         public override bool IsApproved()
         {

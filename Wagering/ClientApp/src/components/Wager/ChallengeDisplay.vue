@@ -4,12 +4,12 @@
             <v-toolbar-title>{{ hostsString(challenge.hosts) }}</v-toolbar-title>
             <v-spacer />
             <slot name="button"></slot>
-            <HostsMenu v-if="!ignoreHosts" :hosts="challenge.hosts" />
+            <hosts-menu v-if="!ignoreHosts" :hosts="challenge.hosts" />
         </toolbar>
         <v-card-text>
         </v-card-text>
         <v-card-actions>
-            <timeago class="caption" datetime="challenge.date" autoUpdate></timeago>
+            <timeago class="caption" :datetime="challenge.date" autoUpdate></timeago>
         </v-card-actions>
     </v-card>
 </template>
@@ -18,7 +18,7 @@
     import HostsMenu from "@/components/HostsMenu";
     export default {
         components: {
-            HostsMenu
+            "hosts-menu": HostsMenu,
         },
         mixins: [HostsMixin],
         props: {

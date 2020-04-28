@@ -34,7 +34,7 @@ namespace Wagering.Controllers
             }
             List<string> hostGroups = new List<string>();
             List<string> clientGroups = new List<string>();
-            hostGroups.AddRange(await _context.WagerBids.Include(x => x.Wager).Where(x => x.UserId == user.Id).Where(x => x.Wager.Status <= 1).Select(x => x.Wager.GroupName).ToListAsync());
+            hostGroups.AddRange(await _context.WagerHostBids.Include(x => x.Wager).Where(x => x.UserId == user.Id).Where(x => x.Wager.Status <= 1).Select(x => x.Wager.GroupName).ToListAsync());
             return Ok(new { hostGroups, clientGroups });
         }
     }

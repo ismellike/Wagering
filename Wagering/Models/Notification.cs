@@ -2,7 +2,7 @@
 
 namespace Wagering.Models
 {
-    public abstract class Notification
+    public class Notification
     {
         public int Id { get; set; }
 

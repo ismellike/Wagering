@@ -110,7 +110,7 @@ namespace Wagering.Controllers
 
             if (!_cache.TryGetValue(id, out Wager wager))
             {
-                wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
+                wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).Include(x => x.Notifications).ThenInclude(x => x.Notification).FirstOrDefaultAsync(x => x.Id == id);
                 _cache.Set(id, wager, TimeSpan.FromSeconds(20));
             }
 
@@ -174,12 +174,15 @@ namespace Wagering.Controllers
                 Status = 0,
                 Hosts = new List<WagerHostBid>(),
                 ChallengeCount = 0,
-                Notifications = new List<EventNotification>()
+                Notifications = new List<WagerNotification>()
                 {
-                    new EventNotification
+                    new WagerNotification
                     {
-                        Message = $"{user.UserName} created the wager.",
-                        Date = date
+                        Notification = new Notification
+                        {
+                            Date = date,
+                             Message = $"{user.UserName} created the wager."
+                        }
                     }
                 }
             };

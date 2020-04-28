@@ -1,9 +1,11 @@
-﻿namespace Wagering.Models
+﻿using System;
+
+namespace Wagering.Models
 {
-    public class PersonalNotification : Notification
+    public class PersonalNotification
     {
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public string Message { get; set; }
+        public DateTime Date { get; set; }
         public bool IsRead { get; set; }
         public string Link { get; set; }
     }

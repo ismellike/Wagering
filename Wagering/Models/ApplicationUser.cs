@@ -12,7 +12,6 @@ namespace Wagering.Models
 		public string Platform { get; set; }
 		public string Input { get; set; }
 		public ICollection<Rating> Ratings { get; set; }
-		public IList<PersonalNotification> Notifications { get; set; }
 
 		#region overrides
 		[JsonIgnore]

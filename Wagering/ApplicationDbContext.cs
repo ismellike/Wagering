@@ -10,13 +10,20 @@ namespace Wagering
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
         IOptions<OperationalStoreOptions> Options { get; set; }
+        #region Wagers
         public DbSet<Wager> Wagers { get; set; }
-        public DbSet<WagerChallenge> Challenges { get; set; }
-        public DbSet<WagerHostBid> WagerBids { get; set; }
-        public DbSet<Game> Games { get; set; }
-        public DbSet<EventNotification> EventNotifications { get; set; }
-        public DbSet<PersonalNotification> PersonalNotifications { get; set; }
+        public DbSet<WagerChallenge> WagerChallenges { get; set; }
+        public DbSet<WagerChallengeBid> WagerChallengeBids { get; set; }
+        public DbSet<WagerHostBid> WagerHostBids { get; set; }
+        public DbSet<WagerRule> WagerRules { get; set; }
+        public DbSet<WagerNotification> WagerNotifications { get; set; }
+        #endregion
+        #region Tournaments
         public DbSet<Tournament> Tournaments { get; set; }
+        #endregion
+        public DbSet<Game> Games { get; set; }
+        public DbSet<Rule> Rules { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         public ApplicationDbContext(
             DbContextOptions options,

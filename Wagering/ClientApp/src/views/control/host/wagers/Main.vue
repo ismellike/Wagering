@@ -12,14 +12,14 @@
                 <v-row dense v-for="wager in pending" :key="wager.id">
                     <v-col>
                         <v-container>
-                            <WagerDisplay :wager="wager" ignoreHosts>
+                            <wager-display :wager="wager" ignoreHosts>
                                 <template v-slot:button>
                                     <v-btn color="secondary"
                                            :to="{ name: 'wager_pending', params: { id: wager.id } }">
                                         View
                                     </v-btn>
                                 </template>
-                            </WagerDisplay>
+                            </wager-display>
                         </v-container>
                     </v-col>
                 </v-row>
@@ -31,14 +31,14 @@
                 <v-row dense v-for="wager in confirmed" :key="wager.id">
                     <v-col>
                         <v-container>
-                            <WagerDisplay :wager="wager" ignoreHosts>
+                            <wager-display :wager="wager" ignoreHosts>
                                 <template v-slot:button>
                                     <v-btn color="secondary"
                                            :to="{ name: 'wager_confirmed', params: { id: wager.id } }">
                                         View
                                     </v-btn>
                                 </template>
-                            </WagerDisplay>
+                            </wager-display>
                         </v-container>
                     </v-col>
                 </v-row>
@@ -50,14 +50,14 @@
                 <v-row dense v-for="wager in completed" :key="wager.id">
                     <v-col>
                         <v-container>
-                            <WagerDisplay :wager="wager" ignoreHosts>
+                            <wager-display :wager="wager" ignoreHosts>
                                 <template v-slot:button>
                                     <v-btn color="secondary"
                                            :to="{ name: 'wager_completed', params: { id: wager.id } }">
                                         View
                                     </v-btn>
                                 </template>
-                            </WagerDisplay>
+                            </wager-display>
                         </v-container>
                     </v-col>
                 </v-row>
@@ -66,10 +66,10 @@
     </v-tabs>
 </template>
 <script>
-    import WagerDisplay from "@/components/WagerDisplay";
+    import WagerDisplay from "@/components/Wager/WagerDisplay";
     export default {
         components: {
-            WagerDisplay
+            "wager-display": WagerDisplay
         },
         data() {
             return {

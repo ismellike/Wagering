@@ -3,13 +3,13 @@
     <v-row>
       <v-col cols="12" sm="10" md="8" class="mx-auto">
         <v-skeleton-loader :loading="loading" type="card" transition="scale-transition">
-          <WagerHostsDisplay :hosts="wager.hosts">
+          <hosts-display :hosts="wager.hosts">
             <template v-if="!hasAccepted" v-slot:actions>
               <v-spacer />
               <v-btn color="success" @click="accept">Accept</v-btn>
               <v-btn color="error" @click="decline">Decline</v-btn>
             </template>
-          </WagerHostsDisplay>
+          </hosts-display>
         </v-skeleton-loader>
       </v-col>
       <v-col cols="12" sm="10" md="8" class="mx-auto">
@@ -17,11 +17,11 @@
           <v-card>
             <v-card-title>Wager</v-card-title>
             <v-card-text>
-              <WagerInfoDisplay :wager="wager" />
+              <info-display :wager="wager" />
             </v-card-text>
             <v-card-actions>
               <v-spacer />
-              <timeago class="caption" datetime="wager.date" autoUpdate />
+              <timeago class="caption" :datetime="wager.date" autoUpdate />
             </v-card-actions>
           </v-card>
         </v-skeleton-loader>
@@ -30,12 +30,12 @@
   </v-container>
 </template>
 <script>
-import WagerInfoDisplay from "@/components/WagerInfoDisplay";
-import WagerHostsDisplay from "@/components/WagerHostsDisplay";
+import InfoDisplay from "@/components/Wager/InfoDisplay";
+import HostsDisplay from "@/components/Wager/HostsDisplay";
 export default {
   components: {
-    WagerInfoDisplay,
-    WagerHostsDisplay
+    "info-display": InfoDisplay,
+    "hosts-display": HostsDisplay
   },
   data() {
     return {

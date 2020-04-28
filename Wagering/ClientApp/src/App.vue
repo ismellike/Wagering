@@ -65,7 +65,7 @@
                 </template>
             </v-list>
             <template v-slot:append>
-                <LoginMenu />
+                <login-menu />
             </template>
         </v-navigation-drawer>
 
@@ -100,7 +100,7 @@
                                     <v-list-item-title>
                                         {{ notification.message }}
                                     </v-list-item-title>
-                                    <v-list-item-subtitle><timeago datetime="notification.date" autoUpdate /></v-list-item-subtitle>
+                                    <v-list-item-subtitle><timeago :datetime="notification.date" autoUpdate /></v-list-item-subtitle>
                                 </v-list-item-content>
                                 <v-list-item-action>
                                     <template>
@@ -163,7 +163,7 @@
             source: String
         },
         components: {
-            LoginMenu
+            "login-menu": LoginMenu
         },
         data() {
             return {
@@ -199,16 +199,9 @@
                     this.hostCount = result.data.hostGroups.length;
                 });
             },
-            getNotifications() {
-                this.$axios.get("/api/notification/personal").then(result => {
-                    result.data.forEach(notification => {
-                        this.notifications.push(notification);
-                    });
-                });
-            },
             listen() {
-                this.receiveNotifications();
                 this.receiveGroups();
+                this.receiveNotifications();
             }
         },
         created() {
@@ -237,7 +230,6 @@
                     this.listen();
                     this.addGroups();
                 });
-                this.getNotifications(); //get all information in 1 http request
             }
         }
     };

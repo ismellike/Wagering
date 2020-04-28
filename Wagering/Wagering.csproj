@@ -60,6 +60,7 @@
 
   <ItemGroup>
     <Folder Include="Contracts\" />
+    <Folder Include="Models\League\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

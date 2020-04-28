@@ -29,13 +29,16 @@ namespace Wagering.Controllers
             if (wager == null)
                 return;
             wager.Status = 1;
-            EventNotification notification = new EventNotification
+            WagerNotification notification = new WagerNotification
             {
                 WagerId = wagerId,
-                Date = DateTime.Now,
-                Message = $"{username} has accepted the wager."
+                Notification = new Notification
+                {
+                    Date = DateTime.Now,
+                    Message = $"{username} has accepted the wager."
+                }
             };
-            _context.EventNotifications.Add(notification);
+            _context.WagerNotifications.Add(notification);
             _context.Wagers.Update(wager);
         }
 
@@ -45,13 +48,16 @@ namespace Wagering.Controllers
             if (wager == null)
                 return;
             wager.Status = 2;
-            EventNotification notification = new EventNotification
+            WagerNotification notification = new WagerNotification
             {
                 WagerId = wagerId,
-                Date = DateTime.Now,
-                Message = $"{username} has declined the wager."
+                Notification = new Notification
+                {
+                    Date = DateTime.Now,
+                    Message = $"{username} has declined the wager."
+                }
             };
-            _context.EventNotifications.Add(notification);
+            _context.WagerNotifications.Add(notification);
             _context.Wagers.Update(wager);
         }
 
@@ -66,7 +72,7 @@ namespace Wagering.Controllers
                 return BadRequest(ModelState);
             }
 
-            var bid = await _context.WagerBids.Include(x => x.Wager).ThenInclude(x => x.Hosts).FirstOrDefaultAsync(x => x.Id == id);
+            var bid = await _context.WagerHostBids.Include(x => x.Wager).ThenInclude(x => x.Hosts).FirstOrDefaultAsync(x => x.Id == id);
             if (bid.UserId != user.Id)
             {
                 ModelState.AddModelError("User", _errorMessages.NotCorresponding);
@@ -86,7 +92,7 @@ namespace Wagering.Controllers
             bid.Approved = true;
             if (bid.Wager.IsApproved())
                 await Confirm(bid.WagerId, user.UserName);
-            _context.WagerBids.Update(bid);
+            _context.WagerHostBids.Update(bid);
             await _context.SaveChangesAsync();
             return Ok();
         }
@@ -102,7 +108,7 @@ namespace Wagering.Controllers
                 return BadRequest(ModelState);
             }
 
-            var bid = await _context.WagerBids.FirstOrDefaultAsync(x => x.Id == id);
+            var bid = await _context.WagerHostBids.FirstOrDefaultAsync(x => x.Id == id);
             if (bid.UserId != user.Id)
             {
                 ModelState.AddModelError("User", _errorMessages.NotCorresponding);
@@ -119,7 +125,7 @@ namespace Wagering.Controllers
                 return BadRequest(ModelState);
             }
             bid.Approved = false;
-            _context.WagerBids.Update(bid);
+            _context.WagerHostBids.Update(bid);
             await Decline(bid.WagerId, user.UserName);
             await _context.SaveChangesAsync();
             return Ok();

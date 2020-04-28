@@ -16,7 +16,6 @@ namespace Wagering.Models
         [Required]
         public DateTime Date { get; set; }
         public bool IsPrivate { get; set; }
-        public IList<EventNotification> Notifications { get; set; }
 
         public abstract string GroupName { get; }
     }

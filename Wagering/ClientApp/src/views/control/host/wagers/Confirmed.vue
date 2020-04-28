@@ -3,7 +3,7 @@
         <v-row>
             <v-col cols="12" sm="10" md="8" class="mx-auto">
                 <v-skeleton-loader :loading="loading" type="card" transition="scale-transition">
-                    <WagerHostsDisplay :hosts="wager.hosts"></WagerHostsDisplay>
+                    <hosts-display :hosts="wager.hosts"></hosts-display>
                 </v-skeleton-loader>
             </v-col>
             <v-col cols="12" sm="10" md="8" class="mx-auto">
@@ -11,11 +11,11 @@
                     <v-card>
                         <v-card-title>Wager</v-card-title>
                         <v-card-text>
-                            <WagerInfoDisplay :wager="wager" />
+                            <info-display :wager="wager" />
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer />
-                            <timeago class="caption" datetime="wager.date" autoUpdate/>
+                            <timeago class="caption" :datetime="wager.date" autoUpdate/>
                         </v-card-actions>
                     </v-card>
                 </v-skeleton-loader>
@@ -25,7 +25,14 @@
                     <v-card>
                         <v-card-title>Challenges</v-card-title>
                         <v-card-text>
-                            <WagerChallengeDisplay  />
+                            <template v-if="wager.challenges && wager.challenges.length > 0">
+                                <v-container v-for="challenge in wager.challenges" v-bind:key="challenge.id">
+                                    <challenge-display :challenge="challenge" />
+                                </v-container>
+                            </template>
+                            <template v-else>
+                                There's currently no challenges.
+                            </template>
                         </v-card-text>
                     </v-card>
                 </v-skeleton-loader>
@@ -34,14 +41,14 @@
     </v-container>
 </template>
 <script>
-    import WagerInfoDisplay from "@/components/WagerInfoDisplay";
-    import WagerHostsDisplay from "@/components/WagerHostsDisplay";
-    import WagerChallengeDisplay from "@/components/WagerChallengeDisplay";
+    import InfoDisplay from "@/components/Wager/InfoDisplay";
+    import HostsDisplay from "@/components/Wager/HostsDisplay";
+    import ChallengeDisplay from "@/components/Wager/ChallengeDisplay";
     export default {
         components: {
-            WagerInfoDisplay,
-            WagerHostsDisplay,
-            WagerChallengeDisplay
+            "info-display": InfoDisplay,
+            "hosts-display": HostsDisplay,
+            "challenge-display": ChallengeDisplay
         },
         data() {
             return {
