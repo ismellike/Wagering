@@ -15,7 +15,7 @@
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer />
-                            <timeago class="caption" :datetime="wager.date" autoUpdate/>
+                            <timeago class="caption" :datetime="wager.date" autoUpdate />
                         </v-card-actions>
                     </v-card>
                 </v-skeleton-loader>
@@ -37,6 +37,11 @@
                     </v-card>
                 </v-skeleton-loader>
             </v-col>
+            <v-col cols="12" sm="10" md="8" class="mx-auto">
+                <v-skeleton-loader :loading="loading" type="card" transition="scale-transition">
+                    <notifications-display :notifications="notifications" />
+                </v-skeleton-loader>
+            </v-col>
         </v-row>
     </v-container>
 </template>
@@ -44,11 +49,13 @@
     import InfoDisplay from "@/components/Wager/InfoDisplay";
     import HostsDisplay from "@/components/Wager/HostsDisplay";
     import ChallengeDisplay from "@/components/Wager/ChallengeDisplay";
+    import NotificationsDisplay from "@/components/EventNotificationsDisplay";
     export default {
         components: {
             "info-display": InfoDisplay,
             "hosts-display": HostsDisplay,
-            "challenge-display": ChallengeDisplay
+            "challenge-display": ChallengeDisplay,
+            "notifications-display": NotificationsDisplay
         },
         data() {
             return {
@@ -73,7 +80,13 @@
                     });
             }
         },
-        computed: {},
+        computed: {
+            notifications() {
+                if (this.wager == null || this.wager.notifications == null)
+                    return null;
+                return this.wager.notifications.map(x => x.notification);
+            }
+        },
         created() {
             this.getData();
         }
