@@ -32,10 +32,6 @@ namespace Wagering
             Options = operationalStoreOptions;
         }
 
-        public ApplicationDbContext(DbContextOptions options) : base(options, null)
-        {
-        }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ConfigurePersistedGrantContext(Options.Value);
