@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Wagering.Migrations
@@ -81,6 +80,20 @@ namespace Wagering.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(nullable: false),
+                    Message = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PersistedGrants",
                 columns: table => new
                 {
@@ -98,11 +111,24 @@ namespace Wagering.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Rules",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Message = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rules", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -123,7 +149,7 @@ namespace Wagering.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -204,34 +230,11 @@ namespace Wagering.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PersonalNotifications",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Message = table.Column<string>(nullable: true),
-                    UserId = table.Column<string>(nullable: true),
-                    IsRead = table.Column<bool>(nullable: false),
-                    Link = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PersonalNotifications", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PersonalNotifications_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Rating",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     GameName = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: true),
                     Value = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
@@ -259,7 +262,7 @@ namespace Wagering.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Status = table.Column<byte>(nullable: false),
                     GameName = table.Column<string>(nullable: true),
                     Description = table.Column<string>(maxLength: 50, nullable: false),
@@ -283,7 +286,7 @@ namespace Wagering.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Status = table.Column<byte>(nullable: false),
                     GameName = table.Column<string>(nullable: true),
                     Description = table.Column<string>(maxLength: 50, nullable: false),
@@ -305,11 +308,11 @@ namespace Wagering.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Challenges",
+                name: "WagerChallenges",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Status = table.Column<byte>(nullable: false),
                     WagerId = table.Column<int>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
@@ -318,9 +321,9 @@ namespace Wagering.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Challenges", x => x.Id);
+                    table.PrimaryKey("PK_WagerChallenges", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Challenges_Wagers_WagerId",
+                        name: "FK_WagerChallenges_Wagers_WagerId",
                         column: x => x.WagerId,
                         principalTable: "Wagers",
                         principalColumn: "Id",
@@ -328,56 +331,29 @@ namespace Wagering.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventNotifications",
+                name: "WagerHostBids",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Message = table.Column<string>(nullable: true),
-                    TournamentId = table.Column<int>(nullable: true),
-                    WagerId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EventNotifications", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_EventNotifications_Tournaments_TournamentId",
-                        column: x => x.TournamentId,
-                        principalTable: "Tournaments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_EventNotifications_Wagers_WagerId",
-                        column: x => x.WagerId,
-                        principalTable: "Wagers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "WagerBids",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(nullable: true),
                     Approved = table.Column<bool>(nullable: true),
-                    WagerId = table.Column<int>(nullable: false),
-                    Percentage = table.Column<byte>(nullable: false),
-                    IsOwner = table.Column<bool>(nullable: false)
+                    ReceivablePt = table.Column<byte>(nullable: false),
+                    PayablePt = table.Column<byte>(nullable: false),
+                    IsOwner = table.Column<bool>(nullable: false),
+                    WagerId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WagerBids", x => x.Id);
+                    table.PrimaryKey("PK_WagerHostBids", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WagerBids_AspNetUsers_UserId",
+                        name: "FK_WagerHostBids_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_WagerBids_Wagers_WagerId",
+                        name: "FK_WagerHostBids_Wagers_WagerId",
                         column: x => x.WagerId,
                         principalTable: "Wagers",
                         principalColumn: "Id",
@@ -385,28 +361,81 @@ namespace Wagering.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "WagerChallengeBid",
+                name: "WagerNotifications",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(nullable: true),
-                    Approved = table.Column<bool>(nullable: true),
-                    ChallengeId = table.Column<int>(nullable: false),
-                    Percentage = table.Column<byte>(nullable: false),
-                    IsOwner = table.Column<bool>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    WagerId = table.Column<int>(nullable: false),
+                    NotificationId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WagerChallengeBid", x => x.Id);
+                    table.PrimaryKey("PK_WagerNotifications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WagerChallengeBid_Challenges_ChallengeId",
-                        column: x => x.ChallengeId,
-                        principalTable: "Challenges",
+                        name: "FK_WagerNotifications_Notifications_NotificationId",
+                        column: x => x.NotificationId,
+                        principalTable: "Notifications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_WagerChallengeBid_AspNetUsers_UserId",
+                        name: "FK_WagerNotifications_Wagers_WagerId",
+                        column: x => x.WagerId,
+                        principalTable: "Wagers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WagerRules",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RuleId = table.Column<int>(nullable: false),
+                    WagerId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WagerRules", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WagerRules_Rules_RuleId",
+                        column: x => x.RuleId,
+                        principalTable: "Rules",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WagerRules_Wagers_WagerId",
+                        column: x => x.WagerId,
+                        principalTable: "Wagers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WagerChallengeBids",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(nullable: true),
+                    Approved = table.Column<bool>(nullable: true),
+                    ReceivablePt = table.Column<byte>(nullable: false),
+                    PayablePt = table.Column<byte>(nullable: false),
+                    IsOwner = table.Column<bool>(nullable: false),
+                    ChallengeId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WagerChallengeBids", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WagerChallengeBids_WagerChallenges_ChallengeId",
+                        column: x => x.ChallengeId,
+                        principalTable: "WagerChallenges",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WagerChallengeBids_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -427,7 +456,8 @@ namespace Wagering.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -453,12 +483,8 @@ namespace Wagering.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Challenges_WagerId",
-                table: "Challenges",
-                column: "WagerId");
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeviceCodes_DeviceCode",
@@ -472,16 +498,6 @@ namespace Wagering.Migrations
                 column: "Expiration");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventNotifications_TournamentId",
-                table: "EventNotifications",
-                column: "TournamentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EventNotifications_WagerId",
-                table: "EventNotifications",
-                column: "WagerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PersistedGrants_Expiration",
                 table: "PersistedGrants",
                 column: "Expiration");
@@ -490,11 +506,6 @@ namespace Wagering.Migrations
                 name: "IX_PersistedGrants_SubjectId_ClientId_Type",
                 table: "PersistedGrants",
                 columns: new[] { "SubjectId", "ClientId", "Type" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PersonalNotifications_UserId",
-                table: "PersonalNotifications",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rating_GameName",
@@ -512,24 +523,49 @@ namespace Wagering.Migrations
                 column: "GameName");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WagerBids_UserId",
-                table: "WagerBids",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WagerBids_WagerId",
-                table: "WagerBids",
-                column: "WagerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WagerChallengeBid_ChallengeId",
-                table: "WagerChallengeBid",
+                name: "IX_WagerChallengeBids_ChallengeId",
+                table: "WagerChallengeBids",
                 column: "ChallengeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WagerChallengeBid_UserId",
-                table: "WagerChallengeBid",
+                name: "IX_WagerChallengeBids_UserId",
+                table: "WagerChallengeBids",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WagerChallenges_WagerId",
+                table: "WagerChallenges",
+                column: "WagerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WagerHostBids_UserId",
+                table: "WagerHostBids",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WagerHostBids_WagerId",
+                table: "WagerHostBids",
+                column: "WagerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WagerNotifications_NotificationId",
+                table: "WagerNotifications",
+                column: "NotificationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WagerNotifications_WagerId",
+                table: "WagerNotifications",
+                column: "WagerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WagerRules_RuleId",
+                table: "WagerRules",
+                column: "RuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WagerRules_WagerId",
+                table: "WagerRules",
+                column: "WagerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Wagers_GameName",
@@ -558,34 +594,40 @@ namespace Wagering.Migrations
                 name: "DeviceCodes");
 
             migrationBuilder.DropTable(
-                name: "EventNotifications");
-
-            migrationBuilder.DropTable(
                 name: "PersistedGrants");
-
-            migrationBuilder.DropTable(
-                name: "PersonalNotifications");
 
             migrationBuilder.DropTable(
                 name: "Rating");
 
             migrationBuilder.DropTable(
-                name: "WagerBids");
+                name: "Tournaments");
 
             migrationBuilder.DropTable(
-                name: "WagerChallengeBid");
+                name: "WagerChallengeBids");
+
+            migrationBuilder.DropTable(
+                name: "WagerHostBids");
+
+            migrationBuilder.DropTable(
+                name: "WagerNotifications");
+
+            migrationBuilder.DropTable(
+                name: "WagerRules");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Tournaments");
-
-            migrationBuilder.DropTable(
-                name: "Challenges");
+                name: "WagerChallenges");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "Rules");
 
             migrationBuilder.DropTable(
                 name: "Wagers");

@@ -27,7 +27,7 @@ namespace Wagering
         {
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
             services.AddDefaultIdentity<ApplicationUser>()
