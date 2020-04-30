@@ -138,6 +138,7 @@ export class AuthorizeService {
 	updateState(user) {
 		if (user) {
 			store.dispatch("setLogin", {
+				id: user.profile.sub,
 				username: user.profile.name,
 				token: user.access_token
 			});

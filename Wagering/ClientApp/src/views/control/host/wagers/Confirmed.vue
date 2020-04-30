@@ -59,10 +59,7 @@
         },
         data() {
             return {
-                wager: {
-                    hosts: [],
-                    description: null
-                },
+                wager: {},
                 loading: true,
                 errors: []
             };
