@@ -75,7 +75,7 @@
                             "wager_" + this.$route.params.id,
                             {
                                 message:
-                                    this.$store.state.account.username + " has accepted the wager.",
+                                    this.$store.getters.username + " has accepted the wager.",
                                 isRead: false,
                                 link: this.$route.path
                             }
@@ -94,7 +94,7 @@
                             "wager_" + this.$route.params.id,
                             {
                                 message:
-                                    this.$store.state.account.username + " has declined the wager.",
+                                    this.$store.getters.username + " has declined the wager.",
                                 isRead: false,
                                 link: this.$route.path
                             }
@@ -108,7 +108,7 @@
         computed: {
             userBid() {
                 return this.wager.hosts.find(host => {
-                    return host.user.userName == this.$store.state.account.username;
+                    return host.user.userName == this.$store.getters.username;
                 });
             },
             hasAccepted() {

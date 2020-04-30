@@ -6,7 +6,7 @@
                     <v-card-title class="display-1">Fortnite</v-card-title>
                     <v-card-text>
                         <v-btn class="ma-1" color="secondary" :to="{ name: 'wagers', params: { game: 'fortnite' }}">
-                            <v-icon left>mdi-coin</v-icon>Wagers
+                            <v-icon left>mdi-currency-usd-circle</v-icon>Wagers
                         </v-btn>
                         <v-btn class="ma-1" color="secondary" :to="{ name: 'tournaments', params: { game: 'fortnite' }}">
                             <v-icon left>mdi-trophy</v-icon>Tournaments

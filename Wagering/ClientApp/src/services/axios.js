@@ -5,8 +5,8 @@ axios.interceptors.request.use(request => {
     if (process.env.NODE_ENV == "development") {
         console.log("REQUEST", request);
     }
-    if (store.state.account.isAuthenticated) {
-        request.headers.Authorization = `Bearer ${store.state.account.token}`;
+    if (store.getters.isAuthenticated) {
+        request.headers.Authorization = `Bearer ${store.getters.token}`;
     }
     return request;
 }, function (err) {

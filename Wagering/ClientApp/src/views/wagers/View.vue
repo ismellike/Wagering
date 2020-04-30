@@ -10,7 +10,7 @@
                 <v-expansion-panels v-if="!isHost" focusable>
                     <v-expansion-panel>
                         <v-expansion-panel-header class="title">Apply</v-expansion-panel-header>
-                        <v-expansion-panel-content v-if="this.$store.state.account.isAuthenticated">
+                        <v-expansion-panel-content v-if="this.$store.getters.isAuthenticated">
                             <v-container></v-container>
                             <!--Apply logic here-->
                         </v-expansion-panel-content>

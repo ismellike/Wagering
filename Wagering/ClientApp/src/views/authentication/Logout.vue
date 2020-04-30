@@ -58,7 +58,6 @@
                                 case AuthenticationResultStatus.Redirect:
                                     break;
                                 case AuthenticationResultStatus.Success:
-                                    this.removeUser();
                                     this.navigateToReturnUrl(returnUrl);
                                     break;
                                 case AuthenticationResultStatus.Fail:
@@ -83,7 +82,6 @@
                             // is when we are doing a redirect sign in flow.
                             throw new Error("Should not redirect.");
                         case AuthenticationResultStatus.Success:
-                            this.removeUser();
                             this.navigateToReturnUrl(this.getReturnUrl(result.state));
                             break;
                         case AuthenticationResultStatus.Fail:
@@ -93,9 +91,6 @@
                             throw new Error("Invalid authentication result status.");
                     }
                 });
-            },
-            removeUser() {
-                this.$store.dispatch("setLogout");
             },
             getReturnUrl(state) {
                 const params = new URLSearchParams(window.location.search);

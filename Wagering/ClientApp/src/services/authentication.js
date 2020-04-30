@@ -6,6 +6,8 @@ import {
 	ApplicationPaths,
 	ApplicationName
 } from '../constants/authentication';
+import store from "@/store";
+
 export class AuthorizeService {
 	_callbacks = [];
 	_user = null;
@@ -134,6 +136,14 @@ export class AuthorizeService {
 	}
 
 	updateState(user) {
+		if (user) {
+			store.dispatch("setLogin", {
+				username: user.profile.name,
+				token: user.access_token
+			});
+		} else {
+			store.dispatch("setLogout");
+		}
 		this._user = user;
 		this._isAuthenticated = !!this._user;
 	}

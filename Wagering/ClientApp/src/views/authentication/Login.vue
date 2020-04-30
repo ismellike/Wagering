@@ -87,7 +87,6 @@
                             // is when we are doing a redirect sign in flow.
                             throw new Error("Should not redirect.");
                         case AuthenticationResultStatus.Success:
-                            this.addUser();
                             this.navigateToReturnUrl(this.getReturnUrl(result.state));
                             break;
                         case AuthenticationResultStatus.Fail:
@@ -98,22 +97,6 @@
                                 `Invalid authentication result status '${result.status}'.`
                             );
                     }
-                });
-            },
-            addUser() {
-                AuthService.getUser().then(profile => {
-                    AuthService.getAccessToken().then(accessToken => {
-                        const name = profile && profile.name;
-                        if (name && accessToken) {
-                            var payload = {
-                                username: name,
-                                token: accessToken
-                            }
-                            this.$store.dispatch("setLogin", payload);
-                        }
-                    });
-                }).catch(e => {
-                    console.log(e);
                 });
             },
             getReturnUrl(state) {

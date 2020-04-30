@@ -34,7 +34,7 @@
                         <v-list-item-title>The Hub</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <template v-if="this.$store.state.account.isAuthenticated">
+                <template v-if="$store.getters.isAuthenticated">
                     <v-list-item to="/host" link>
                         <v-list-item-action>
                             <v-badge :content="notifications.length"
@@ -154,7 +154,6 @@
 
 <script>
     import LoginMenu from "@/components/LoginMenu.vue";
-    import AuthService from "@/services/authentication";
     import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
     export default {
@@ -205,24 +204,9 @@
             }
         },
         created() {
-            if (this.$store.state.account.isAuthenticated && !this.$route.path.includes("authentication")) {
-                AuthService.getAccessToken().then(accessToken => {
-                    if (accessToken) {
-                        if (accessToken != this.$store.state.account.token) {
-                            var payload = {
-                                username: this.$store.state.account.username,
-                                token: accessToken
-                            }
-                            this.$store.dispatch("setLogin", payload);
-                        }
-                    }
-                    else {
-                        this.$store.dispatch("setLogout");
-                    }
-                });
-
+            if (this.$store.getters.isAuthenticated && !this.$route.path.includes("authentication")) {
                 this.$microsoft.signalr = new HubConnectionBuilder()
-                    .withUrl("/group-hub", { accessTokenFactory: () => this.$store.state.account.token })
+                    .withUrl("/group-hub", { accessTokenFactory: () => this.$store.getters.token })
                     .configureLogging(LogLevel.Information)
                     .withAutomaticReconnect()
                     .build();

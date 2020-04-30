@@ -171,7 +171,7 @@ export default {
         isPrivate: false,
         hosts: [
           {
-            userName: this.$store.state.account.username,
+            userName: this.$store.getters.username,
             approved: true,
             receivablePt: 100,
             payablePt: 100,
@@ -345,7 +345,7 @@ export default {
               users,
               {
                 message:
-                  this.$store.state.account.username +
+                  this.$store.getters.username +
                   " created a new wager with you.",
                 isRead: false,
                 link: "/host/wagers/pending/" + response.data.id
