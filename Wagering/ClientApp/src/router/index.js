@@ -103,6 +103,11 @@ const routes = [
 		component: () => import("@/views/wagers/View.vue")
 	},
 	{
+		path: "/:game/wagers/apply/:id",
+		name= "wager_apply",
+		component: () => import("@/views/wagers/Apply.vue")
+	},
+	{
 		path: "/users/:name",
 		name: "user_view",
 		component: () => import("@/views/users/View.vue")

@@ -37,10 +37,9 @@
                 <template v-if="$store.getters.isAuthenticated">
                     <v-list-item to="/host" link>
                         <v-list-item-action>
-                            <v-badge :content="notifications.length"
-                                     :value="notifications.length"
-                                     color="error"
-                                     overlap>
+                            <v-badge :content="hostCount"
+                                     :value="hostCount"
+                                     color="error">
                                 <v-icon>
                                     mdi-clipboard
                                 </v-icon>
@@ -55,7 +54,11 @@
                     </v-list-item>
                     <v-list-item to="/client" link>
                         <v-list-item-action>
-                            <v-icon>mdi-clipboard-multiple</v-icon>
+                            <v-badge :content="clientCount"
+                                     :value="clientCount"
+                                     color="error">
+                                <v-icon>mdi-clipboard-multiple</v-icon>
+                            </v-badge>
                         </v-list-item-action>
 
                         <v-list-item-content>
@@ -196,6 +199,10 @@
                         this.$microsoft.signalr.invoke("AddToGroup", group);
                     });
                     this.hostCount = result.data.hostGroups.length;
+                    result.data.clientGroups.forEach(group => {
+                        this.$microsoft.signalr.invoke("AddToGroup", group);
+                    });
+                    this.clientCount = result.data.clientGroups.length;
                 });
             },
             listen() {

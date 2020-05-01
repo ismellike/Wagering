@@ -9,6 +9,10 @@
                             <v-btn color="success" @click="accept">Accept</v-btn>
                             <v-btn color="error" @click="decline">Decline</v-btn>
                         </template>
+                        <template v-else v-slot:actions>
+                            <v-spacer />
+                            <v-btn color="error" @click="cancel">Cancel</v-btn>
+                        </template>
                     </hosts-display>
                 </v-skeleton-loader>
             </v-col>
@@ -70,6 +74,7 @@
                 this.$axios
                     .post("/api/bid/wager/accept", this.userBid.id)
                     .then(() => {
+                        this.userBid.approved = true;
                         this.$microsoft.signalr.invoke(
                             "NotifyGroup",
                             "wager_" + this.$route.params.id,
@@ -89,6 +94,7 @@
                 this.$axios
                     .post("/api/bid/wager/decline", this.userBid.id)
                     .then(() => {
+                        this.userBid.approved = false;
                         this.$microsoft.signalr.invoke(
                             "NotifyGroup",
                             "wager_" + this.$route.params.id,
@@ -103,12 +109,28 @@
                     .catch(e => {
                         this.errors = e.response.data.splice();
                     });
+            },
+            cancel() {
+                this.$axios.post("/api/wager/cancel", this.$route.params.id).then(() => {
+                    this.$microsoft.signalr.invoke(
+                        "NotifyGroup",
+                        "wager_" + this.$route.params.id,
+                        {
+                            message:
+                                this.$store.getters.username + " has canceled the wager.",
+                            isRead: false,
+                            link: this.$route.path
+                        }
+                    );
+                }).catch(e => {
+                    this.errors = e.response.data.splice();
+                });
             }
         },
         computed: {
             userBid() {
                 return this.wager.hosts.find(host => {
-                    return host.user.userName == this.$store.getters.username;
+                    return host.userId == this.$store.getters.id;
                 });
             },
             hasAccepted() {

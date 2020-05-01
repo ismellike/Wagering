@@ -23,45 +23,6 @@ namespace Wagering.Controllers
             _context = context;
         }
 
-        private async Task Confirm(int wagerId, string username)
-        {
-            var wager = await _context.Wagers.FirstOrDefaultAsync(x => x.Id == wagerId);
-            if (wager == null)
-                return;
-            wager.Status = 1;
-            WagerNotification notification = new WagerNotification
-            {
-                WagerId = wagerId,
-                Notification = new Notification
-                {
-                    Date = DateTime.Now,
-                    Message = $"{username} has accepted the wager."
-                }
-            };
-            _context.WagerNotifications.Add(notification);
-            _context.Wagers.Update(wager);
-        }
-
-        private async Task Decline(int wagerId, string username)
-        {
-            var wager = await _context.Wagers.FirstOrDefaultAsync(x => x.Id == wagerId);
-            if (wager == null)
-                return;
-            wager.Status = 2;
-            WagerNotification notification = new WagerNotification
-            {
-                WagerId = wagerId,
-                Notification = new Notification
-                {
-                    Date = DateTime.Now,
-                    Message = $"{username} has declined the wager."
-                }
-            };
-            _context.WagerNotifications.Add(notification);
-            _context.Wagers.Update(wager);
-        }
-
-
         [HttpPost("wager/accept")]
         public async Task<IActionResult> AcceptBid(int id)
         {
@@ -91,7 +52,7 @@ namespace Wagering.Controllers
 
             bid.Approved = true;
             if (bid.Wager.IsApproved())
-                await Confirm(bid.WagerId, user.UserName);
+                await _context.Confirm(bid.WagerId, user.UserName);
             _context.WagerHostBids.Update(bid);
             await _context.SaveChangesAsync();
             return Ok();
@@ -126,7 +87,7 @@ namespace Wagering.Controllers
             }
             bid.Approved = false;
             _context.WagerHostBids.Update(bid);
-            await Decline(bid.WagerId, user.UserName);
+            await _context.Decline(bid.WagerId, user.UserName);
             await _context.SaveChangesAsync();
             return Ok();
         }

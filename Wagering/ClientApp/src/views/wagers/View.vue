@@ -2,7 +2,13 @@
     <v-container>
         <v-container>
             <v-skeleton-loader :loading="loading" type="card" transition="scale-transition">
-                <wager-display :wager="wager" />
+                <wager-display :wager="wager">
+                    <template v-if="!isHost && $store.getters.isAuthenticated" v-slot:button>
+                        <v-btn color="secondary" :to="{ name: 'wager_apply', params: { id: wager.id, game: $route.params.game }}">
+                            Apply
+                        </v-btn>
+                    </template>
+                </wager-display>
             </v-skeleton-loader>
         </v-container>
         <v-container v-if="!isHost">
@@ -13,7 +19,7 @@
                         <v-container v-if="$store.getters.isAuthenticated">
                             <!--Logic-->
                         </v-container>
-                        <v-container v-else>Sign in to apply for a wager.</v-container>
+                        <v-container v-else>Sign in to apply.</v-container>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
             </v-expansion-panels>

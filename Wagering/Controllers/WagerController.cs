@@ -59,7 +59,8 @@ namespace Wagering.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            IQueryable<Wager> wagerQuery = _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => !x.IsPrivate).Where(x => x.Status == 1).Where(x => x.GameName == Game.Name);
+            byte confirmed = (byte)Status.Confirmed;
+            IQueryable<Wager> wagerQuery = _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Where(x => !x.IsPrivate).Where(x => x.Status == confirmed).Where(x => x.GameName == Game.Name);
 
             if (query.playerCount.HasValue)
                 wagerQuery = wagerQuery.Where(x => x.Hosts.Count == query.playerCount);
@@ -86,6 +87,7 @@ namespace Wagering.Controllers
         }
 
         [HttpGet("host")]
+        [Authorize]
         public async Task<IActionResult> HostWagers()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -99,6 +101,7 @@ namespace Wagering.Controllers
         }
 
         [HttpGet("host/{id}")]
+        [Authorize]
         public async Task<IActionResult> GetHostWager(int id)
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -125,6 +128,32 @@ namespace Wagering.Controllers
                 return BadRequest(ModelState);
             }
             return Ok(wager);
+        }
+
+        [HttpPost("cancel/{id}")]
+        [Authorize]
+        public async Task<IActionResult> CancelWager(int id)
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user == null)
+            {
+                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
+                return BadRequest(ModelState);
+            }
+            Wager wager = await _context.Wagers.Include(x => x.Hosts).FirstOrDefaultAsync(x => x.Id == id);
+
+            if (wager == null)
+            {
+                ModelState.AddModelError("Not Found", _errorMessages.NotFound);
+                return BadRequest(ModelState);
+            }
+            if (!wager.Hosts.Any(x => x.UserId == user.Id))
+            {
+                ModelState.AddModelError("Not Host", "You are not a host of this wager.");
+                return BadRequest(ModelState);
+            }
+
+            return Ok();
         }
 
         // POST: api/Wagers
