@@ -5,8 +5,13 @@
 </template>
 <script>
     export default {
-        props: {
+        data() {
+            challenge: { }
+        },
+        methods: {
+            createChallenge() {
 
+            }
         }
     };
 </script>

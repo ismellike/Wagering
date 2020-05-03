@@ -6,13 +6,13 @@ import VuexPersist from "vuex-persist";
 Vue.use(Vuex);
 
 const vuexPersist = new VuexPersist({
-  key: "Wagering.gg",
-  storage: window.localStorage
+    key: "Wagering.gg",
+    storage: window.localStorage,
 });
 
 export default new Vuex.Store({
-  plugins: [vuexPersist.plugin],
-  modules: {
-    account
-  }
+    plugins: [vuexPersist.plugin],
+    modules: {
+        account,
+    },
 });

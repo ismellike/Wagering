@@ -355,3 +355,4 @@ MigrationBackup/
 Wagering/appsettings.Development.json
 Wagering/appsettings.Production.json
 Wagering/ClientApp/package-lock.json
+package-lock.json

@@ -11,19 +11,6 @@
                 </wager-display>
             </v-skeleton-loader>
         </v-container>
-        <v-container v-if="!isHost">
-            <v-expansion-panels v-if="!isHost">
-                <v-expansion-panel>
-                    <v-expansion-panel-header class="title">Apply</v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                        <v-container v-if="$store.getters.isAuthenticated">
-                            <!--Logic-->
-                        </v-container>
-                        <v-container v-else>Sign in to apply.</v-container>
-                    </v-expansion-panel-content>
-                </v-expansion-panel>
-            </v-expansion-panels>
-        </v-container>
         <v-container>
             <v-skeleton-loader :loading="loading" type="card" transition="scale-transition">
                 <v-card>

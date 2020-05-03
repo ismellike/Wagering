@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "noEmitOnError": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "sourceMap": true,
+        "target": "ES2015",
+        "module": "ES2015",
+        "moduleResolution": "node",
+        "outDir": "./built",
+        "allowJs": true,
+        "baseUrl": "./src",
+        "paths": {
+            "@/*": ["./*"]
+        }
+    },
+    "compileOnSave": true,
+    "include": ["./src/**/*"]
+}

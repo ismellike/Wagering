@@ -14,10 +14,14 @@
                         <v-container>
                             <wager-display :wager="wager" ignoreHosts>
                                 <template v-slot:button>
-                                    <v-btn color="secondary"
-                                           :to="{ name: 'wager_pending', params: { id: wager.id } }">
-                                        View
-                                    </v-btn>
+                                    <v-btn
+                                        color="secondary"
+                                        :to="{
+                                            name: 'wager_pending',
+                                            params: { id: wager.id },
+                                        }"
+                                        >View</v-btn
+                                    >
                                 </template>
                             </wager-display>
                         </v-container>
@@ -33,10 +37,14 @@
                         <v-container>
                             <wager-display :wager="wager" ignoreHosts>
                                 <template v-slot:button>
-                                    <v-btn color="secondary"
-                                           :to="{ name: 'wager_confirmed', params: { id: wager.id } }">
-                                        View
-                                    </v-btn>
+                                    <v-btn
+                                        color="secondary"
+                                        :to="{
+                                            name: 'wager_confirmed',
+                                            params: { id: wager.id },
+                                        }"
+                                        >View</v-btn
+                                    >
                                 </template>
                             </wager-display>
                         </v-container>
@@ -52,10 +60,14 @@
                         <v-container>
                             <wager-display :wager="wager" ignoreHosts>
                                 <template v-slot:button>
-                                    <v-btn color="secondary"
-                                           :to="{ name: 'wager_completed', params: { id: wager.id } }">
-                                        View
-                                    </v-btn>
+                                    <v-btn
+                                        color="secondary"
+                                        :to="{
+                                            name: 'wager_completed',
+                                            params: { id: wager.id },
+                                        }"
+                                        >View</v-btn
+                                    >
                                 </template>
                             </wager-display>
                         </v-container>
@@ -66,34 +78,36 @@
     </v-tabs>
 </template>
 <script>
-    import WagerDisplay from "@/components/Wager/WagerDisplay";
-    export default {
-        components: {
-            "wager-display": WagerDisplay
-        },
-        data() {
-            return {
-                pending: [],
-                confirmed: [],
-                completed: [],
-                errors: []
-            };
-        },
-        created() {
-            this.$axios.get("/api/wager/host").then(response => {
-                response.data.forEach(item => {
+import WagerDisplay from "@/components/Wager/WagerDisplay";
+export default {
+    components: {
+        "wager-display": WagerDisplay,
+    },
+    data() {
+        return {
+            pending: [],
+            confirmed: [],
+            completed: [],
+            errors: [],
+        };
+    },
+    created() {
+        this.$axios
+            .get("/api/wager/host")
+            .then((response) => {
+                response.data.forEach((item) => {
                     if (item.status == 0) {
                         this.pending.push(item);
                     } else if (item.status == 1) {
                         this.confirmed.push(item);
-                    }
-                    else if (item.status == 2) {
+                    } else if (item.status == 2) {
                         this.completed.push(item);
                     }
                 });
-            }).catch(e => {
+            })
+            .catch((e) => {
                 this.errors = e.response.data.splice();
             });
-        }
-    };
+    },
+};
 </script>
