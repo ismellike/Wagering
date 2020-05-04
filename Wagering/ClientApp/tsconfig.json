@@ -2,12 +2,13 @@
     "compilerOptions": {
         "target": "ES2015",
         "module": "ESNext",
-        "jsx": "preserve",
         "importHelpers": true,
+        "declaration": true,
         "moduleResolution": "node",
-        "declaration": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "noEmitOnError": true,
+        "noImplicitAny": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "sourceMap": true,
@@ -27,5 +28,6 @@
         "tests/**/*.ts",
         "tests/**/*.tsx"
     ],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules"],
+    "compileOnSave": true
 }

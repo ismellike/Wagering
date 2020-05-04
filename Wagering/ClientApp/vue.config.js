@@ -2,7 +2,7 @@ module.exports = {
     devServer: {
         progress: false,
         liveReload: true,
-        public: "0.0.0.0",
+        public: "localhost:8080",
     },
     pages: {
         app: {

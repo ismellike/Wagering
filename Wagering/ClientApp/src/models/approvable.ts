@@ -1,0 +1,3 @@
+interface Approvable {
+    status: number;
+}
