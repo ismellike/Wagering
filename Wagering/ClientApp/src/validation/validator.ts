@@ -1,5 +1,6 @@
 import Vue from "vue";
 import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
+/* eslint-disable @typescript-eslint/camelcase */
 import {
     required,
     email,

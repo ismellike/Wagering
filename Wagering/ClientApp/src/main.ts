@@ -15,7 +15,6 @@ Vue.use(VueTimeago, {
         "en-US": require("date-fns/locale/en"),
     },
 });
-Vue.config.productionTip = false;
 Vue.prototype.$axios = axios;
 Vue.prototype.$microsoft = { signalr: null };
 
