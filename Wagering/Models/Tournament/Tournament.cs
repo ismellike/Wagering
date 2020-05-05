@@ -2,7 +2,7 @@
 
 namespace Wagering.Models
 {
-    public class Tournament : Event
+    public class Tournament : Group
     {
         [Column(TypeName = "decimal(18,7)")]
         public decimal Entry { get; set; }

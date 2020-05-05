@@ -4,6 +4,9 @@ module.exports = {
         liveReload: true,
         public: "localhost:8080",
     },
+    chainWebpack: (config) => {
+        config.resolve.alias.set("@", "src");
+    },
     pages: {
         app: {
             entry: "src/main.ts",

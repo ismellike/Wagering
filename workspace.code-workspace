@@ -1,8 +1,13 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {}
+    "folders": [
+        {
+            "name": "Client",
+            "path": "./Wagering/ClientApp"
+        },
+        {
+            "name": "Server",
+            "path": "./Wagering"
+        }
+    ],
+    "settings": {}
 }

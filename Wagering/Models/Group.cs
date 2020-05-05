@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Wagering.Models
 {
-  public abstract class Event : Approvable
+  public abstract class Group : Approvable
   {
     public int Id { get; set; }
     public string GameUrl { get; set; }

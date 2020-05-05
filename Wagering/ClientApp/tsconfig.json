@@ -13,11 +13,11 @@
         "allowSyntheticDefaultImports": true,
         "sourceMap": true,
         "baseUrl": ".",
+        "paths": {
+            "@/*": ["./src/*"]
+        },
         "typeRoots": ["node_modules/@types"],
         "types": ["webpack-env"],
-        "paths": {
-            "@/*": ["src/*"]
-        },
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
     },
     "allowJs": true,

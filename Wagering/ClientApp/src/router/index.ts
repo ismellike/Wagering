@@ -1,5 +1,5 @@
 import Vue from "vue";
-import Router from "vue-router";
+import Router, { Route } from "vue-router";
 import Home from "@/views/Home.vue";
 import {
     LoginActions,
@@ -123,7 +123,7 @@ const routes = [
         props: {
             action: LoginActions.Login,
         },
-        beforeEnter: (to, from, next) => {
+        beforeEnter: (to: Route, from: Route, next: Function) => {
             if (
                 to.query.returnUrl == null &&
                 !window.location.href.includes("authentication") &&
@@ -166,7 +166,7 @@ const routes = [
         props: {
             action: LoginActions.Register,
         },
-        beforeEnter: (to, from, next) => {
+        beforeEnter: (to: Route, from: Route, next: Function) => {
             if (
                 to.query.returnUrl == null &&
                 !window.location.href.includes("authentication") &&

@@ -34,7 +34,7 @@ extend("min", {
 // Add a rule.
 extend("less_than", {
     params: ["target"],
-    validate(value, params) {
+    validate(value, params: Record<"target", any>) {
         if (value === null || params["target"] === null) return true;
         return value <= params["target"];
     },
@@ -42,14 +42,14 @@ extend("less_than", {
 });
 extend("greater_than", {
     params: ["target"],
-    validate(value, params) {
+    validate(value, params: Record<"target", any>) {
         if (value === null || params["target"] === null) return true;
         return value >= params["target"];
     },
     message: "{_field_} must be greater than {target}.",
 });
 extend("min_amount", {
-    validate: (value) => value > 0.01,
+    validate: (value) => value >= 0.01,
     message: "The minimum amount is .01",
 });
 

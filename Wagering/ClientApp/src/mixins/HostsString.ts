@@ -1,25 +1,21 @@
 ﻿export default {
-    data() {
-        return {
-            cutoff: 4,
-        };
-    },
     methods: {
-        hostsString(hosts) {
+        hostsString(hosts: WagerHostBid[] | null) {
             if (hosts == null) return null;
             const length = hosts.length;
-            if (length > this.cutoff) {
+            const cutoff = 4;
+            if (length > cutoff) {
                 return (
                     hosts
-                        .splice(0, this.cutoff)
+                        .splice(0, cutoff)
                         .map((x) => x.user.userName)
                         .join(", ") +
                     ", +" +
-                    (length - this.cutoff + 1) +
+                    (length - cutoff + 1) +
                     " more..."
                 );
             }
-            return hosts.map((x) => (x = x.user.userName)).join(", ");
+            return hosts.map((x) => x.user.userName).join(", ");
         },
     },
 };

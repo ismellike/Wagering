@@ -1,8 +1,8 @@
-﻿import axios from "axios";
+﻿import axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from "axios";
 import store from "@/store";
 
 axios.interceptors.request.use(
-    (request) => {
+    (request: AxiosRequestConfig) => {
         if (process.env.NODE_ENV == "development") {
             console.log("REQUEST", request);
         }
@@ -11,30 +11,30 @@ axios.interceptors.request.use(
         }
         return request;
     },
-    function(err) {
+    (e: AxiosError): Promise<AxiosError> => {
         if (process.env.NODE_ENV == "development") {
-            console.log("ERROR", err);
+            console.log("ERROR", e);
         }
-        return Promise.reject(err);
+        return Promise.reject(e);
     }
 );
 
 axios.interceptors.response.use(
-    (response) => {
+    (response: AxiosResponse) => {
         if (process.env.NODE_ENV == "development") {
             console.log("RESPONSE", response);
         }
         return response;
     },
-    function(err) {
+    (e: AxiosError): Promise<AxiosError> => {
         if (process.env.NODE_ENV == "development") {
-            console.log("ERROR", err);
+            console.log("ERROR", e);
         }
-        if (err.response.status == 401) {
+        if (e.response.status == 401) {
             if (!window.location.href.includes("authentication"))
                 window.location.href = "/authentication/login";
         }
-        return Promise.reject(err);
+        return Promise.reject(e);
     }
 );
 

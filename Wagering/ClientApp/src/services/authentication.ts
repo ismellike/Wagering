@@ -1,17 +1,23 @@
-﻿import { UserManager, WebStorageStateStore } from "oidc-client";
+﻿import { UserManager, WebStorageStateStore, User } from "oidc-client";
 import { ApplicationPaths, ApplicationName } from "../constants/authentication";
 import store from "@/store";
 
-export const AuthenticationResultStatus = {
-    Redirect: "redirect",
-    Success: "success",
-    Fail: "fail",
-};
+export enum AuthenticationResultStatus {
+    Redirect = "redirect",
+    Success = "success",
+    Fail = "fail",
+}
+
+export interface Result {
+    status: AuthenticationResultStatus;
+    message?: string;
+    state?: string;
+}
 
 export class AuthorizeService {
-    _callbacks = [];
-    _user = null;
+    _user: User | null = null;
     _isAuthenticated = false;
+    userManager: UserManager | null = null;
 
     // By default pop ups are disabled because they don't work properly on Edge.
     // If you want to enable pop up authentication simply set this flag to false.
@@ -46,11 +52,11 @@ export class AuthorizeService {
     //    Pop-Up blocker or the user has disabled PopUps.
     // 3) If the two methods above fail, we redirect the browser to the IdP to perform a traditional
     //    redirect flow.
-    async signIn(state) {
+    async signIn(state: string) {
         await this.ensureUserManagerInitialized();
         try {
             const silentUser = await this.userManager.signinSilent(
-                this.createArguments()
+                this.createArguments(null)
             );
             this.updateState(silentUser);
             return this.success(state);
@@ -66,7 +72,7 @@ export class AuthorizeService {
                 }
 
                 const popUpUser = await this.userManager.signinPopup(
-                    this.createArguments()
+                    this.createArguments(null)
                 );
                 this.updateState(popUpUser);
                 return this.success(state);
@@ -95,7 +101,7 @@ export class AuthorizeService {
         }
     }
 
-    async completeSignIn(url) {
+    async completeSignIn(url: string) {
         try {
             await this.ensureUserManagerInitialized();
             const user = await this.userManager.signinCallback(url);
@@ -112,7 +118,7 @@ export class AuthorizeService {
     //    Pop-Up blocker or the user has disabled PopUps.
     // 2) If the method above fails, we redirect the browser to the IdP to perform a traditional
     //    post logout redirect flow.
-    async signOut(state) {
+    async signOut(state: string) {
         await this.ensureUserManagerInitialized();
         try {
             if (this._popUpDisabled) {
@@ -121,7 +127,7 @@ export class AuthorizeService {
                 );
             }
 
-            await this.userManager.signoutPopup(this.createArguments());
+            await this.userManager.signoutPopup(this.createArguments(null));
             this.updateState(undefined);
             return this.success(state);
         } catch (popupSignOutError) {
@@ -138,19 +144,19 @@ export class AuthorizeService {
         }
     }
 
-    async completeSignOut(url) {
+    async completeSignOut(url: string) {
         await this.ensureUserManagerInitialized();
         try {
             const response = await this.userManager.signoutCallback(url);
             this.updateState(null);
-            return this.success(response && response.data);
+            return this.success(response && response.state);
         } catch (error) {
             console.log(`There was an error trying to log out '${error}'.`);
             return this.error(error);
         }
     }
 
-    updateState(user) {
+    updateState(user: User | null) {
         if (user) {
             store.dispatch("setLogin", {
                 id: user.profile.sub,
@@ -164,28 +170,28 @@ export class AuthorizeService {
         this._isAuthenticated = !!this._user;
     }
 
-    createArguments(state) {
+    createArguments(state: string | null) {
         return {
             useReplaceToNavigate: true,
             data: state,
         };
     }
 
-    error(message) {
+    error(message: string): Result {
         return {
             status: AuthenticationResultStatus.Fail,
             message,
         };
     }
 
-    success(state) {
+    success(state: string): Result {
         return {
             status: AuthenticationResultStatus.Success,
             state,
         };
     }
 
-    redirect() {
+    redirect(): Result {
         return {
             status: AuthenticationResultStatus.Redirect,
         };

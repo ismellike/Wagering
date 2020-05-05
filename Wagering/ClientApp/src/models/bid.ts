@@ -1,6 +1,6 @@
 interface Bid {
-    id: number;
-    userId: string;
-    //user?: ApplicationUser;
-    approved: boolean | null;
+    id?: number;
+    userId?: string;
+    user?: ApplicationUser | null;
+    approved?: boolean | null;
 }

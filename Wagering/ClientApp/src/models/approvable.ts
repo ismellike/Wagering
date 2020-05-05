@@ -1,3 +1,3 @@
 interface Approvable {
-    status: number;
+    status?: number;
 }

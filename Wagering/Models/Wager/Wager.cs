@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Wagering.Models
 {
-    public class Wager : Event
+    public class Wager : Group
     {
         public ICollection<WagerHostBid> Hosts { get; set; }
         public ICollection<WagerChallenge> Challenges { get; set; }

@@ -25,9 +25,7 @@
                           v-model="search.select"
                           :loading="search.loading"
                           :items="search.users"
-                          :search-input.sync="
-                                                        searchEvent
-                                                    "
+                          :search-input.sync="searchEvent"
                           cache-items
                           hide-no-data
                           clearable
@@ -169,26 +167,48 @@
   </v-container>
 </template>
 <script lang="ts">
+import { AxiosResponse } from "axios";
+
+interface UserBid {
+  userName: string;
+  userId: number;
+  approved: boolean;
+  receivablePt: number;
+  payablePt: number;
+  isOwner: boolean;
+}
+
+interface Search {
+  users: ApplicationUser[];
+  userName: string;
+  interval: number;
+  loading: boolean;
+  select: ApplicationUser;
+  timer: NodeJS.Timer;
+}
+
 export default {
   data() {
     return {
-      searchEvent: null,
+      searchEvent: null as void,
       wager: {
-        gameName: this.$route.params.game.toLowerCase(),
+        gameUrl: this.$route.params.game.toLowerCase(),
         minimumWager: null,
         maximumWager: null,
         description: null,
         isPrivate: false,
         hosts: [
           {
-            userName: this.$store.getters.username,
+            user: {
+              userName: this.$store.getters.username
+            },
             approved: true,
             receivablePt: 100,
             payablePt: 100,
             isOwner: true
           }
         ]
-      },
+      } as Wager,
       search: {
         users: [],
         userName: null,
@@ -196,7 +216,7 @@ export default {
         loading: false,
         select: null,
         timer: null
-      },
+      } as Search,
       user: {
         userName: null,
         userId: null,
@@ -204,7 +224,7 @@ export default {
         receivablePt: 50,
         payablePt: 50,
         isOwner: false
-      },
+      } as UserBid,
       defaultUser: {
         userName: null,
         userId: null,
@@ -212,9 +232,9 @@ export default {
         receivablePt: 50,
         payablePt: 50,
         isOwner: false
-      },
-      index: -1,
-      dialog: false,
+      } as UserBid,
+      index: -1 as number,
+      dialog: false as boolean,
       headers: [
         {
           text: "Username",
@@ -225,12 +245,11 @@ export default {
         { text: "Receivable (%)", value: "receivablePt" },
         { text: "Approved", value: "approved" },
         { text: "Actions", value: "actions", sortable: false }
-      ],
-      errors: []
+      ]
     };
   },
   watch: {
-    searchEvent(val) {
+    searchEvent(val: string): void {
       clearTimeout(this.search.timer);
       if (
         val &&
@@ -248,53 +267,50 @@ export default {
     }
   },
   computed: {
-    totalReceivable() {
+    totalReceivable(): number {
       return this.wager.hosts.reduce(
-        (x, y) => x + (parseInt(y["receivablePt"]) || 0),
+        (x: number, y: WagerHostBid) => x + y.receivablePt,
         0
       );
     },
-    receivableColor() {
+    receivableColor(): string {
       return this.totalReceivable == 100 ? "success" : "error";
     },
-    totalPayable() {
+    totalPayable(): number {
       return this.wager.hosts.reduce(
-        (x, y) => x + (parseInt(y["payablePt"]) || 0),
+        (x: number, y: WagerHostBid) => x + y.payablePt,
         0
       );
     },
-    payableColor() {
+    payableColor(): string {
       return this.totalPayable == 100 ? "success" : "error";
     },
-    dialogTitle() {
+    dialogTitle(): string {
       return this.index == -1 ? "Add User" : "Edit User";
     }
   },
   methods: {
-    getUsers() {
+    getUsers(): void {
       this.$axios
         .get("/api/user/search/" + this.search.userName)
-        .then(response => {
+        .then((response: AxiosResponse) => {
           this.search.users = response.data;
-        })
-        .catch(e => {
-          this.errors = e.response.data.slice();
         })
         .finally(() => {
           this.search.loading = false;
         });
     },
-    close() {
+    close(): void {
       this.user = Object.assign({}, this.defaultUser);
       this.dialog = false;
       this.search.select = null;
       this.index = -1;
     },
-    addUser() {
+    addUser(): void {
       if (this.search.select) {
         if (
-          !this.wager.hosts.some(x => {
-            return x.userName == name;
+          !this.wager.hosts.some((x: WagerHostBid) => {
+            return x.user.userName == this.username;
           })
         ) {
           this.wager.hosts.push({
@@ -307,7 +323,7 @@ export default {
         }
       }
     },
-    save() {
+    save(): void {
       if (this.index > -1) {
         Object.assign(this.wager.hosts[this.index], this.user);
       } else {
@@ -315,39 +331,39 @@ export default {
       }
       this.close();
     },
-    editUser(item) {
+    editUser(item: WagerHostBid): void {
       this.index = this.wager.hosts.indexOf(item);
       this.user = Object.assign({}, item);
       this.dialog = true;
     },
-    deleteUser(item) {
+    deleteUser(item: WagerHostBid): void {
       const index = this.wager.hosts.indexOf(item);
       confirm("Are you sure you want to remove this user?") &&
         this.wager.hosts.splice(index, 1);
     },
-    normalize() {
+    normalize(): void {
       const count = this.wager.hosts.length;
-      this.wager.hosts.forEach(item => {
+      this.wager.hosts.forEach((item: WagerHostBid) => {
         const amount = Math.floor(100 / count);
         item.receivablePt = amount;
         item.payablePt = amount;
       });
     },
-    submit() {
-      this.$refs.observer.validate().then(response => {
+    submit(): void {
+      this.$refs.observer.validate().then((response: AxiosResponse) => {
         if (response) {
           this.postWager();
         }
       });
     },
-    postWager() {
+    postWager(): void {
       this.$axios
         .post("/api/wager", this.wager)
-        .then(response => {
+        .then((response: AxiosResponse) => {
           this.$microsoft.signalr.invoke("AddToGroup", response.data.groupName);
           const users = response.data.hosts
-            .filter(x => !x.isOwner)
-            .map(x => x.userId);
+            .filter((x: WagerHostBid) => !x.isOwner)
+            .map((x: WagerHostBid) => x.userId);
           if (users.length > 0)
             this.$microsoft.signalr.invoke(
               "AddUsersToGroup",
@@ -367,9 +383,6 @@ export default {
             name: pathName,
             params: { id: response.data.id }
           });
-        })
-        .catch(e => {
-          this.errors = e.response.data.splice();
         });
     }
   }
