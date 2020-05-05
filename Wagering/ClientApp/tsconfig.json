@@ -1,26 +1,26 @@
 {
+    "compileOnSave": true,
     "compilerOptions": {
         "target": "ES2015",
         "module": "ESNext",
-        "importHelpers": true,
+        "strict": true,
+        "pretty": true,
         "declaration": true,
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "noEmitOnError": true,
-        "noImplicitAny": true,
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
         "sourceMap": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["src/*"]
         },
-        "typeRoots": ["node_modules/@types"],
-        "types": ["webpack-env"],
-        "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+        "typeRoots": ["node_modules/@types", "node_modules/vuetify/types"],
+        "types": ["webpack-env", "vuetify", "vue-timeago"],
+        "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+        "outDir": "dist/",
     },
-    "allowJs": true,
     "include": [
         "src/**/*.ts",
         "src/**/*.tsx",
@@ -28,6 +28,5 @@
         "tests/**/*.ts",
         "tests/**/*.tsx"
     ],
-    "exclude": ["node_modules"],
-    "compileOnSave": true
+    "exclude": ["node_modules"]
 }

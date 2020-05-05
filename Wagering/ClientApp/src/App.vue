@@ -137,11 +137,12 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue";
 import LoginMenu from "@/components/LoginMenu.vue";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { AxiosResponse } from "axios";
 
-export default {
+export default Vue.extend({
   name: "App",
   props: {
     source: String
@@ -215,5 +216,5 @@ export default {
       });
     }
   }
-};
+});
 </script>

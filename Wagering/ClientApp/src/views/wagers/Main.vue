@@ -13,60 +13,66 @@
         <v-expansion-panel>
           <v-expansion-panel-header color="accent">Filter</v-expansion-panel-header>
           <v-expansion-panel-content>
-            <ValidationObserver ref="observer">
-              <v-row>
-                <v-col cols="12" sm="6" md="3">
-                  <ValidationProvider rules="alpha_num" name="Username" v-slot="{ errors }">
-                    <v-text-field v-model="form.username" label="Username" :error-messages="errors"></v-text-field>
-                  </ValidationProvider>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <ValidationProvider rules="min_value:1" name="Player Count" v-slot="{ errors }">
-                    <v-text-field
-                      v-model="form.playerCount"
-                      label="Player Count"
-                      type="number"
-                      :error-messages="errors"
-                    ></v-text-field>
-                  </ValidationProvider>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <ValidationProvider
-                    rules="less_than:@maxWager|min_amount"
-                    vid="minWager"
-                    name="Minimum Wager"
-                    v-slot="{ errors }"
-                  >
-                    <v-text-field
-                      v-model="form.minimumWager"
-                      label="Minimum Wager"
-                      type="number"
-                      :error-messages="errors"
-                    ></v-text-field>
-                  </ValidationProvider>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <ValidationProvider
-                    rules="greater_than:@minWager|min_amount"
-                    vid="maxWager"
-                    name="Maximum Wager"
-                    v-slot="{ errors }"
-                  >
-                    <v-text-field
-                      v-model="form.maximumWager"
-                      label="Maximum Wager"
-                      type="number"
-                      :error-messages="errors"
-                    ></v-text-field>
-                  </ValidationProvider>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="text-right">
-                  <v-btn color="success" v-on:click="submit" class="ma-1">Search</v-btn>
-                  <v-btn color="error" v-on:click="clear" class="ma-1">Clear</v-btn>
-                </v-col>
-              </v-row>
+            <ValidationObserver v-slot="{handleSubmit, reset}">
+              <form @submit.prevent="handleSubmit(submit)" @reset.prevent="reset">
+                <v-row>
+                  <v-col cols="12" sm="6" md="3">
+                    <ValidationProvider rules="alpha_num" name="Username" v-slot="{ errors }">
+                      <v-text-field
+                        v-model="form.username"
+                        label="Username"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="3">
+                    <ValidationProvider rules="min_value:1" name="Player Count" v-slot="{ errors }">
+                      <v-text-field
+                        v-model="form.playerCount"
+                        label="Player Count"
+                        type="number"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="3">
+                    <ValidationProvider
+                      rules="less_than:@maxWager|min_amount"
+                      vid="minWager"
+                      name="Minimum Wager"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        v-model="form.minimumWager"
+                        label="Minimum Wager"
+                        type="number"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="3">
+                    <ValidationProvider
+                      rules="greater_than:@minWager|min_amount"
+                      vid="maxWager"
+                      name="Maximum Wager"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        v-model="form.maximumWager"
+                        label="Maximum Wager"
+                        type="number"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="text-right">
+                    <v-btn color="success" type="submit" class="ma-1">Search</v-btn>
+                    <v-btn color="error" type="reset" class="ma-1">Clear</v-btn>
+                  </v-col>
+                </v-row>
+              </form>
             </ValidationObserver>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -107,9 +113,10 @@
   </v-container>
 </template>
 <script lang="ts">
+import Vue from "vue";
 import WagerDisplay from "@/components/Wager/WagerDisplay.vue";
 import { AxiosResponse } from "axios";
-import { Route } from "vue-router";
+import { Route, RawLocation } from "vue-router";
 class Query {
   page?: number;
   username?: string | null;
@@ -118,12 +125,18 @@ class Query {
   maximumWager?: number | null;
   game?: string;
 
-  setVars(query: Query): void {
-    this.page = query.page;
-    this.username = query.username;
-    this.playerCount = query.playerCount;
-    this.minimumWager = query.minimumWager;
-    this.maximumWager = query.maximumWager;
+  setVars(route: Record<string, string | (string | null)[]>): void {
+    this.page = route.Page ? Number(route.page) : 1;
+    this.username = String(route.username);
+    this.playerCount = route.playerCount
+      ? Number(route.playerCount)
+      : undefined;
+    this.minimumWager = route.minimumWager
+      ? Number(route.minimumWager)
+      : undefined;
+    this.maximumWager = route.maximumWager
+      ? Number(route.maximumWager)
+      : undefined;
   }
 
   copyForm(query: Query): void {
@@ -141,24 +154,26 @@ class Query {
     this.maximumWager = null;
   }
 
-  routeQuery(): Query {
+  routeQuery(): Record<string, string | (string | null)[]> {
     return {
-      page: this.page > 1 ? this.page : undefined,
+      page: this.page && this.page > 1 ? String(this.page) : undefined,
       username: this.username ? this.username : undefined,
       playerCount:
-        this.playerCount && this.playerCount > 0 ? this.playerCount : undefined,
+        this.playerCount && this.playerCount > 0
+          ? String(this.playerCount)
+          : undefined,
       minimumWager:
         this.minimumWager && this.minimumWager > 0
-          ? this.minimumWager
+          ? String(this.minimumWager)
           : undefined,
       maximumWager:
-        this.maximumWager && this.maximumWager > this.minimumWager
-          ? this.maximumWager
+        this.maximumWager && this.maximumWager > 0
+          ? String(this.maximumWager)
           : undefined
-    } as Query;
+    } as Record<string, string | (string | null)[]>;
   }
 }
-export default {
+export default Vue.extend({
   components: {
     "wager-display": WagerDisplay
   },
@@ -190,7 +205,7 @@ export default {
         name: "wagers",
         params: { game: this.query.game },
         query: this.query.routeQuery()
-      });
+      } as RawLocation);
     },
     getWagers(): void {
       //api call here
@@ -203,21 +218,13 @@ export default {
           this.loading = false;
         });
     },
-    clear() {
-      this.form.clear();
-      this.$refs.observer.reset();
-    },
     submit() {
-      this.$refs.observer.validate().then((response: AxiosResponse) => {
-        if (response) {
-          this.query.copyForm(this.form);
-          this.$router.push({
-            name: "wagers",
-            params: { game: this.query.game },
-            query: this.query.routeQuery()
-          });
-        }
-      });
+      this.query.copyForm(this.form);
+      this.$router.push({
+        name: "wagers",
+        params: { game: this.query.game },
+        query: this.query.routeQuery()
+      } as RawLocation);
     }
   },
   beforeRouteUpdate(to: Route, from: Route, next: Function): void {
@@ -231,5 +238,5 @@ export default {
     this.query.setVars(this.$route.query);
     this.getWagers();
   }
-};
+});
 </script>

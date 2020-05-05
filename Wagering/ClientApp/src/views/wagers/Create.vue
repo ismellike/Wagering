@@ -167,46 +167,43 @@
   </v-container>
 </template>
 <script lang="ts">
+import Vue from "vue";
 import { AxiosResponse } from "axios";
+import { RawLocation } from "vue-router";
 
-interface UserBid {
-  userName: string;
-  userId: number;
-  approved: boolean;
-  receivablePt: number;
-  payablePt: number;
-  isOwner: boolean;
+interface UserBid extends WagerHostBid {
+  userName: string | null;
 }
 
 interface Search {
   users: ApplicationUser[];
-  userName: string;
+  userName: string | null;
   interval: number;
   loading: boolean;
-  select: ApplicationUser;
-  timer: NodeJS.Timer;
+  select: ApplicationUser | null;
+  timer: NodeJS.Timer | null;
 }
 
-export default {
+export default Vue.extend({
   data() {
     return {
-      searchEvent: null as void,
+      searchEvent: null,
       wager: {
         gameUrl: this.$route.params.game.toLowerCase(),
         minimumWager: null,
         maximumWager: null,
-        description: null,
+        description: "",
         isPrivate: false,
         hosts: [
           {
             user: {
               userName: this.$store.getters.username
-            },
+            } as ApplicationUser,
             approved: true,
             receivablePt: 100,
             payablePt: 100,
             isOwner: true
-          }
+          } as WagerHostBid
         ]
       } as Wager,
       search: {
@@ -219,7 +216,7 @@ export default {
       } as Search,
       user: {
         userName: null,
-        userId: null,
+        userId: undefined,
         approved: false,
         receivablePt: 50,
         payablePt: 50,
@@ -227,7 +224,7 @@ export default {
       } as UserBid,
       defaultUser: {
         userName: null,
-        userId: null,
+        userId: undefined,
         approved: false,
         receivablePt: 50,
         payablePt: 50,
@@ -250,7 +247,7 @@ export default {
   },
   watch: {
     searchEvent(val: string): void {
-      clearTimeout(this.search.timer);
+      if (this.search.timer) clearTimeout(this.search.timer);
       if (
         val &&
         val.trim() &&
@@ -261,25 +258,29 @@ export default {
         this.search.loading = true;
         this.search.timer = setTimeout(this.getUsers, this.search.interval);
       } else {
-        clearTimeout(this.search.timer);
+        if (this.search.timer) clearTimeout(this.search.timer);
         this.search.loading = false;
       }
     }
   },
   computed: {
     totalReceivable(): number {
-      return this.wager.hosts.reduce(
-        (x: number, y: WagerHostBid) => x + y.receivablePt,
-        0
+      return (
+        this.wager?.hosts?.reduce(
+          (x: number, y: WagerHostBid) => x + y.receivablePt,
+          0
+        ) ?? 0
       );
     },
     receivableColor(): string {
       return this.totalReceivable == 100 ? "success" : "error";
     },
     totalPayable(): number {
-      return this.wager.hosts.reduce(
-        (x: number, y: WagerHostBid) => x + y.payablePt,
-        0
+      return (
+        this.wager?.hosts?.reduce(
+          (x: number, y: WagerHostBid) => x + y.payablePt,
+          0
+        ) ?? 0
       );
     },
     payableColor(): string {
@@ -309,37 +310,47 @@ export default {
     addUser(): void {
       if (this.search.select) {
         if (
-          !this.wager.hosts.some((x: WagerHostBid) => {
-            return x.user.userName == this.username;
+          this.wager?.hosts?.some((x: WagerHostBid) => {
+            if (x.user) return x.user.userName == this.user.userName;
           })
         ) {
           this.wager.hosts.push({
-            userName: this.search.select.userName,
+            user: {
+              userName: this.search.select.userName
+            },
             userId: this.search.select.id,
             approved: false,
             payablePt: this.user.payablePt,
-            receivablePt: this.user.receivablePt
+            receivablePt: this.user.receivablePt,
+            isOwner: false
           });
         }
       }
     },
     save(): void {
       if (this.index > -1) {
-        Object.assign(this.wager.hosts[this.index], this.user);
+        if (this.wager && this.wager.hosts)
+          Object.assign(this.wager.hosts[this.index], this.user);
       } else {
         this.addUser();
       }
       this.close();
     },
     editUser(item: WagerHostBid): void {
-      this.index = this.wager.hosts.indexOf(item);
-      this.user = Object.assign({}, item);
+      this.index = this.wager?.hosts?.indexOf(item) ?? 0;
+      this.user = {
+        ...item,
+        userName: this.search.userName
+      };
       this.dialog = true;
     },
     deleteUser(item: WagerHostBid): void {
-      const index = this.wager.hosts.indexOf(item);
-      confirm("Are you sure you want to remove this user?") &&
-        this.wager.hosts.splice(index, 1);
+      if (this.wager && this.wager.hosts) {
+        const index = this.wager.hosts.indexOf(item);
+        if (index > -1)
+          confirm("Are you sure you want to remove this user?") &&
+            this.wager.hosts.splice(index, 1);
+      }
     },
     normalize(): void {
       const count = this.wager.hosts.length;
@@ -382,9 +393,9 @@ export default {
           this.$router.push({
             name: pathName,
             params: { id: response.data.id }
-          });
+          } as RawLocation);
         });
     }
   }
-};
+});
 </script>
