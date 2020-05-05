@@ -34,7 +34,7 @@ extend("min", {
 // Add a rule.
 extend("less_than", {
     params: ["target"],
-    validate(value, params: Record<"target", any>) {
+    validate(value, params: Record<string, any>) {
         if (value === null || params["target"] === null) return true;
         return value <= params["target"];
     },
@@ -42,7 +42,7 @@ extend("less_than", {
 });
 extend("greater_than", {
     params: ["target"],
-    validate(value, params: Record<"target", any>) {
+    validate(value, params: Record<string, any>) {
         if (value === null || params["target"] === null) return true;
         return value >= params["target"];
     },
@@ -53,5 +53,5 @@ extend("min_amount", {
     message: "The minimum amount is .01",
 });
 
-Vue.component("ValidationProvider", ValidationProvider);
-Vue.component("ValidationObserver", ValidationObserver);
+Vue.component("validation-provider", ValidationProvider);
+Vue.component("validation-observer", ValidationObserver);

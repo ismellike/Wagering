@@ -10,6 +10,7 @@
   </v-container>
 </template>
 <script lang="ts">
+import Vue from "vue";
 import AuthService, {
   AuthenticationResultStatus,
   Result
@@ -20,7 +21,7 @@ import {
   ApplicationPaths
 } from "@/constants/authentication";
 
-export default {
+export default Vue.extend({
   props: {
     action: {
       type: String,
@@ -29,7 +30,7 @@ export default {
   },
   data() {
     return {
-      message: undefined as string,
+      message: null as string | null,
       login: LoginActions.Login as string,
       callback: LoginActions.LoginCallback as string,
       profile: LoginActions.Profile as string,
@@ -39,7 +40,7 @@ export default {
   mounted() {
     switch (this.action) {
       case LoginActions.Login:
-        this.processLogin(this.getReturnUrl());
+        this.processLogin(this.getReturnUrl(null));
         break;
       case LoginActions.LoginCallback:
         this.processLoginCallback();
@@ -47,7 +48,7 @@ export default {
       case LoginActions.LoginFailed: {
         const params = new URLSearchParams(window.location.search);
         const error = params.get(QueryParameterNames.Message);
-        this.message = error;
+        this.message = error ?? null;
         break;
       }
       case LoginActions.Profile:
@@ -70,7 +71,7 @@ export default {
             this.navigateToReturnUrl(returnUrl);
             break;
           case AuthenticationResultStatus.Fail:
-            this.message = result.message;
+            this.message = result.message ?? null;
             break;
           default:
             throw new Error(`Invalid status result ${result.status}.`);
@@ -86,10 +87,10 @@ export default {
             // is when we are doing a redirect sign in flow.
             throw new Error("Should not redirect.");
           case AuthenticationResultStatus.Success:
-            this.navigateToReturnUrl(this.getReturnUrl(result.state));
+            this.navigateToReturnUrl(this.getReturnUrl(result.state ?? null));
             break;
           case AuthenticationResultStatus.Fail:
-            this.message = result.message;
+            this.message = result.message ?? null;
             break;
           default:
             throw new Error(
@@ -98,7 +99,7 @@ export default {
         }
       });
     },
-    getReturnUrl(state: string): string {
+    getReturnUrl(state: string | null): string {
       const params = new URLSearchParams(window.location.search);
       const fromQuery = params.get(QueryParameterNames.ReturnUrl);
       if (fromQuery && !fromQuery.startsWith(`${window.location.origin}/`)) {
@@ -132,5 +133,5 @@ export default {
       window.location.replace(returnUrl);
     }
   }
-};
+});
 </script>

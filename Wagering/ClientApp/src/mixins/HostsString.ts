@@ -8,14 +8,14 @@
                 return (
                     hosts
                         .splice(0, cutoff)
-                        .map((x) => x.user.userName)
+                        .map((x) => x.user?.userName)
                         .join(", ") +
                     ", +" +
                     (length - cutoff + 1) +
                     " more..."
                 );
             }
-            return hosts.map((x) => x.user.userName).join(", ");
+            return hosts.map((x) => x.user?.userName).join(", ");
         },
     },
 };

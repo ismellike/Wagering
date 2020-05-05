@@ -13,30 +13,34 @@
         <v-expansion-panel>
           <v-expansion-panel-header color="accent">Filter</v-expansion-panel-header>
           <v-expansion-panel-content>
-            <ValidationObserver v-slot="{handleSubmit, reset}">
+            <validation-observer v-slot="{handleSubmit, reset}">
               <form @submit.prevent="handleSubmit(submit)" @reset.prevent="reset">
                 <v-row>
                   <v-col cols="12" sm="6" md="3">
-                    <ValidationProvider rules="alpha_num" name="Username" v-slot="{ errors }">
+                    <validation-provider rules="alpha_num" name="Username" v-slot="{ errors }">
                       <v-text-field
                         v-model="form.username"
                         label="Username"
                         :error-messages="errors"
                       ></v-text-field>
-                    </ValidationProvider>
+                    </validation-provider>
                   </v-col>
                   <v-col cols="12" sm="6" md="3">
-                    <ValidationProvider rules="min_value:1" name="Player Count" v-slot="{ errors }">
+                    <validation-provider
+                      rules="min_value:1"
+                      name="Player Count"
+                      v-slot="{ errors }"
+                    >
                       <v-text-field
                         v-model="form.playerCount"
                         label="Player Count"
                         type="number"
                         :error-messages="errors"
                       ></v-text-field>
-                    </ValidationProvider>
+                    </validation-provider>
                   </v-col>
                   <v-col cols="12" sm="6" md="3">
-                    <ValidationProvider
+                    <validation-provider
                       rules="less_than:@maxWager|min_amount"
                       vid="minWager"
                       name="Minimum Wager"
@@ -48,10 +52,10 @@
                         type="number"
                         :error-messages="errors"
                       ></v-text-field>
-                    </ValidationProvider>
+                    </validation-provider>
                   </v-col>
                   <v-col cols="12" sm="6" md="3">
-                    <ValidationProvider
+                    <validation-provider
                       rules="greater_than:@minWager|min_amount"
                       vid="maxWager"
                       name="Maximum Wager"
@@ -63,7 +67,7 @@
                         type="number"
                         :error-messages="errors"
                       ></v-text-field>
-                    </ValidationProvider>
+                    </validation-provider>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -73,7 +77,7 @@
                   </v-col>
                 </v-row>
               </form>
-            </ValidationObserver>
+            </validation-observer>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>

@@ -77,37 +77,37 @@
         </v-tab-item>
     </v-tabs>
 </template>
-<script>
-import WagerDisplay from "@/components/Wager/WagerDisplay";
-export default {
-    components: {
-        "wager-display": WagerDisplay,
-    },
-    data() {
-        return {
-            pending: [],
-            confirmed: [],
-            completed: [],
-            errors: [],
-        };
-    },
-    created() {
-        this.$axios
-            .get("/api/wager/host")
-            .then((response) => {
-                response.data.forEach((item) => {
-                    if (item.status == 0) {
-                        this.pending.push(item);
-                    } else if (item.status == 1) {
-                        this.confirmed.push(item);
-                    } else if (item.status == 2) {
-                        this.completed.push(item);
-                    }
+<script lang="ts">
+    import Vue from "vue";
+    import WagerDisplay from "@/components/Wager/WagerDisplay.vue";
+    import { AxiosResponse } from "axios";
+
+    export default Vue.extend({
+        components: {
+            "wager-display": WagerDisplay,
+        },
+        data() {
+            return {
+                pending: [] as Wager[],
+                confirmed: [] as Wager[],
+                completed: [] as Wager[],
+                errors: [] as Wager[],
+            };
+        },
+        created() {
+            this.$axios
+                .get("/api/wager/host")
+                .then((response: AxiosResponse) => {
+                    response.data.forEach((item: Wager) => {
+                        if (item.status == 0) {
+                            this.pending.push(item);
+                        } else if (item.status == 1) {
+                            this.confirmed.push(item);
+                        } else if (item.status == 2) {
+                            this.completed.push(item);
+                        }
+                    });
                 });
-            })
-            .catch((e) => {
-                this.errors = e.response.data.splice();
-            });
-    },
-};
+        },
+    });
 </script>

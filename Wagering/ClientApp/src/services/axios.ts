@@ -30,7 +30,7 @@ axios.interceptors.response.use(
         if (process.env.NODE_ENV == "development") {
             console.log("ERROR", e);
         }
-        if (e.response.status == 401) {
+        if (e.response?.status == 401) {
             if (!window.location.href.includes("authentication"))
                 window.location.href = "/authentication/login";
         }

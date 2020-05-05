@@ -11,7 +11,7 @@ export enum AuthenticationResultStatus {
 export interface Result {
     status: AuthenticationResultStatus;
     message?: string;
-    state?: string;
+    state?: string | null;
 }
 
 export class AuthorizeService {
@@ -34,13 +34,13 @@ export class AuthorizeService {
         }
 
         await this.ensureUserManagerInitialized();
-        const user = await this.userManager.getUser();
+        const user = await this.userManager?.getUser();
         return user && user.profile;
     }
 
     async getAccessToken() {
         await this.ensureUserManagerInitialized();
-        const user = await this.userManager.getUser();
+        const user = await this.userManager?.getUser();
         return user && user.access_token;
     }
 
@@ -55,9 +55,10 @@ export class AuthorizeService {
     async signIn(state: string) {
         await this.ensureUserManagerInitialized();
         try {
-            const silentUser = await this.userManager.signinSilent(
+            const silentUser = await this.userManager?.signinSilent(
                 this.createArguments(null)
             );
+            if (!silentUser) throw new Error("Undefined silent user.");
             this.updateState(silentUser);
             return this.success(state);
         } catch (silentError) {
@@ -71,9 +72,10 @@ export class AuthorizeService {
                     );
                 }
 
-                const popUpUser = await this.userManager.signinPopup(
+                const popUpUser = await this.userManager?.signinPopup(
                     this.createArguments(null)
                 );
+                if (!popUpUser) throw new Error("Undefined popup user.");
                 this.updateState(popUpUser);
                 return this.success(state);
             } catch (popUpError) {
@@ -86,7 +88,7 @@ export class AuthorizeService {
 
                 // PopUps might be blocked by the user, fallback to redirect
                 try {
-                    await this.userManager.signinRedirect(
+                    await this.userManager?.signinRedirect(
                         this.createArguments(state)
                     );
                     return this.redirect();
@@ -104,8 +106,8 @@ export class AuthorizeService {
     async completeSignIn(url: string) {
         try {
             await this.ensureUserManagerInitialized();
-            const user = await this.userManager.signinCallback(url);
-            this.updateState(user);
+            const user = await this.userManager?.signinCallback(url);
+            if (user) this.updateState(user);
             return this.success(user && user.state);
         } catch (error) {
             console.log("There was an error signing in: ", error);
@@ -127,13 +129,13 @@ export class AuthorizeService {
                 );
             }
 
-            await this.userManager.signoutPopup(this.createArguments(null));
-            this.updateState(undefined);
+            await this.userManager?.signoutPopup(this.createArguments(null));
+            this.updateState(null);
             return this.success(state);
         } catch (popupSignOutError) {
             console.log("Popup signout error: ", popupSignOutError);
             try {
-                await this.userManager.signoutRedirect(
+                await this.userManager?.signoutRedirect(
                     this.createArguments(state)
                 );
                 return this.redirect();
@@ -147,7 +149,7 @@ export class AuthorizeService {
     async completeSignOut(url: string) {
         await this.ensureUserManagerInitialized();
         try {
-            const response = await this.userManager.signoutCallback(url);
+            const response = await this.userManager?.signoutCallback(url);
             this.updateState(null);
             return this.success(response && response.state);
         } catch (error) {
@@ -219,8 +221,8 @@ export class AuthorizeService {
         this.userManager = new UserManager(settings);
 
         this.userManager.events.addUserSignedOut(async () => {
-            await this.userManager.removeUser();
-            this.updateState(undefined);
+            await this.userManager?.removeUser();
+            this.updateState(null);
         });
     }
 

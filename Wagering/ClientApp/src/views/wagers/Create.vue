@@ -118,10 +118,10 @@
         <v-card>
           <v-card-title>Settings</v-card-title>
           <v-card-text>
-            <ValidationObserver ref="observer">
+            <validation-observer ref="observer">
               <v-row>
                 <v-col cols="12" sm="6" md="3">
-                  <ValidationProvider
+                  <validation-provider
                     rules="less_than:@maxWager|min_amount"
                     vid="minWager"
                     name="Minimum Wager"
@@ -133,10 +133,10 @@
                       type="number"
                       :error-messages="errors"
                     ></v-text-field>
-                  </ValidationProvider>
+                  </validation-provider>
                 </v-col>
                 <v-col cols="12" sm="6" md="3">
-                  <ValidationProvider
+                  <validation-provider
                     rules="greater_than:@minWager|min_amount"
                     vid="maxWager"
                     name="Maximum Wager"
@@ -148,13 +148,13 @@
                       type="number"
                       :error-messages="errors"
                     ></v-text-field>
-                  </ValidationProvider>
+                  </validation-provider>
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-textarea v-model="wager.description" label="Description" rows="1"></v-textarea>
                 </v-col>
               </v-row>
-            </ValidationObserver>
+            </validation-observer>
           </v-card-text>
           <v-card-actions>
             <v-switch v-model="wager.isPrivate" label="Private"></v-switch>
@@ -353,6 +353,7 @@ export default Vue.extend({
       }
     },
     normalize(): void {
+      if (!this.wager || !this.wager.hosts) return;
       const count = this.wager.hosts.length;
       this.wager.hosts.forEach((item: WagerHostBid) => {
         const amount = Math.floor(100 / count);

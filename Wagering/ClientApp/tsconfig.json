@@ -17,9 +17,9 @@
             "@/*": ["src/*"]
         },
         "typeRoots": ["node_modules/@types", "node_modules/vuetify/types"],
-        "types": ["webpack-env", "vuetify", "vue-timeago"],
+        "types": ["webpack-env", "vuetify"],
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
-        "outDir": "dist/",
+        "outDir": "dist/"
     },
     "include": [
         "src/**/*.ts",
