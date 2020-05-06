@@ -13,7 +13,7 @@
         <v-expansion-panel>
           <v-expansion-panel-header color="accent">Filter</v-expansion-panel-header>
           <v-expansion-panel-content>
-            <validation-observer v-slot="{handleSubmit, reset}">
+            <validation-observer v-slot="{ handleSubmit, reset }">
               <form @submit.prevent="handleSubmit(submit)" @reset.prevent="reset">
                 <v-row>
                   <v-col cols="12" sm="6" md="3">
@@ -119,8 +119,8 @@
 <script lang="ts">
 import Vue from "vue";
 import WagerDisplay from "@/components/Wager/WagerDisplay.vue";
-import { AxiosResponse } from "axios";
-import { Route, RawLocation } from "vue-router";
+import { RawLocation, Route } from "vue-router";
+
 class Query {
   page?: number;
   username?: string | null;
@@ -128,7 +128,6 @@ class Query {
   minimumWager?: number | null;
   maximumWager?: number | null;
   game?: string;
-
   setVars(route: Record<string, string | (string | null)[]>): void {
     this.page = route.Page ? Number(route.page) : 1;
     this.username = String(route.username);
@@ -142,7 +141,6 @@ class Query {
       ? Number(route.maximumWager)
       : undefined;
   }
-
   copyForm(query: Query): void {
     this.page = 1;
     this.username = query.username;
@@ -150,14 +148,12 @@ class Query {
     this.minimumWager = query.minimumWager;
     this.maximumWager = query.maximumWager;
   }
-
   clear(): void {
     this.username = null;
     this.playerCount = null;
     this.minimumWager = null;
     this.maximumWager = null;
   }
-
   routeQuery(): Record<string, string | (string | null)[]> {
     return {
       page: this.page && this.page > 1 ? String(this.page) : undefined,
@@ -177,6 +173,7 @@ class Query {
     } as Record<string, string | (string | null)[]>;
   }
 }
+
 export default Vue.extend({
   components: {
     "wager-display": WagerDisplay
@@ -214,15 +211,13 @@ export default Vue.extend({
     getWagers(): void {
       //api call here
       this.loading = true;
-      this.$axios
-        .post("/api/wager/search", this.query)
-        .then((response: AxiosResponse) => {
-          this.totalPages = response.data.totalPages;
-          this.wagers = response.data.list.slice();
-          this.loading = false;
-        });
+      this.$axios.post("/api/wager/search", this.query).then(response => {
+        this.totalPages = response.data.totalPages;
+        this.wagers = response.data.list.slice();
+        this.loading = false;
+      });
     },
-    submit() {
+    submit(): void {
       this.query.copyForm(this.form);
       this.$router.push({
         name: "wagers",

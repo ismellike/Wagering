@@ -12,11 +12,7 @@
                   <v-btn color="secondary" v-on="on">Add User</v-btn>
                 </template>
                 <v-card>
-                  <v-card-title>
-                    {{
-                    dialogTitle
-                    }}
-                  </v-card-title>
+                  <v-card-title>{{ dialogTitle }}</v-card-title>
                   <v-card-text>
                     <v-row>
                       <v-col cols="12" sm="6">
@@ -25,7 +21,9 @@
                           v-model="search.select"
                           :loading="search.loading"
                           :items="search.users"
-                          :search-input.sync="searchEvent"
+                          :search-input.sync="
+                                                        searchEvent
+                                                    "
                           cache-items
                           hide-no-data
                           clearable
@@ -87,22 +85,14 @@
                         :color="payableColor"
                         :value="totalPayable"
                         class="overline"
-                      >
-                        {{
-                        totalPayable
-                        }}
-                      </v-progress-circular>
+                      >{{ totalPayable }}</v-progress-circular>
                     </td>
                     <td>
                       <v-progress-circular
                         :color="receivableColor"
                         :value="totalReceivable"
                         class="overline"
-                      >
-                        {{
-                        totalReceivable
-                        }}
-                      </v-progress-circular>
+                      >{{ totalReceivable }}</v-progress-circular>
                     </td>
                     <td class="text-right">
                       <v-btn small outlined color="secondary" @click="normalize">Normalize</v-btn>

@@ -3,5 +3,5 @@ interface WagerNotification {
     wagerId: number;
     wager: Wager | null;
     notificationId: number;
-    notification: Notification | null;
+    notification: GroupNotification | null;
 }

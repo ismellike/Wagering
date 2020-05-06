@@ -87,7 +87,11 @@
             <v-list two-line>
               <v-list-item v-for="(notification, i) in notifications" :key="i">
                 <v-list-item-content>
-                  <v-list-item-title>{{ notification.message }}</v-list-item-title>
+                  <v-list-item-title>
+                    {{
+                    notification.message
+                    }}
+                  </v-list-item-title>
                   <v-list-item-subtitle>
                     <timeago :datetime="notification.date" autoUpdate />
                   </v-list-item-subtitle>
@@ -140,7 +144,6 @@
 import Vue from "vue";
 import LoginMenu from "@/components/LoginMenu.vue";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import { AxiosResponse } from "axios";
 
 export default Vue.extend({
   name: "App",
@@ -153,7 +156,7 @@ export default Vue.extend({
   data() {
     return {
       drawer: false as boolean,
-      notifications: [] as Notification[],
+      notifications: [] as GroupNotification[],
       dialog: false as boolean,
       hostCount: 0 as number,
       clientCount: 0 as number
@@ -163,7 +166,7 @@ export default Vue.extend({
     receiveNotifications(): void {
       this.$microsoft.signalr.on(
         "GetNotification",
-        (notification: Notification) => {
+        (notification: GroupNotification) => {
           this.notifications.push(notification);
         }
       );
@@ -175,22 +178,22 @@ export default Vue.extend({
     receiveGroups(): void {
       this.$microsoft.signalr.on(
         "ReceiveGroup",
-        (name: string, notification: Notification) => {
+        (name: string, notification: GroupNotification) => {
           this.notifications.push(notification);
           this.$microsoft.signalr.invoke("AddToGroup", name);
         }
       );
     },
     addGroups(): void {
-      this.$axios.get("/api/event").then((result: AxiosResponse) => {
-        result.data.hostGroups.forEach((group: string) => {
+      this.$axios.get("/api/event").then(response => {
+        response.data.hostGroups.forEach((group: string) => {
           this.$microsoft.signalr.invoke("AddToGroup", group);
         });
-        this.hostCount = result.data.hostGroups.length;
-        result.data.clientGroups.forEach((group: string) => {
+        this.hostCount = response.data.hostGroups.length;
+        response.data.clientGroups.forEach((group: string) => {
           this.$microsoft.signalr.invoke("AddToGroup", group);
         });
-        this.clientCount = result.data.clientGroups.length;
+        this.clientCount = response.data.clientGroups.length;
       });
     },
     listen(): void {

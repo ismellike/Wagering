@@ -15,9 +15,10 @@
     </v-row>
   </v-container>
 </template>
+<script lang="ts">
+import Vue from "vue";
 
-<script>
-export default {
+export default Vue.extend({
   name: "Home"
-};
+});
 </script>
