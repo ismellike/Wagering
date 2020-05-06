@@ -6,20 +6,28 @@
         <v-list>
             <v-list-item v-for="host in hosts" :key="host.id">
                 <v-list-item-title>
-                    <v-btn color="secondary"
-                           :to="{ name:'user_view', params:{ name:host.user.userName }}"
-                           class="ma-1">{{ host.user.userName }}</v-btn>
+                    <v-btn
+                        color="secondary"
+                        :to="{
+                            name: 'user_view',
+                            params: { name: host.user.userName },
+                        }"
+                        class="ma-1"
+                        >{{ host.user.userName }}</v-btn
+                    >
                 </v-list-item-title>
             </v-list-item>
         </v-list>
     </v-menu>
 </template>
-<script>
-    export default {
+<script lang="ts">
+    import Vue from "vue";
+
+    export default Vue.extend({
         props: {
             hosts: {
-                required: true
-            }
-        }
-    }
+                required: true,
+            },
+        },
+    });
 </script>

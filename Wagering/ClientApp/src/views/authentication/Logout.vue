@@ -12,7 +12,8 @@
 <script lang="ts">
 import Vue from "vue";
 import AuthService, {
-  AuthenticationResultStatus
+  AuthenticationResultStatus,
+  State
 } from "@/services/authentication";
 import {
   QueryParameterNames,
@@ -53,9 +54,10 @@ export default Vue.extend({
   },
   methods: {
     processLogout(returnUrl: string) {
+      const state = { returnUrl } as State;
       AuthService.isAuthenticated().then(isAuthenticated => {
         if (isAuthenticated) {
-          AuthService.signOut(returnUrl).then(result => {
+          AuthService.signOut(state).then(result => {
             switch (result.status) {
               case AuthenticationResultStatus.Redirect:
                 break;
@@ -93,7 +95,7 @@ export default Vue.extend({
         }
       });
     },
-    getReturnUrl(state: string | null): string {
+    getReturnUrl(state: State | null): string {
       const params = new URLSearchParams(window.location.search);
       const fromQuery = params.get(QueryParameterNames.ReturnUrl);
       if (fromQuery && !fromQuery.startsWith(`${window.location.origin}/`)) {
@@ -103,7 +105,7 @@ export default Vue.extend({
         );
       }
       return (
-        state ||
+        (state && state.returnUrl) ||
         fromQuery ||
         `${window.location.origin}${ApplicationPaths.LoggedOut}`
       );

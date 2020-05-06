@@ -13,7 +13,8 @@
 import Vue from "vue";
 import AuthService, {
   AuthenticationResultStatus,
-  Result
+  Result,
+  State
 } from "@/services/authentication";
 import {
   LoginActions,
@@ -63,7 +64,8 @@ export default Vue.extend({
   },
   methods: {
     processLogin(returnUrl: string) {
-      AuthService.signIn(returnUrl).then((result: Result) => {
+      const state = { returnUrl } as State;
+      AuthService.signIn(state).then((result: Result) => {
         switch (result.status) {
           case AuthenticationResultStatus.Redirect:
             break;
@@ -99,7 +101,7 @@ export default Vue.extend({
         }
       });
     },
-    getReturnUrl(state: string | null): string {
+    getReturnUrl(state: State | null): string {
       const params = new URLSearchParams(window.location.search);
       const fromQuery = params.get(QueryParameterNames.ReturnUrl);
       if (fromQuery && !fromQuery.startsWith(`${window.location.origin}/`)) {
@@ -108,7 +110,9 @@ export default Vue.extend({
           "Invalid return url. The return url needs to have the same origin as the current page."
         );
       }
-      return state || fromQuery || `${window.location.origin}/`;
+      return (
+        (state && state.returnUrl) || fromQuery || `${window.location.origin}/`
+      );
     },
     redirectToRegister(): void {
       this.redirectToApiAuthorizationPath(

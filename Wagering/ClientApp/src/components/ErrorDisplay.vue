@@ -1,16 +1,22 @@
 ﻿<template>
     <v-container>
-        <p v-for="error in errors" class="body-1 error--text">
+        <p
+            v-for="(error, i) in errors"
+            v-bind:key="i"
+            class="body-1 error--text"
+        >
             {{ error }}
         </p>
     </v-container>
 </template>
-<script>
-    export default {
+<script lang="ts">
+    import Vue from "vue";
+
+    export default Vue.extend({
         props: {
             errors: {
-                required: true
-            }
-        }
-    };
+                required: true,
+            },
+        },
+    });
 </script>

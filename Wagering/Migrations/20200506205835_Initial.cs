@@ -71,12 +71,12 @@ namespace Wagering.Migrations
                 name: "Games",
                 columns: table => new
                 {
-                    Name = table.Column<string>(nullable: false),
-                    Url = table.Column<string>(nullable: true)
+                    Url = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Games", x => x.Name);
+                    table.PrimaryKey("PK_Games", x => x.Url);
                 });
 
             migrationBuilder.CreateTable(
@@ -235,7 +235,7 @@ namespace Wagering.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GameName = table.Column<string>(nullable: true),
+                    GameUrl = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: true),
                     Value = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
                     GamesPlayed = table.Column<int>(nullable: false)
@@ -244,10 +244,10 @@ namespace Wagering.Migrations
                 {
                     table.PrimaryKey("PK_Rating", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Rating_Games_GameName",
-                        column: x => x.GameName,
+                        name: "FK_Rating_Games_GameUrl",
+                        column: x => x.GameUrl,
                         principalTable: "Games",
-                        principalColumn: "Name",
+                        principalColumn: "Url",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Rating_AspNetUsers_UserId",
@@ -264,7 +264,7 @@ namespace Wagering.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Status = table.Column<byte>(nullable: false),
-                    GameName = table.Column<string>(nullable: true),
+                    GameUrl = table.Column<string>(nullable: true),
                     Description = table.Column<string>(maxLength: 50, nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     IsPrivate = table.Column<bool>(nullable: false),
@@ -274,10 +274,10 @@ namespace Wagering.Migrations
                 {
                     table.PrimaryKey("PK_Tournaments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tournaments_Games_GameName",
-                        column: x => x.GameName,
+                        name: "FK_Tournaments_Games_GameUrl",
+                        column: x => x.GameUrl,
                         principalTable: "Games",
-                        principalColumn: "Name",
+                        principalColumn: "Url",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -288,7 +288,7 @@ namespace Wagering.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Status = table.Column<byte>(nullable: false),
-                    GameName = table.Column<string>(nullable: true),
+                    GameUrl = table.Column<string>(nullable: true),
                     Description = table.Column<string>(maxLength: 50, nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     IsPrivate = table.Column<bool>(nullable: false),
@@ -300,10 +300,10 @@ namespace Wagering.Migrations
                 {
                     table.PrimaryKey("PK_Wagers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Wagers_Games_GameName",
-                        column: x => x.GameName,
+                        name: "FK_Wagers_Games_GameUrl",
+                        column: x => x.GameUrl,
                         principalTable: "Games",
-                        principalColumn: "Name",
+                        principalColumn: "Url",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -444,8 +444,8 @@ namespace Wagering.Migrations
 
             migrationBuilder.InsertData(
                 table: "Games",
-                columns: new[] { "Name", "Url" },
-                values: new object[] { "Fortnite", "fortnite" });
+                columns: new[] { "Url", "Name" },
+                values: new object[] { "fortnite", "Fortnite" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -508,9 +508,9 @@ namespace Wagering.Migrations
                 columns: new[] { "SubjectId", "ClientId", "Type" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rating_GameName",
+                name: "IX_Rating_GameUrl",
                 table: "Rating",
-                column: "GameName");
+                column: "GameUrl");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rating_UserId",
@@ -518,9 +518,9 @@ namespace Wagering.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tournaments_GameName",
+                name: "IX_Tournaments_GameUrl",
                 table: "Tournaments",
-                column: "GameName");
+                column: "GameUrl");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WagerChallengeBids_ChallengeId",
@@ -568,9 +568,9 @@ namespace Wagering.Migrations
                 column: "WagerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Wagers_GameName",
+                name: "IX_Wagers_GameUrl",
                 table: "Wagers",
-                column: "GameName");
+                column: "GameUrl");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

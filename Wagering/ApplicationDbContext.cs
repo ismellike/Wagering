@@ -23,7 +23,7 @@ namespace Wagering
         #endregion
         public DbSet<Game> Games { get; set; }
         public DbSet<Rule> Rules { get; set; }
-        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<GroupNotification> Notifications { get; set; }
 
         public ApplicationDbContext(
             DbContextOptions options,

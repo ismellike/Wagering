@@ -10,7 +10,7 @@ using Wagering;
 namespace Wagering.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200429045235_Initial")]
+    [Migration("20200506205835_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -317,25 +317,25 @@ namespace Wagering.Migrations
 
             modelBuilder.Entity("Wagering.Models.Game", b =>
                 {
-                    b.Property<string>("Name")
+                    b.Property<string>("Url")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Url")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Name");
+                    b.HasKey("Url");
 
                     b.ToTable("Games");
 
                     b.HasData(
                         new
                         {
-                            Name = "Fortnite",
-                            Url = "fortnite"
+                            Url = "fortnite",
+                            Name = "Fortnite"
                         });
                 });
 
-            modelBuilder.Entity("Wagering.Models.Notification", b =>
+            modelBuilder.Entity("Wagering.Models.GroupNotification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -360,7 +360,7 @@ namespace Wagering.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("GameName")
+                    b.Property<string>("GameUrl")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("GamesPlayed")
@@ -374,7 +374,7 @@ namespace Wagering.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GameName");
+                    b.HasIndex("GameUrl");
 
                     b.HasIndex("UserId");
 
@@ -414,7 +414,7 @@ namespace Wagering.Migrations
                     b.Property<decimal>("Entry")
                         .HasColumnType("decimal(18,7)");
 
-                    b.Property<string>("GameName")
+                    b.Property<string>("GameUrl")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsPrivate")
@@ -425,7 +425,7 @@ namespace Wagering.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GameName");
+                    b.HasIndex("GameUrl");
 
                     b.ToTable("Tournaments");
                 });
@@ -448,7 +448,7 @@ namespace Wagering.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
-                    b.Property<string>("GameName")
+                    b.Property<string>("GameUrl")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsPrivate")
@@ -465,7 +465,7 @@ namespace Wagering.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GameName");
+                    b.HasIndex("GameUrl");
 
                     b.ToTable("Wagers");
                 });
@@ -666,7 +666,7 @@ namespace Wagering.Migrations
                 {
                     b.HasOne("Wagering.Models.Game", "Game")
                         .WithMany()
-                        .HasForeignKey("GameName");
+                        .HasForeignKey("GameUrl");
 
                     b.HasOne("Wagering.Models.ApplicationUser", "User")
                         .WithMany("Ratings")
@@ -677,14 +677,14 @@ namespace Wagering.Migrations
                 {
                     b.HasOne("Wagering.Models.Game", "Game")
                         .WithMany()
-                        .HasForeignKey("GameName");
+                        .HasForeignKey("GameUrl");
                 });
 
             modelBuilder.Entity("Wagering.Models.Wager", b =>
                 {
                     b.HasOne("Wagering.Models.Game", "Game")
                         .WithMany()
-                        .HasForeignKey("GameName");
+                        .HasForeignKey("GameUrl");
                 });
 
             modelBuilder.Entity("Wagering.Models.WagerChallenge", b =>
@@ -724,7 +724,7 @@ namespace Wagering.Migrations
 
             modelBuilder.Entity("Wagering.Models.WagerNotification", b =>
                 {
-                    b.HasOne("Wagering.Models.Notification", "Notification")
+                    b.HasOne("Wagering.Models.GroupNotification", "Notification")
                         .WithMany()
                         .HasForeignKey("NotificationId")
                         .OnDelete(DeleteBehavior.Cascade)

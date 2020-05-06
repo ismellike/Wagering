@@ -2,10 +2,7 @@ module.exports = {
     devServer: {
         progress: false,
         liveReload: true,
-        public: "localhost:8080",
-    },
-    chainWebpack: (config) => {
-        config.resolve.alias.set("@", "src");
+        public: "0.0.0.0",
     },
     pages: {
         app: {

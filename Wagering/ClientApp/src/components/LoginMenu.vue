@@ -1,12 +1,14 @@
 ﻿<template>
     <v-list dense>
-        <div v-if="$store.getters.isAuthenticated">
+        <div v-if="this.$store.getters.isAuthenticated">
             <v-list-item to="/authentication/profile" link>
                 <v-list-item-action>
                     <v-icon>mdi-account</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>Hello {{ $store.getters.username }}</v-list-item-title>
+                    <v-list-item-title
+                        >Hello {{ $store.getters.username }}</v-list-item-title
+                    >
                 </v-list-item-content>
             </v-list-item>
             <v-list-item to="/authentication/logout" link>
@@ -38,7 +40,8 @@
         </div>
     </v-list>
 </template>
-<script>
-    export default {
-    };
+<script lang="ts">
+    import Vue from "vue";
+
+    export default Vue.extend({});
 </script>

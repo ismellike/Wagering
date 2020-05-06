@@ -39,7 +39,7 @@ namespace Wagering.Controllers
 
     //POST: api/wagers/search
     [HttpPost("search")]
-    public async Task<IActionResult> GetWagers([FromBody]Query query)
+    public async Task<IActionResult> GetWagers([FromBody] Query query)
     {
       if (query.page < 1)
         ModelState.AddModelError("Page", $"{query.page} is not a valid page.");
@@ -204,7 +204,7 @@ namespace Wagering.Controllers
                 {
                     new WagerNotification
                     {
-                        Notification = new Notification
+                        Notification = new GroupNotification
                         {
                             Date = date,
                              Message = $"{user.UserName} created the wager."

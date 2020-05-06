@@ -5,12 +5,17 @@
         </v-card-title>
         <v-card-text>
             <v-list v-if="notifications && notifications.length > 0" two-line>
-                <v-list-item v-for="notification in notifications" :key="notification.id">
+                <v-list-item
+                    v-for="notification in notifications"
+                    :key="notification.id"
+                >
                     <v-list-item-content>
                         <v-list-item-title>
                             {{ notification.message }}
                         </v-list-item-title>
-                        <v-list-item-subtitle><timeago :datetime="notification.date" autoUpdate /></v-list-item-subtitle>
+                        <v-list-item-subtitle
+                            ><timeago :datetime="notification.date" autoUpdate
+                        /></v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
@@ -20,12 +25,14 @@
         </v-card-text>
     </v-card>
 </template>
-<script>
-    export default {
+<script lang="ts">
+    import Vue from "vue";
+
+    export default Vue.extend({
         props: {
             notifications: {
-                required: true
-            }
-        }
-    };
+                required: true,
+            },
+        },
+    });
 </script>

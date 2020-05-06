@@ -24,7 +24,7 @@ const mutations: MutationTree<State> = {
     setLogin(state, payload: State) {
         state.username = payload.username;
         state.id = payload.id;
-        state.isAuthenticated = payload.isAuthenticated;
+        state.isAuthenticated = true;
         state.token = payload.token;
     },
     setLogout(state) {

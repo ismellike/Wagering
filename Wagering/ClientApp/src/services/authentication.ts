@@ -11,7 +11,11 @@ export enum AuthenticationResultStatus {
 export interface Result {
     status: AuthenticationResultStatus;
     message?: string;
-    state?: string | null;
+    state?: State;
+}
+
+export interface State {
+    returnUrl: string;
 }
 
 export class AuthorizeService {
@@ -52,7 +56,7 @@ export class AuthorizeService {
     //    Pop-Up blocker or the user has disabled PopUps.
     // 3) If the two methods above fail, we redirect the browser to the IdP to perform a traditional
     //    redirect flow.
-    async signIn(state: string) {
+    async signIn(state: State) {
         await this.ensureUserManagerInitialized();
         try {
             const silentUser = await this.userManager?.signinSilent(
@@ -120,7 +124,7 @@ export class AuthorizeService {
     //    Pop-Up blocker or the user has disabled PopUps.
     // 2) If the method above fails, we redirect the browser to the IdP to perform a traditional
     //    post logout redirect flow.
-    async signOut(state: string) {
+    async signOut(state: State) {
         await this.ensureUserManagerInitialized();
         try {
             if (this._popUpDisabled) {
@@ -172,7 +176,7 @@ export class AuthorizeService {
         this._isAuthenticated = !!this._user;
     }
 
-    createArguments(state: string | null) {
+    createArguments(state: State | null) {
         return {
             useReplaceToNavigate: true,
             data: state,
@@ -182,11 +186,11 @@ export class AuthorizeService {
     error(message: string): Result {
         return {
             status: AuthenticationResultStatus.Fail,
-            message,
+            message: message,
         };
     }
 
-    success(state: string): Result {
+    success(state: State): Result {
         return {
             status: AuthenticationResultStatus.Success,
             state,
@@ -200,7 +204,7 @@ export class AuthorizeService {
     }
 
     async ensureUserManagerInitialized() {
-        if (this.userManager !== undefined) {
+        if (this.userManager !== null) {
             return;
         }
 

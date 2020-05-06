@@ -128,6 +128,14 @@ class Query {
   minimumWager?: number | null;
   maximumWager?: number | null;
   game?: string;
+  constructor(game: string) {
+    this.page = 1;
+    this.username = null;
+    this.game = game;
+    this.playerCount = null;
+    this.minimumWager = null;
+    this.maximumWager = null;
+  }
   setVars(route: Record<string, string | (string | null)[]>): void {
     this.page = route.Page ? Number(route.page) : 1;
     this.username = String(route.username);
@@ -180,14 +188,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      query: {
-        username: null,
-        game: this.$route.params.game,
-        page: 1,
-        playerCount: null,
-        minimumWager: null,
-        maximumWager: null
-      } as Query,
+      query: new Query(this.$route.params.game),
       form: {
         username: null,
         playerCount: null,
