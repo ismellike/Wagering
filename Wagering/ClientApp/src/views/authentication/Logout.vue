@@ -1,5 +1,5 @@
 ﻿<template>
-  <v-container>
+  <content-display>
     <h1 v-if="!!message">{{ message }}</h1>
     <div v-else>
       <h1 v-if="action === logout">Processing logout</h1>
@@ -7,7 +7,7 @@
       <h1 v-else-if="action === loggedOut">{{ message }}</h1>
       <h1 v-else>Invalid action {{ action }}</h1>
     </div>
-  </v-container>
+  </content-display>
 </template>
 <script lang="ts">
 import Vue from "vue";

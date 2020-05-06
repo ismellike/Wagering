@@ -1,6 +1,6 @@
 <template>
   <!--Decided to use USDC stablecoin with Nethereum and circle api-->
-  <v-container>
+  <content-display>
     <v-container>
       <h1 class="display-2">
         <v-icon large color="accent">mdi-pound</v-icon>Cryptocurrency
@@ -170,7 +170,7 @@
       <v-btn color="secondary" outlined target="_blank" href="https://brave.com/?ref=ism355">Brave</v-btn>
       <v-btn color="secondary" outlined target="_blank" href="https://bounty0x.io/">Bounty0x</v-btn>
     </v-container>
-  </v-container>
+  </content-display>
 </template>
 <script lang="ts">
 import Vue from "vue";

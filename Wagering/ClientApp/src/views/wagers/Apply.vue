@@ -1,5 +1,5 @@
 ﻿<template>
-  <v-container></v-container>
+  <content-display></content-display>
 </template>
 <script lang="ts">
 import Vue from "vue";

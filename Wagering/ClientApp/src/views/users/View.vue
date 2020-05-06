@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <content-display>
     <div v-if="user == null">
       <p v-if="error != null" class="display-1">{{ error }}</p>
       <v-skeleton-loader v-else type="card" />
@@ -41,10 +41,10 @@
       </v-card>
       <v-snackbar v-model="showCopy" :timeout="2000">
         The key is copied to the clipboard.
-        <v-btn color="red" text @click="showCopy = false">Close</v-btn>
+        <v-btn color="error" text @click="showCopy = false">Close</v-btn>
       </v-snackbar>
     </div>
-  </v-container>
+  </content-display>
 </template>
 <script lang="ts">
 import Vue from "vue";

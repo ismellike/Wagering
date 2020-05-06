@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <content-display fullScreen>
     <h1 class="text-center display-1">Wagering.gg</h1>
     <h2 class="text-center headline">Invest in yourself: one game at a time.</h2>
     <v-row>
@@ -13,7 +13,7 @@
         <v-img src="@/assets/peace.jpg" aspect-ratio=".5625" />
       </v-col>
     </v-row>
-  </v-container>
+  </content-display>
 </template>
 <script lang="ts">
 import Vue from "vue";

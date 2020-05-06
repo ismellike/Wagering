@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <content-display>
     <v-container>
       <v-skeleton-loader :loading="loading" type="card" transition="scale-transition">
         <wager-display :wager="wager">
@@ -27,7 +27,7 @@
         </v-card>
       </v-skeleton-loader>
     </v-container>
-  </v-container>
+  </content-display>
 </template>
 <script lang="ts">
 import Vue from "vue";

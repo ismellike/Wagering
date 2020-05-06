@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <content-display>
     <v-container>
       <h1 class="text-center">Wagers</h1>
     </v-container>
@@ -114,7 +114,7 @@
       @previous="goTo"
       @input="goTo"
     ></v-pagination>
-  </v-container>
+  </content-display>
 </template>
 <script lang="ts">
 import Vue from "vue";

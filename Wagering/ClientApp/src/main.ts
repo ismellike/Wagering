@@ -7,6 +7,7 @@ import "./registerServiceWorker";
 import vuetify from "./plugins/vuetify";
 import "./services/validation";
 import VueTimeago from "vue-timeago";
+import "./components/ContentDisplay.vue";
 
 Vue.use(VueTimeago, {
     name: "Timeago",

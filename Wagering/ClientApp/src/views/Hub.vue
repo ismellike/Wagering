@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <content-display>
     <v-row dense>
       <v-col cols="12" sm="6" lg="4">
         <v-card color="accent">
@@ -32,7 +32,7 @@
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+  </content-display>
 </template>
 <script lang="ts">
 import Vue from "vue";

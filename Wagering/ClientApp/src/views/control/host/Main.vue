@@ -1,5 +1,5 @@
 <template>
-  <v-container class="mb-auto">
+  <content-display>
     <!--Need to change from tabs to nav bar-->
     <!--Split into wagers/tournaments/leagues-->
     <v-container>
@@ -11,7 +11,7 @@
       <v-tab to="/host/leagues">Leagues</v-tab>
     </v-tabs>
     <router-view></router-view>
-  </v-container>
+  </content-display>
 </template>
 <script lang="ts">
 import Vue from "vue";
