@@ -20,7 +20,7 @@ export interface State {
 
 export class AuthorizeService {
     _user: User | null = null;
-    _isAuthenticated = false;
+    _isAuthenticated: boolean = false;
     userManager: UserManager | null = null;
 
     // By default pop ups are disabled because they don't work properly on Edge.

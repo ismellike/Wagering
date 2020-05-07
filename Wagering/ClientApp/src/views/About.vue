@@ -1,5 +1,4 @@
 <template>
-  <!--Decided to use USDC stablecoin with Nethereum and circle api-->
   <content-display>
     <v-container>
       <h1 class="display-2">
@@ -11,8 +10,7 @@
         <v-expansion-panel>
           <v-expansion-panel-header class="headline">What is cryptocurrency?</v-expansion-panel-header>
           <v-expansion-panel-content class="body-1">
-            Cryptocurrency is a digital currency - protected by
-            cryptography - operating independently from a central
+            Cryptocurrency is a digital currency operating independently from a central
             system like a bank, government, or business.
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -22,20 +20,13 @@
             necessary?
           </v-expansion-panel-header>
           <v-expansion-panel-content class="body-1">
-            Cryptocurrencies have many benefits for Wagering.gg:
-            transfers are near-instantaneous and cheap, money is
-            securely stored in the user's own wallet, and some
-            cryptocurrencies can be programmatically transferred.
+            Transactions are quick, secure, and inexpensive.
+            What distinguishes cryptocurrency from traditional methods is its ability to create a programmable, digital dollar.
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header class="headline">How do wallets work?</v-expansion-panel-header>
-          <v-expansion-panel-content class="body-1">
-            Each user's wallet will have a public and private key.
-            Public keys are used for receiving money. Private keys
-            are used for authorizing transactions. A private key
-            should never be shared with another user.
-          </v-expansion-panel-content>
+          <v-expansion-panel-header class="headline">How is cryptocurrency used?</v-expansion-panel-header>
+          <v-expansion-panel-content class="body-1">Users obtain cryptocurrency</v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
           <v-expansion-panel-header class="headline">
@@ -43,9 +34,9 @@
             cryptocurrency?
           </v-expansion-panel-header>
           <v-expansion-panel-content class="body-1">
-            Cryptocurrency can either be bought from exchanges or
+            Cryptocurrency can either be bought from exchanges and atm's or
             earned from trading, browsing, mining, staking,
-            wagering, bounties, etc.
+            wagering, etc.
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
