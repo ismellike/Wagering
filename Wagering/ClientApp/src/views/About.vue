@@ -19,14 +19,17 @@
             Why is cryptocurrency
             necessary?
           </v-expansion-panel-header>
-          <v-expansion-panel-content class="body-1">
-            Transactions are quick, secure, and inexpensive.
-            What distinguishes cryptocurrency from traditional methods is its ability to create a programmable, digital dollar.
-          </v-expansion-panel-content>
+          <v-expansion-panel-content
+            class="body-1"
+          >Transactions are programmable, quick, secure, and inexpensive.</v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header class="headline">How is cryptocurrency used?</v-expansion-panel-header>
-          <v-expansion-panel-content class="body-1">Users obtain cryptocurrency</v-expansion-panel-content>
+          <v-expansion-panel-header class="headline">How does cryptocurrency work?</v-expansion-panel-header>
+          <v-expansion-panel-content class="body-1">
+            Users obtain cryptocurrency from external sources.
+            That currency is stored in the user's choice of wallet as an account.
+            An account runs on public key infrastructure (PKI): A public key is used for identifying users on the network, and a private key is used for proving authority of an account.
+          </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
           <v-expansion-panel-header class="headline">
@@ -34,8 +37,8 @@
             cryptocurrency?
           </v-expansion-panel-header>
           <v-expansion-panel-content class="body-1">
-            Cryptocurrency can either be bought from exchanges and atm's or
-            earned from trading, browsing, mining, staking,
+            Cryptocurrency can be bought from exchanges and ATM's or
+            earned from trading, mining, staking, browsing,
             wagering, etc.
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -61,8 +64,8 @@
           >Why is Stellar Lumens our preferred cryptocurrency?</v-expansion-panel-header>
           <v-expansion-panel-content class="body-1">
             Stellar is lead by an experienced nonprofit organization
-            offering extremely low transaction fees while offering
-            quick transfers of money (~5 seconds). Stellar also
+            offering extremely low transaction fees and
+            quick transaction processing (~5 seconds). Stellar also
             provides smart contract capabilities for handling
             complex payment scenarios.
           </v-expansion-panel-content>
@@ -74,12 +77,10 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content class="body-1">
             The minimum transaction fee is a flat fee of .00001
-            lumen per operation, and that's only to deter spam
-            behavior on the network. Compare this with traditional
+            lumen per operation. Compare this with traditional
             methods charging a standard fee of 2.9%+.30 per
             transaction - or even more depending on where you send
-            it and how much is sent: Stellar Lumens easily comes out
-            on top.
+            it: Stellar easily comes out on top.
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -104,22 +105,14 @@
           <v-expansion-panel-header class="headline">How does Wagering.gg work?</v-expansion-panel-header>
           <v-expansion-panel-content class="body-1">
             Utilizing smart contracts on the Stellar network,
-            Wagering.gg can award funds directly between accounts
-            and can create complex payment scenarios. Imagine a
-            scenario where 100 people enter a tournament with money
-            and the top players earn some of the pool. With smart
-            contracts, this is possible.
+            Wagering.gg can hold and award funds directly between accounts.
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header class="headline">How much are service fees?</v-expansion-panel-header>
+          <v-expansion-panel-header class="headline">What are the fees?</v-expansion-panel-header>
           <v-expansion-panel-content class="body-1">
-            Our service fee is 10% - or 5% for verified users - of
-            the loser's wager amount. A standard percentage rate
-            keeps the process simple and allows for low-value wagers
-            to be possible. This still keeps our fees close to
-            traditional methods while being able to provide a
-            service.
+            Our service fee is a flat 6%. A standard percentage rate
+            keeps the process simple and allows for wagers of any amount to be possible. This allows Wagering.gg to keep fees low and similar to traditional methods while also providing a service.
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
