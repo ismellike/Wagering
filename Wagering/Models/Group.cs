@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace Wagering.Models
 {
@@ -19,5 +20,9 @@ namespace Wagering.Models
 
         public abstract string GroupName { get; }
         public abstract string GroupLink { get; }
+
+        public abstract IEnumerable<string> HostUsers();
+        public abstract IEnumerable<string> ClientUsers();
+        public abstract IEnumerable<string> AllUsers();
     }
 }

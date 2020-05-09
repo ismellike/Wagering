@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using Wagering.Models;
+using System.Linq;
 
 namespace Wagering.Controllers
 {
@@ -9,7 +10,7 @@ namespace Wagering.Controllers
     {
         public static async Task<PersonalNotification> Confirm(this ApplicationDbContext _context, int wagerId, string username)
         {
-            var wager = await _context.Wagers.FirstOrDefaultAsync(x => x.Id == wagerId);
+            var wager = await _context.Wagers.Include(x => x.Challenges).FirstOrDefaultAsync(x => x.Id == wagerId);
             if (wager == null)
                 return null;
             wager.Status = (byte)Status.Confirmed;
@@ -17,14 +18,15 @@ namespace Wagering.Controllers
             {
                 Date = DateTime.Now,
                 Message = $"{username} has accepted the wager.",
-                Link = wager.GroupLink
+                Data = wager.Id.ToString(),
+                DataModel = (byte)DataModel.Wager
             };
             return notification;
         }
 
         public static async Task<PersonalNotification> Decline(this ApplicationDbContext _context, int wagerId, string username)
         {
-            var wager = await _context.Wagers.FirstOrDefaultAsync(x => x.Id == wagerId);
+            var wager = await _context.Wagers.Include(x => x.Challenges).FirstOrDefaultAsync(x => x.Id == wagerId);
             if (wager == null)
                 return null;
             wager.Status = (byte)Status.Declined;
@@ -32,24 +34,26 @@ namespace Wagering.Controllers
             {
                 Date = DateTime.Now,
                 Message = $"{username} has declined the wager.",
-                Link = wager.GroupLink
+                Data = wager.Id.ToString(),
+                DataModel = (byte)DataModel.Wager
             };
             return notification;
         }
 
-        public static async Task<PersonalNotification> Cancel(this ApplicationDbContext _context, int wagerId, string username)
+        public static async Task Cancel(this ApplicationDbContext _context, int wagerId, string username)
         {
-            var wager = await _context.Wagers.FirstOrDefaultAsync(x => x.Id == wagerId);
+            var wager = await _context.Wagers.Include(x => x.Challenges).FirstOrDefaultAsync(x => x.Id == wagerId);
             if (wager == null)
-                return null;
+                return;
             wager.Status = (byte)Status.Canceled;
             PersonalNotification notification = new PersonalNotification
             {
                 Date = DateTime.Now,
                 Message = $"{username} has canceled the wager.",
-                Link = wager.GroupLink
+                Data = wager.Id.ToString(),
+                DataModel = (byte)DataModel.Wager
             };
-            return notification;
+            _context.AddNotificationToUsers(wager.Hosts.Select(x => x.UserId).Union(wager.Challenges.Select(x => x.Challengers.UserId)), notification);
         }
     }
 }

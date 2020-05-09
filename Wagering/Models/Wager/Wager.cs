@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Wagering.Models
 {
@@ -31,5 +32,19 @@ namespace Wagering.Models
 
         public override string GroupName { get { return $"wager_{Id}"; } }
         public override string GroupLink { get { return $"/control/wagers/{Id}"; } }
+        public override IEnumerable<string> HostUsers()
+        {
+            return Hosts.Select(x => x.UserId);
+        }
+
+        public override IEnumerable<string> ClientUsers()
+        {
+            IEnumerable<string> result = Enumerable.Empty<string>();
+            foreach (WagerChallenge challenge in Challenges)
+            {
+                result = result.Union(challenge.Challengers.Select(x => x.UserId));
+            }
+            return result;
+        }
     }
 }

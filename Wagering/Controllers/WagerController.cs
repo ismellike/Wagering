@@ -225,8 +225,14 @@ namespace Wagering.Controllers
 
             _context.Wagers.Add(wager);
             _context.SaveChanges();
-            //add a notification to hosts
-            //_context.SaveChanges();
+            PersonalNotification notification = new PersonalNotification
+            {
+                Date = date,
+                Message = $"{user.UserName} created the wager.",
+                Data = wager.Id.ToString(),
+                DataModel = (byte)DataModel.Wager
+            };
+            _context.AddNotificationToUsers(wager.Hosts.Select(x => x.UserId), notification);
 
             _cache.Set(wager.Id, wager, TimeSpan.FromSeconds(20));
             return Ok(wager);
