@@ -93,7 +93,7 @@
                   :to="{
                         name: 'wager_view',
                         params: {
-                            game: wager.gameName,
+                            game: wager.gameUrl,
                             id: wager.id,
                         },
                     }"
@@ -106,12 +106,12 @@
       </v-row>
     </v-container>
     <v-pagination
-      v-model="query.page"
+      v-model="page"
       color="secondary"
       class="text-center"
       :length="totalPages"
-      @next="goTo"
-      @previous="goTo"
+      @next="goTo(page)"
+      @previous="goTo(page)"
       @input="goTo"
     ></v-pagination>
   </content-display>
@@ -138,7 +138,7 @@ class Query {
   }
   setVars(route: Record<string, string | (string | null)[]>): void {
     this.page = route.Page ? Number(route.page) : 1;
-    this.username = String(route.username);
+    this.username = route.username ? String(route.username) : undefined;
     this.playerCount = route.playerCount
       ? Number(route.playerCount)
       : undefined;
@@ -196,13 +196,16 @@ export default Vue.extend({
         maximumWager: null
       } as Query,
       wagers: [] as Wager[],
+      page: 1 as number,
       totalPages: 0 as number,
       showFilter: false as boolean,
       loading: true as boolean
     };
   },
   methods: {
-    goTo(): void {
+    goTo(i: number): void {
+      if (i == this.query.page) return;
+      this.query.page = i;
       this.$router.push({
         name: "wagers",
         params: { game: this.query.game },

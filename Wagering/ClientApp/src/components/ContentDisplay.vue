@@ -5,7 +5,7 @@
         <slot />
       </v-container>
     </v-col>
-    <v-col v-else cols="12" sm="10" md="8" class="mx-auto">
+    <v-col v-else cols="12" sm="11" md="10" lg="9" xl="8" class="mx-auto">
       <slot />
     </v-col>
   </v-row>

@@ -41,7 +41,13 @@
         <template v-if="$store.getters.isAuthenticated">
           <v-list-item to="/host" link>
             <v-list-item-action>
-              <v-badge :content="hostCount" :value="hostCount" color="error">
+              <v-badge
+                :content="hostCount"
+                :value="hostCount > 0"
+                offset-x="10"
+                offset-y="10"
+                color="error"
+              >
                 <v-icon>mdi-clipboard</v-icon>
               </v-badge>
             </v-list-item-action>
@@ -52,7 +58,13 @@
           </v-list-item>
           <v-list-item to="/client" link>
             <v-list-item-action>
-              <v-badge :content="clientCount" :value="clientCount" color="error">
+              <v-badge
+                :content="clientCount"
+                :value="clientCount > 0"
+                offset-x="10"
+                offset-y="10"
+                color="error"
+              >
                 <v-icon>mdi-clipboard-multiple</v-icon>
               </v-badge>
             </v-list-item-action>
@@ -75,10 +87,10 @@
         <template v-slot:activator="{ on }">
           <v-badge
             :content="notifications.length"
-            :value="notifications.length"
+            :value="notifications.length > 0"
             color="error"
-            offset-y="22"
-            offset-x="22"
+            offset-y="20"
+            offset-x="20"
           >
             <v-btn color="warning" icon v-on="on" @click.stop="dialog = true">
               <v-icon>mdi-bell</v-icon>
@@ -204,20 +216,21 @@ export default Vue.extend({
     }
   },
   created(): void {
-    if (
-      this.$store.getters.isAuthenticated &&
-      !this.$route.path.includes("authentication")
-    ) {
-      this.$microsoft.signalr = new HubConnectionBuilder()
-        .withUrl("/group-hub", {
-          accessTokenFactory: () => this.$store.getters.token
-        })
-        .configureLogging(LogLevel.Information)
-        .withAutomaticReconnect()
-        .build();
-      this.$microsoft.signalr.start().then(() => {
-        this.listen();
-        this.addGroups();
+    if (!this.$route.path.includes("authentication")) {
+      this.$store.dispatch("init").then(result => {
+        if (result) {
+          this.$microsoft.signalr = new HubConnectionBuilder()
+            .withUrl("/group-hub", {
+              accessTokenFactory: () => this.$store.getters.token
+            })
+            .configureLogging(LogLevel.Information)
+            .withAutomaticReconnect()
+            .build();
+          this.$microsoft.signalr.start().then(() => {
+            this.listen();
+            this.addGroups();
+          });
+        }
       });
     }
   }

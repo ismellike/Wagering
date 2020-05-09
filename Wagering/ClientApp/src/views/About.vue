@@ -2,11 +2,11 @@
   <content-display>
     <v-container>
       <h1 class="display-2">
-        <v-icon large color="accent">mdi-pound</v-icon>Cryptocurrency
+        <span class="accent--text">#</span>Cryptocurrency
       </h1>
     </v-container>
     <v-container>
-      <v-expansion-panels inset hover>
+      <v-expansion-panels inset>
         <v-expansion-panel>
           <v-expansion-panel-header class="headline">What is cryptocurrency?</v-expansion-panel-header>
           <v-expansion-panel-content class="body-1">
@@ -46,11 +46,11 @@
     </v-container>
     <v-container>
       <h1 class="display-2">
-        <v-icon large color="accent">mdi-pound</v-icon>Stellar
+        <span class="accent--text">#</span>Stellar
       </h1>
     </v-container>
     <v-container>
-      <v-expansion-panels inset hover>
+      <v-expansion-panels inset>
         <v-expansion-panel>
           <v-expansion-panel-header class="headline">What is Stellar Lumens?</v-expansion-panel-header>
           <v-expansion-panel-content class="body-1">
@@ -87,11 +87,11 @@
     </v-container>
     <v-container>
       <h1 class="display-2">
-        <v-icon large color="accent">mdi-pound</v-icon>Wagering.gg
+        <span class="accent--text">#</span>Wagering.gg
       </h1>
     </v-container>
     <v-container>
-      <v-expansion-panels inset hover>
+      <v-expansion-panels inset>
         <v-expansion-panel>
           <v-expansion-panel-header class="headline">Why should I use Wagering.gg?</v-expansion-panel-header>
           <v-expansion-panel-content class="body-1">
@@ -111,7 +111,7 @@
         <v-expansion-panel>
           <v-expansion-panel-header class="headline">What are the fees?</v-expansion-panel-header>
           <v-expansion-panel-content class="body-1">
-            Our service fee is a flat 6%. A standard percentage rate
+            There is a flat 6% service fee. A standard percentage rate
             keeps the process simple and allows for wagers of any amount to be possible. This allows Wagering.gg to keep fees low and similar to traditional methods while also providing a service.
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -119,13 +119,12 @@
     </v-container>
     <v-container>
       <h1 class="display-2">
-        <v-icon large color="accent">mdi-pound</v-icon>Resources
+        <span class="accent--text">#</span>Resources
       </h1>
     </v-container>
     <v-container>
       <h3 class="display-1">
-        <v-icon large color="accent">mdi-pound</v-icon>
-        <v-icon large color="accent">mdi-pound</v-icon>Exchanges
+        <span class="accent--text">##</span>Exchanges
       </h3>
     </v-container>
     <v-container>
@@ -146,8 +145,7 @@
     </v-container>
     <v-container>
       <h3 class="display-1">
-        <v-icon large color="accent">mdi-pound</v-icon>
-        <v-icon large color="accent">mdi-pound</v-icon>Earning
+        <span class="accent--text">##</span>Earning
       </h3>
     </v-container>
     <v-container>

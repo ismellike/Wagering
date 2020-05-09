@@ -1,4 +1,5 @@
 import { GetterTree, MutationTree, ActionTree } from "vuex";
+import AuthService from "@/services/authentication";
 
 class State {
     username: string | null = null;
@@ -40,6 +41,21 @@ const actions: ActionTree<State, any> = {
     },
     setLogout({ commit }) {
         commit("setLogout");
+    },
+    async init({ commit }) {
+        const user = await AuthService.getUser();
+        if (user) {
+            const token = await AuthService.getAccessToken();
+            const payload = {
+                username: user.name,
+                id: user.sub,
+                isAuthenticated: true,
+                token: token,
+            } as State;
+            commit("setLogin", payload);
+            return true;
+        }
+        return false;
     },
 };
 export default {
