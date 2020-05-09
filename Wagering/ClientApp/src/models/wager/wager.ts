@@ -5,5 +5,4 @@ interface Wager extends Group {
     maximumWager: number | null;
     challengeCount?: number;
     rules?: WagerRule[] | null;
-    notifications?: WagerNotification[] | null;
 }

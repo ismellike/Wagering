@@ -12,19 +12,19 @@ namespace Wagering.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class EventController : ControllerBase
+    public class GroupController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public EventController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public GroupController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEventGroups()
+        public async Task<IActionResult> GetGroups()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)

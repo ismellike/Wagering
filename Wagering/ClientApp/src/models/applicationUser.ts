@@ -6,4 +6,5 @@ interface ApplicationUser {
     platform?: string;
     input?: string;
     ratings?: Rating[] | null;
+    notifications?: PersonalNotification[] | null;
 }

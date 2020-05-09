@@ -16,18 +16,17 @@ namespace Wagering
         public DbSet<WagerChallengeBid> WagerChallengeBids { get; set; }
         public DbSet<WagerHostBid> WagerHostBids { get; set; }
         public DbSet<WagerRule> WagerRules { get; set; }
-        public DbSet<WagerNotification> WagerNotifications { get; set; }
         #endregion
         #region Tournaments
         public DbSet<Tournament> Tournaments { get; set; }
         #endregion
         public DbSet<Game> Games { get; set; }
         public DbSet<Rule> Rules { get; set; }
-        public DbSet<GroupNotification> Notifications { get; set; }
+        public DbSet<PersonalNotification> Notifications { get; set; }
 
         public ApplicationDbContext(
-            DbContextOptions options,
-            IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
+          DbContextOptions options,
+          IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
             Options = operationalStoreOptions;
         }

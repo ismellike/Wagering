@@ -77,8 +77,7 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
             if (Input.PublicKey != key)
             {
                 user.PublicKey = Input.PublicKey;
-                _context.Users.Update(user);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
 
             await _signInManager.RefreshSignInAsync(user);

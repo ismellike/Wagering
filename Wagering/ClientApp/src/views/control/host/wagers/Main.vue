@@ -17,9 +17,9 @@
                   <v-btn
                     color="secondary"
                     :to="{
-                                            name: 'wager_pending',
-                                            params: { id: wager.id },
-                                        }"
+                      name: 'wager_pending',
+                      params: { id: wager.id },
+                    }"
                   >View</v-btn>
                 </template>
               </wager-display>
@@ -39,9 +39,9 @@
                   <v-btn
                     color="secondary"
                     :to="{
-                                            name: 'wager_confirmed',
-                                            params: { id: wager.id },
-                                        }"
+                      name: 'wager_confirmed',
+                      params: { id: wager.id }
+                    }"
                   >View</v-btn>
                 </template>
               </wager-display>
@@ -61,9 +61,9 @@
                   <v-btn
                     color="secondary"
                     :to="{
-                                            name: 'wager_completed',
-                                            params: { id: wager.id },
-                                        }"
+                      name: 'wager_completed',
+                      params: { id: wager.id }
+                    }"
                   >View</v-btn>
                 </template>
               </wager-display>
@@ -91,7 +91,7 @@ export default Vue.extend({
     };
   },
   created() {
-    this.$axios.get("/api/wager/host").then(response => {
+    this.$axios.get("/api/wager/control").then(response => {
       response.data.forEach((item: Wager) => {
         if (item.status == 0) {
           this.pending.push(item);
