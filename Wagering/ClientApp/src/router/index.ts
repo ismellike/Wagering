@@ -27,68 +27,42 @@ const routes = [
         component: () => import("@/views/Hub.vue"),
     },
     {
-        path: "/host",
-        component: () => import("@/views/control/host/Main.vue"),
+        path: "/control",
+        component: () => import("@/views/control/Main.vue"),
         meta: {
             requiresAuth: true,
         },
         children: [
             {
                 path: "wagers",
-                component: () => import("@/views/control/host/wagers/Main.vue"),
+                component: () => import("@/views/control/wagers/Main.vue"),
             },
             {
                 path: "tournaments",
-                component: () =>
-                    import("@/views/control/host/tournaments/Main.vue"),
+                component: () => import("@/views/control/tournaments/Main.vue"),
             },
             {
                 path: "leagues",
-                component: () =>
-                    import("@/views/control/host/leagues/Main.vue"),
+                component: () => import("@/views/control/leagues/Main.vue"),
             },
         ],
     },
     {
-        path: "/host/wagers/pending/:id",
+        path: "/control/wagers/:id",
         name: "wager_pending",
-        component: () => import("@/views/control/host/wagers/Pending.vue"),
+        component: () => import("@/views/control/wagers/Pending.vue"),
         meta: {
             requiresAuth: true,
         },
     },
     {
-        path: "/host/wagers/confirmed/:id",
+        path: "/control/wagers/:id",
         name: "wager_confirmed",
-        component: () => import("@/views/control/host/wagers/Confirmed.vue"),
+        component: () => import("@/views/control/wagers/Confirmed.vue"),
         meta: {
             requiresAuth: true,
         },
     },
-    {
-        path: "/client",
-        component: () => import("@/views/control/client/Main.vue"),
-        meta: {
-            requiresAuth: true,
-        },
-        children: [
-            {
-                path: "wagers",
-                component: () =>
-                    import("@/views/control/client/wagers/Main.vue"),
-            },
-            {
-                path: "tournaments",
-                component: () =>
-                    import("@/views/control/client/tournaments/Main.vue"),
-            },
-            {
-                path: "leagues",
-                component: () =>
-                    import("@/views/control/client/leagues/Main.vue"),
-            },
-        ],
-    }, // wagers
     {
         path: "/:game/wagers",
         name: "wagers",

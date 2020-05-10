@@ -30,8 +30,13 @@ namespace Wagering.Models
             return true;
         }
 
-        public override string GroupName { get { return $"wager_{Id}"; } }
-        public override string GroupLink { get { return $"/control/wagers/{Id}"; } }
+        public override string GroupName
+        {
+            get
+            {
+                return GetGroupName.Wager(Id);
+            }
+        }
         public override IEnumerable<string> HostUsers()
         {
             return Hosts.Select(x => x.UserId);
@@ -44,7 +49,12 @@ namespace Wagering.Models
             {
                 result = result.Union(challenge.Challengers.Select(x => x.UserId));
             }
-            return result;
+            return result.Distinct();
+        }
+
+        public override IEnumerable<string> AllUsers()
+        {
+            return HostUsers().Union(ClientUsers());
         }
     }
 }

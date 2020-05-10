@@ -19,7 +19,6 @@ namespace Wagering.Models
         public bool IsPrivate { get; set; }
 
         public abstract string GroupName { get; }
-        public abstract string GroupLink { get; }
 
         public abstract IEnumerable<string> HostUsers();
         public abstract IEnumerable<string> ClientUsers();

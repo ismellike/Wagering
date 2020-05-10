@@ -32,10 +32,8 @@ namespace Wagering.Controllers
                 ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
                 return BadRequest(ModelState);
             }
-            List<string> hostGroups = new List<string>();
-            List<string> clientGroups = new List<string>();
-            hostGroups.AddRange(await _context.WagerHostBids.Include(x => x.Wager).Where(x => x.UserId == user.Id).Where(x => x.Wager.Status <= 1).Select(x => x.Wager.GroupName).ToListAsync());
-            return Ok(new { hostGroups, clientGroups });
+            List<string> groups = await _context.UserGroups.Where(x => x.UserId == user.Id).Select(x => x.GroupName).ToListAsync();
+            return Ok(groups);
         }
     }
 }

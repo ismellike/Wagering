@@ -210,6 +210,11 @@ export default Vue.extend({
                     this.notifications.push(notification);
                 }
             );
+            this.$axios.get("/api/notification").then(response => {
+                response.data.forEach((notification: PersonalNotification) => {
+                    this.notifications.push(notification);
+                });
+            });
         },
         deleteNotification(index: number): void {
             //add to list to be sent to server when dialog closed

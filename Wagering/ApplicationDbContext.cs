@@ -20,6 +20,7 @@ namespace Wagering
         #region Tournaments
         public DbSet<Tournament> Tournaments { get; set; }
         #endregion
+        public DbSet<UserGroup> UserGroups { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<Rule> Rules { get; set; }
         public DbSet<PersonalNotification> Notifications { get; set; }

@@ -52,7 +52,7 @@ namespace Wagering.Controllers
 
             bid.Approved = true;
             if (bid.Wager.IsApproved())
-                await _context.Confirm(bid.WagerId, user.UserName);
+                await WagerHandler.Confirm(_context, bid.WagerId, user.UserName);
             _context.SaveChanges();
             return Ok();
         }
@@ -85,7 +85,7 @@ namespace Wagering.Controllers
                 return BadRequest(ModelState);
             }
             bid.Approved = false;
-            await _context.Decline(bid.WagerId, user.UserName);
+            await WagerHandler.Decline(_context, bid.WagerId, user.UserName);
             _context.SaveChanges();
             return Ok();
         }

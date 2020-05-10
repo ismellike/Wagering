@@ -2,17 +2,17 @@
 using System;
 using System.Threading.Tasks;
 using Wagering.Models;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Wagering.Controllers
 {
     public static class WagerHandler
     {
-        public static async Task<PersonalNotification> Confirm(this ApplicationDbContext _context, int wagerId, string username)
+        public static async Task Confirm(ApplicationDbContext _context, int wagerId, string username)
         {
-            var wager = await _context.Wagers.Include(x => x.Challenges).FirstOrDefaultAsync(x => x.Id == wagerId);
+            var wager = await _context.Wagers.Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync(x => x.Id == wagerId);
             if (wager == null)
-                return null;
+                return;
             wager.Status = (byte)Status.Confirmed;
             PersonalNotification notification = new PersonalNotification
             {
@@ -21,14 +21,14 @@ namespace Wagering.Controllers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            return notification;
+            _context.AddNotificationToUsers(wager.AllUsers(), notification);
         }
 
-        public static async Task<PersonalNotification> Decline(this ApplicationDbContext _context, int wagerId, string username)
+        public static async Task Decline(ApplicationDbContext _context, int wagerId, string username)
         {
-            var wager = await _context.Wagers.Include(x => x.Challenges).FirstOrDefaultAsync(x => x.Id == wagerId);
+            var wager = await _context.Wagers.Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync(x => x.Id == wagerId);
             if (wager == null)
-                return null;
+                return;
             wager.Status = (byte)Status.Declined;
             PersonalNotification notification = new PersonalNotification
             {
@@ -37,12 +37,12 @@ namespace Wagering.Controllers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            return notification;
+            _context.AddNotificationToUsers(wager.AllUsers(), notification);
         }
 
-        public static async Task Cancel(this ApplicationDbContext _context, int wagerId, string username)
+        public static async Task Cancel(ApplicationDbContext _context, int wagerId, string username)
         {
-            var wager = await _context.Wagers.Include(x => x.Challenges).FirstOrDefaultAsync(x => x.Id == wagerId);
+            var wager = await _context.Wagers.Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync(x => x.Id == wagerId);
             if (wager == null)
                 return;
             wager.Status = (byte)Status.Canceled;
@@ -53,7 +53,21 @@ namespace Wagering.Controllers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            _context.AddNotificationToUsers(wager.Hosts.Select(x => x.UserId).Union(wager.Challenges.Select(x => x.Challengers.UserId)), notification);
+            _context.AddNotificationToUsers(wager.AllUsers(), notification);
+        }
+
+        public static void AddUserGroups(ApplicationDbContext _context, int wagerId, IEnumerable<string> userIds)
+        {
+            List<UserGroup> userGroups = new List<UserGroup>();
+            foreach (string id in userIds)
+            {
+                userGroups.Add(new UserGroup
+                {
+                    WagerId = wagerId,
+                    UserId = id
+                });
+            }
+            _context.AddRange(userGroups);
         }
     }
 }

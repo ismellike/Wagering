@@ -83,9 +83,9 @@ namespace Wagering.Controllers
             return Ok(wager);
         }
 
-        [HttpGet("host")]
+        [HttpGet("control")]
         [Authorize]
-        public async Task<IActionResult> HostWagers()
+        public async Task<IActionResult> ControlWagers()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
@@ -93,7 +93,7 @@ namespace Wagering.Controllers
                 ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
                 return BadRequest(ModelState);
             }
-            List<Wager> results = await _context.Wagers.AsNoTracking().Where(x => x.Hosts.Any(y => y.UserId == user.Id)).Include(x => x.Hosts).ThenInclude(x => x.User).ToListAsync();
+            List<Wager> results = await _context.UserGroups.AsNoTracking().Where(x => x.UserId == user.Id).Include(x => x.Wager).Select(x => x.Wager).ToListAsync();
             return Ok(results);
         }
 
@@ -149,7 +149,7 @@ namespace Wagering.Controllers
                 ModelState.AddModelError("Not Host", "You are not a host of this wager.");
                 return BadRequest(ModelState);
             }
-
+            await WagerHandler.Decline(_context, id, user.UserName);
             return Ok();
         }
 
@@ -177,14 +177,22 @@ namespace Wagering.Controllers
                 ModelState.AddModelError("Payable", "The hosts payable percentages do not add up to 100.");
                 return BadRequest(ModelState);
             }
+            if (!wagerData.HostUsers().IsUnique())
+            {
+                ModelState.AddModelError("Unique", "The hosts are not unique.");
+                return BadRequest(ModelState);
+            }
 
             try
             {
-                wagerData.Hosts.Single(x => x.IsOwner && x.UserId == null).UserId = user.Id;
+                if (wagerData.Hosts.Single(x => x.UserId == user.Id || x.UserId == null) == null)
+                    throw new Exception("Host values are unknown.");
+                if (wagerData.Hosts.Single(x => x.IsOwner) == null)
+                    throw new Exception("Only 1 owner should be specified.");
             }
-            catch
+            catch (Exception e)
             {
-                ModelState.AddModelError("Wrong Owner", "Cannot request for someone else to be the owner.");
+                ModelState.AddModelError("Wrong Owner", e.Message);
                 return BadRequest(ModelState);
             }
 
@@ -210,9 +218,9 @@ namespace Wagering.Controllers
                     IsOwner = false,
                     ReceivablePt = host.ReceivablePt,
                     PayablePt = host.PayablePt,
-                    UserId = host.UserId,
+                    UserId = host.UserId ?? user.Id,
                 };
-                if (host.UserId == user.Id)
+                if (host.IsOwner)
                 {
                     bid.Approved = true;
                     bid.IsOwner = true;
@@ -232,10 +240,13 @@ namespace Wagering.Controllers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            _context.AddNotificationToUsers(wager.Hosts.Select(x => x.UserId), notification);
-
+            IEnumerable<string> users = wager.HostUsers();
+            _context.AddNotificationToUsers(users, notification);
+            WagerHandler.AddUserGroups(_context, wager.Id, users);
+            _context.SaveChanges();
             _cache.Set(wager.Id, wager, TimeSpan.FromSeconds(20));
-            return Ok(wager);
+
+            return Ok(new { wager = wager, notification = notification });
         }
     }
 }
