@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-#nullable disable
 namespace Wagering.Hubs
 {
-    public class ConnectionMapping<T>
+    public class ConnectionMapping<T> where T : notnull
     {
         private readonly Dictionary<T, HashSet<string>> _connections =
             new Dictionary<T, HashSet<string>>();
@@ -20,21 +19,21 @@ namespace Wagering.Hubs
         {
             lock (_connections)
             {
-                if (!_connections.TryGetValue(key, out HashSet<string> connections))
+                if (!_connections.TryGetValue(key, out HashSet<string>? connections))
                 {
                     connections = new HashSet<string>();
                     _connections.Add(key, connections);
                 }
 
-                lock (connections)
-                    connections.Add(connectionId);
+                if (connections != null)
+                    lock (connections)
+                        connections.Add(connectionId);
             }
         }
 
         public IEnumerable<string> GetConnections(T key)
         {
-            HashSet<string> connections;
-            if (_connections.TryGetValue(key, out connections))
+            if (_connections.TryGetValue(key, out HashSet<string>? connections))
             {
                 return connections;
             }
@@ -46,16 +45,17 @@ namespace Wagering.Hubs
         {
             lock (_connections)
             {
-                if (!_connections.TryGetValue(key, out HashSet<string> connections))
+                if (!_connections.TryGetValue(key, out HashSet<string>? connections))
                     return;
 
-                lock (connections)
-                {
-                    connections.Remove(connectionId);
+                if (connections != null)
+                    lock (connections)
+                    {
+                        connections.Remove(connectionId);
 
-                    if (connections.Count == 0)
-                        _connections.Remove(key);
-                }
+                        if (connections.Count == 0)
+                            _connections.Remove(key);
+                    }
             }
         }
     }

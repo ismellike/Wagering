@@ -10,7 +10,7 @@ namespace Wagering
     {
         public int PageIndex { get; set; }
         public int TotalPages { get; set; }
-        public List<T>? List { get; set; }
+        public List<T> List { get; set; } = new List<T>();
 
         public PaginatedList() { }
 
