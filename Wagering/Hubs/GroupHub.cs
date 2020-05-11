@@ -18,9 +18,16 @@ namespace Wagering.Hubs
             return base.OnConnectedAsync();
         }
 
-        public async Task AddToGroup(string name)
+        public async Task AddToGroup(string id, string groupName)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, name);
+            foreach (var connectionId in _connections.GetConnections(id))
+                await Groups.AddToGroupAsync(connectionId, groupName);
+        }
+
+        public async Task RemoveFromGroup(string id, string groupName)
+        {
+            foreach (var connectionId in _connections.GetConnections(id))
+                await Groups.RemoveFromGroupAsync(connectionId, groupName);
         }
 
         public async Task AddUsersToGroup(string name, string[] ids, PersonalNotification notification)
@@ -33,11 +40,6 @@ namespace Wagering.Hubs
         public async Task NotifyGroup(string name, PersonalNotification notification)
         {
             await Clients.OthersInGroup(name).SendAsync("GetNotification", notification);
-        }
-
-        public async Task RemoveFromGroup(string name)
-        {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, name);
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
