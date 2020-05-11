@@ -93,7 +93,7 @@ namespace Wagering.Controllers
                 ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
                 return BadRequest(ModelState);
             }
-            List<Wager> results = await _context.UserGroups.AsNoTracking().Where(x => x.UserId == user.Id).Include(x => x.Wager).Select(x => x.Wager).ToListAsync();
+            List<Wager?> results = await _context.UserGroups.AsNoTracking().Where(x => x.UserId == user.Id).Include(x => x.Wager).Select(x => x.Wager).ToListAsync();
             return Ok(results);
         }
 
@@ -240,7 +240,7 @@ namespace Wagering.Controllers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            IEnumerable<string> users = wager.HostUsers();
+            IEnumerable<string?> users = wager.HostUsers();
             _context.AddNotificationToUsers(users, notification);
             WagerHandler.AddUserGroups(_context, wager.Id, users);
             _context.SaveChanges();

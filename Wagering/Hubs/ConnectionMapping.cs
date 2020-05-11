@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
+#nullable disable
 namespace Wagering.Hubs
 {
     public class ConnectionMapping<T>

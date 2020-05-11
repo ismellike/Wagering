@@ -20,7 +20,7 @@ namespace Wagering.Areas.Identity.Pages.Account
         }
 
         [TempData]
-        public string StatusMessage { get; set; }
+        public string? StatusMessage { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string userId, string code)
         {

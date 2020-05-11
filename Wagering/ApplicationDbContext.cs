@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Wagering.Models;
-
+#nullable disable
 namespace Wagering
 {
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>

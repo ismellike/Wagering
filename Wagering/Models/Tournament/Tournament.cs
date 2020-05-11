@@ -21,15 +21,15 @@ namespace Wagering.Models
         }
         public override IEnumerable<string> HostUsers()
         {
-            return null;
+            return new List<string>();
         }
         public override IEnumerable<string> ClientUsers()
         {
-            return null;
+            return new List<string>();
         }
         public override IEnumerable<string> AllUsers()
         {
-            return null;
+            return new List<string>();
         }
     }
 }

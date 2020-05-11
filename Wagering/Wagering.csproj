@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     <UserSecretsId>ca7ad22a-7bc4-4f55-a292-8cac7d834d82</UserSecretsId>
@@ -52,8 +53,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
-    <PackageReference Include="Nethereum.KeyStore" Version="3.7.1" />
-    <PackageReference Include="Nethereum.Web3" Version="3.7.1" />
     <PackageReference Include="VueCliMiddleware" Version="3.1.1" />
   </ItemGroup>
 

@@ -38,26 +38,26 @@ namespace Wagering.Areas.Identity.Pages.Account
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = new InputModel();
 
-        public string LoginProvider { get; set; }
+        public string? LoginProvider { get; set; }
 
-        public string ReturnUrl { get; set; }
+        public string? ReturnUrl { get; set; }
 
         [TempData]
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
 
         public class InputModel
         {
             [Required]
             [EmailAddress]
-            public string Email { get; set; }
+            public string? Email { get; set; }
 
             [Required]
             [RegularExpression(Constants.NameRegex)]
             [StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
             [Display(Name = "Username")]
-            public string Username { get; set; }
+            public string? Username { get; set; }
         }
 
         public IActionResult OnGetAsync()
@@ -65,7 +65,7 @@ namespace Wagering.Areas.Identity.Pages.Account
             return RedirectToPage("./Login");
         }
 
-        public IActionResult OnPost(string provider, string returnUrl = null)
+        public IActionResult OnPost(string provider, string? returnUrl = null)
         {
             // Request a redirect to the external login provider.
             var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
@@ -73,7 +73,7 @@ namespace Wagering.Areas.Identity.Pages.Account
             return new ChallengeResult(provider, properties);
         }
 
-        public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
+        public async Task<IActionResult> OnGetCallbackAsync(string? returnUrl = null, string? remoteError = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/login-callback");
             if (remoteError != null)
@@ -115,7 +115,7 @@ namespace Wagering.Areas.Identity.Pages.Account
             }
         }
 
-        public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostConfirmationAsync(string? returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/login-callback");
             // Get the information about the user from the external login provider
@@ -125,13 +125,12 @@ namespace Wagering.Areas.Identity.Pages.Account
                 ErrorMessage = "Error loading external login information during confirmation.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
-
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
                 {
                     UserName = Input.Username,
-                    Email = Input.Email,
+                    Email = Input.Email ?? string.Empty,
                     IsVerified = false
                 };
                 var result = await _userManager.CreateAsync(user);

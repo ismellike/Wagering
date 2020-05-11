@@ -2,7 +2,7 @@
 {
     public class ErrorMessages
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public static string Unauthorized = "The user is not authorized.";
 
         public string AlreadySent

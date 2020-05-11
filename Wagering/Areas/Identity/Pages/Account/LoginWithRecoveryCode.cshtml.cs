@@ -23,9 +23,9 @@ namespace Wagering.Areas.Identity.Pages.Account
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = new InputModel();
 
-        public string ReturnUrl { get; set; }
+        public string? ReturnUrl { get; set; }
 
         public class InputModel
         {
@@ -33,10 +33,10 @@ namespace Wagering.Areas.Identity.Pages.Account
             [Required]
             [DataType(DataType.Text)]
             [Display(Name = "Recovery Code")]
-            public string RecoveryCode { get; set; }
+            public string RecoveryCode { get; set; } = string.Empty;
         }
 
-        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync(string? returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
@@ -50,7 +50,7 @@ namespace Wagering.Areas.Identity.Pages.Account
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             if (!ModelState.IsValid)
             {

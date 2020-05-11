@@ -5,10 +5,10 @@ namespace Wagering.Controllers
 {
     public static class NotificationHandler
     {
-        public static void AddNotificationToUsers(this ApplicationDbContext _context, IEnumerable<string> UserIds, PersonalNotification notification)
+        public static void AddNotificationToUsers(this ApplicationDbContext _context, IEnumerable<string?> UserIds, PersonalNotification notification)
         {
             List<PersonalNotification> notifications = new List<PersonalNotification>();
-            foreach (string id in UserIds)
+            foreach (string? id in UserIds)
             {
                 notifications.Add(new PersonalNotification
                 {

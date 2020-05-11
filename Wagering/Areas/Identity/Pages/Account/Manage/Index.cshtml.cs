@@ -23,18 +23,18 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
-        public string Username { get; set; }
+        public string? Username { get; set; }
 
         [TempData]
-        public string StatusMessage { get; set; }
+        public string? StatusMessage { get; set; }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = new InputModel();
 
         public class InputModel
         {
             [Display(Name = "Public Key")]
-            public string PublicKey { get; set; }
+            public string? PublicKey { get; set; }
         }
 
         private void Load(ApplicationUser user)
@@ -76,7 +76,7 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
             var key = user.PublicKey;
             if (Input.PublicKey != key)
             {
-                user.PublicKey = Input.PublicKey;
+                user.PublicKey = Input.PublicKey ?? string.Empty;
                 _context.SaveChanges();
             }
 

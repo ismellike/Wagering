@@ -33,7 +33,9 @@ namespace Wagering.Controllers
                 return BadRequest(ModelState);
             }
 
+#nullable disable
             var bid = await _context.WagerHostBids.Include(x => x.Wager).ThenInclude(x => x.Hosts).FirstOrDefaultAsync(x => x.Id == id);
+#nullable enable
             if (bid.UserId != user.Id)
             {
                 ModelState.AddModelError("User", _errorMessages.NotCorresponding);
@@ -51,8 +53,9 @@ namespace Wagering.Controllers
             }
 
             bid.Approved = true;
-            if (bid.Wager.IsApproved())
-                await WagerHandler.Confirm(_context, bid.WagerId, user.UserName);
+            if (bid.Wager != null)
+                if (bid.Wager.IsApproved())
+                    await WagerHandler.Confirm(_context, bid.WagerId, user.UserName);
             _context.SaveChanges();
             return Ok();
         }
