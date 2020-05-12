@@ -1,4 +1,5 @@
 interface Game {
-    name: string;
-    url: string;
+  id: number;
+  name: string;
+  normalizedName: string;
 }

@@ -127,11 +127,11 @@ class Query {
   playerCount?: number | null;
   minimumWager?: number | null;
   maximumWager?: number | null;
-  game?: string;
-  constructor(game: string) {
+  gameId?: number;
+  constructor(gameId: number) {
     this.page = 1;
     this.username = null;
-    this.game = game;
+    this.gameId = gameId;
     this.playerCount = null;
     this.minimumWager = null;
     this.maximumWager = null;
@@ -188,7 +188,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      query: new Query(this.$route.params.game),
+      query: new Query(this.$games.getId(this.$route.params.game)),
       form: {
         username: null,
         playerCount: null,
@@ -208,12 +208,11 @@ export default Vue.extend({
       this.query.page = i;
       this.$router.push({
         name: "wagers",
-        params: { game: this.query.game },
+        params: this.$route.params,
         query: this.query.routeQuery()
       } as RawLocation);
     },
     getWagers(): void {
-      //api call here
       this.loading = true;
       this.$axios.post("/api/wager/search", this.query).then(response => {
         this.totalPages = response.data.totalPages;
@@ -225,7 +224,7 @@ export default Vue.extend({
       this.query.copyForm(this.form);
       this.$router.push({
         name: "wagers",
-        params: { game: this.query.game },
+        params: this.$route.params,
         query: this.query.routeQuery()
       } as RawLocation);
     }

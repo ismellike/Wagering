@@ -1,17 +1,17 @@
 <template>
   <content-display>
     <v-row dense>
-      <v-col cols="12" sm="6" lg="4">
+      <v-col cols="12" sm="6" lg="4" v-for="game in $games.games" v-bind:key="game.id">
         <v-card color="accent">
-          <v-card-title class="display-1">Fortnite</v-card-title>
+          <v-card-title class="display-1">{{ game.name }}</v-card-title>
           <v-card-text>
             <v-btn
               class="ma-1"
               color="secondary"
               :to="{
-                                name: 'wagers',
-                                params: { game: 'fortnite' },
-                            }"
+                  name: 'wagers',
+                  params: { game: game.normalizedName },
+              }"
             >
               <v-icon left>mdi-currency-usd-circle</v-icon>Wagers
             </v-btn>
@@ -19,9 +19,9 @@
               class="ma-1"
               color="secondary"
               :to="{
-                                name: 'tournaments',
-                                params: { game: 'fortnite' },
-                            }"
+                  name: 'tournaments',
+                  params: { game: game.normalizedName },
+              }"
             >
               <v-icon left>mdi-trophy</v-icon>Tournaments
             </v-btn>
