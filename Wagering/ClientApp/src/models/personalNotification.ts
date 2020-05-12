@@ -1,8 +1,9 @@
 interface PersonalNotification {
-    id?: number;
-    userId?: string | null;
+    id: number;
+    userId?: string;
     user?: ApplicationUser | null;
     message: string;
     date: Date;
-    link?: string | null;
+    dataModel: number;
+    data: string | null;
 }

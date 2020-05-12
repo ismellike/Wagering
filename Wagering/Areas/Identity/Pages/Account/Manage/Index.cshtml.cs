@@ -4,21 +4,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Wagering.Models;
+using System;
 
 namespace Wagering.Areas.Identity.Pages.Account.Manage
 {
     public partial class IndexModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
         public IndexModel(
-            ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager)
         {
-            _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
         }
@@ -33,8 +31,8 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Display(Name = "Public Key")]
-            public string? PublicKey { get; set; }
+            [Display(Name = "Phone")]
+            public string? PhoneNumber { get; set; }
         }
 
         private void Load(ApplicationUser user)
@@ -43,7 +41,7 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PublicKey = user.PublicKey
+                PhoneNumber = user.PhoneNumber
             };
         }
 
@@ -73,11 +71,14 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var key = user.PublicKey;
-            if (Input.PublicKey != key)
+            var number = user.PhoneNumber;
+            if (Input.PhoneNumber != number)
             {
-                user.PublicKey = Input.PublicKey ?? string.Empty;
-                _context.SaveChanges();
+                var result = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+                if (!result.Succeeded)
+                {
+                    throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
+                }
             }
 
             await _signInManager.RefreshSignInAsync(user);

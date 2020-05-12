@@ -22,7 +22,7 @@ namespace Wagering.Controllers
         public async Task<IActionResult> GetUser(string name)
         {
             name = name.ToUpper();
-            var user = await _context.Users.Include(x => x.Ratings).FirstOrDefaultAsync(x => x.NormalizedUserName == name);
+            var user = await _context.Profiles.Where(x => x.NormalizedDisplayName == name).Include(x => x.Ratings).FirstOrDefaultAsync();
             if (user == null)
             {
                 ModelState.AddModelError("Not found", _errorMessages.NotFound);
@@ -35,7 +35,7 @@ namespace Wagering.Controllers
         public async Task<IActionResult> SearchUsers(string query)
         {
             query = query.ToUpper();
-            var user = await _context.Users.Where(x => x.NormalizedUserName.Contains(query)).Take(ResultSize).ToListAsync();
+            var user = await _context.Profiles.Where(x => x.NormalizedDisplayName.Contains(query)).Take(ResultSize).ToListAsync();
             return Ok(user);
         }
     }

@@ -1,23 +1,28 @@
 using Wagering.Models;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.SignalR;
+using Wagering.Hubs;
+using System.Threading.Tasks;
 
 namespace Wagering.Controllers
 {
     public static class NotificationHandler
     {
-        public static void AddNotificationToUsers(this ApplicationDbContext _context, IEnumerable<string?> UserIds, PersonalNotification notification)
+        public static async Task AddNotificationToUsers(ApplicationDbContext _context, IHubContext<GroupHub> _hubContext, IEnumerable<string> UserIds, PersonalNotification notification)
         {
             List<PersonalNotification> notifications = new List<PersonalNotification>();
-            foreach (string? id in UserIds)
+            foreach (string id in UserIds)
             {
-                notifications.Add(new PersonalNotification
+                PersonalNotification personalNotification = new PersonalNotification
                 {
                     Date = notification.Date,
                     DataModel = notification.DataModel,
                     Data = notification.Data,
                     Message = notification.Message,
-                    UserId = id
-                });
+                    ProfileUserId = id
+                };
+                notifications.Add(personalNotification);
+                await _hubContext.Clients.User(id).SendAsync("ReceiveNotification", personalNotification);
             }
 
             _context.Notifications.AddRange(notifications);

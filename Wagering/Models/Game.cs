@@ -4,8 +4,10 @@ namespace Wagering.Models
 {
     public class Game
     {
-        public string? Name { get; set; }
-        [Key]
-        public string? Url { get; set; }
+        public int Id { get; set; }
+        [Required]
+        public string Name { get; set; } = string.Empty;
+        [Required]
+        public string NormalizedName { get; set; } = string.Empty;
     }
 }

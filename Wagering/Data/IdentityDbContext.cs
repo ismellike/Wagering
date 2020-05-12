@@ -1,0 +1,27 @@
+﻿using IdentityServer4.EntityFramework.Extensions;
+using IdentityServer4.EntityFramework.Options;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Wagering.Models;
+#nullable disable
+namespace Wagering
+{
+    public class IdentityDbContext : ApiAuthorizationDbContext<ApplicationUser>
+    {
+        IOptions<OperationalStoreOptions> Options { get; set; }
+
+        public IdentityDbContext(
+          DbContextOptions options,
+          IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
+        {
+            Options = operationalStoreOptions;
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.ConfigurePersistedGrantContext(Options.Value);
+            base.OnModelCreating(builder);
+        }
+    }
+}

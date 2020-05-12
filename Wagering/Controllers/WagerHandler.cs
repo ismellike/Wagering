@@ -27,7 +27,7 @@ namespace Wagering.Controllers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            _context.AddNotificationToUsers(wager.AllUsers(), notification);
+            //_context.AddNotificationToUsers(wager.AllUsers(), notification);
         }
 
         public static async Task Decline(ApplicationDbContext _context, int wagerId, string username)
@@ -47,7 +47,7 @@ namespace Wagering.Controllers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            _context.AddNotificationToUsers(wager.AllUsers(), notification);
+            //_context.AddNotificationToUsers(wager.AllUsers(), notification);
         }
 
         public static async Task Close(ApplicationDbContext _context, int wagerId, string username)
@@ -68,7 +68,7 @@ namespace Wagering.Controllers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            _context.AddNotificationToUsers(wager.AllUsers(), notification);
+            //_context.AddNotificationToUsers(wager.AllUsers(), notification);
         }
 
         public static async Task Complete(ApplicationDbContext _context, int wagerId, string username)
@@ -91,7 +91,7 @@ namespace Wagering.Controllers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            _context.AddNotificationToUsers(wager.AllUsers(), notification);
+            //_context.AddNotificationToUsers(wager.AllUsers(), notification);
         }
 
         private static async Task<Wager> GetWagerAsync(ApplicationDbContext _context, int wagerId)
@@ -99,15 +99,15 @@ namespace Wagering.Controllers
             return await _context.Wagers.Where(x => x.Id == wagerId).Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync();
         }
 
-        public static void AddUserGroups(ApplicationDbContext _context, int wagerId, IEnumerable<string?> userIds)
+        public static void AddUserGroups(ApplicationDbContext _context, int wagerId, IEnumerable<string> userIds)
         {
             List<UserGroup> userGroups = new List<UserGroup>();
-            foreach (string? id in userIds)
+            foreach (string id in userIds)
             {
                 userGroups.Add(new UserGroup
                 {
                     WagerId = wagerId,
-                    UserId = id
+                    ProfileUserId = id
                 });
             }
             _context.AddRange(userGroups);

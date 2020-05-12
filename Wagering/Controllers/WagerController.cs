@@ -22,7 +22,7 @@ namespace Wagering.Controllers
         private readonly ErrorMessages _errorMessages = new ErrorMessages { Name = "wager" };
         public struct Query
         {
-            public string game;
+            public int gameId;
             public int page;
             public string username;
             public int? minimumWager;
@@ -56,7 +56,7 @@ namespace Wagering.Controllers
                 return BadRequest(ModelState);
 
             byte confirmed = (byte)Status.Confirmed;
-            IQueryable<Wager> wagerQuery = _context.Wagers.AsNoTracking().Where(x => x.GameUrl == query.game).Where(x => !x.IsPrivate).Where(x => x.Status == confirmed);
+            IQueryable<Wager> wagerQuery = _context.Wagers.AsNoTracking().Where(x => x.GameId == query.gameId).Where(x => !x.IsPrivate).Where(x => x.Status == confirmed);
 
             if (query.playerCount.HasValue)
                 wagerQuery = wagerQuery.Where(x => x.Hosts.Count == query.playerCount);
@@ -65,7 +65,7 @@ namespace Wagering.Controllers
             if (query.maximumWager.HasValue)
                 wagerQuery = wagerQuery.Where(x => x.MaximumWager == null || (x.MinimumWager.HasValue && x.MinimumWager < query.maximumWager) || (x.MaximumWager.HasValue && x.MaximumWager < query.maximumWager));
 
-            wagerQuery = wagerQuery.Include(x => x.Hosts).ThenInclude(x => x.User);
+            wagerQuery = wagerQuery.Include(x => x.Hosts).ThenInclude(x => x.Profile);
             PaginatedList<Wager> results = await PaginatedList<Wager>.CreateAsync(wagerQuery.OrderByDescending(x => x.Date), query.page, ResultSize);
             return Ok(results);
         }
@@ -74,7 +74,7 @@ namespace Wagering.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetWager(int id)
         {
-            var wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).FirstOrDefaultAsync(x => x.Id == id);
+            var wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.Profile).Include(x => x.Challenges).FirstOrDefaultAsync(x => x.Id == id);
             if (wager == null)
             {
                 ModelState.AddModelError("Not Found", _errorMessages.NotFound);
@@ -93,7 +93,7 @@ namespace Wagering.Controllers
                 ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
                 return BadRequest(ModelState);
             }
-            List<Wager?> results = await _context.UserGroups.AsNoTracking().Where(x => x.UserId == user.Id).Include(x => x.Wager).Select(x => x.Wager).ToListAsync();
+            List<Wager?> results = await _context.UserGroups.AsNoTracking().Where(x => x.ProfileUserId == user.Id).Include(x => x.Wager).Select(x => x.Wager).ToListAsync();
             return Ok(results);
         }
 
@@ -110,7 +110,7 @@ namespace Wagering.Controllers
 
             if (!_cache.TryGetValue(id, out Wager wager))
             {
-                wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.User).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
+                wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.Profile).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.Profile).FirstOrDefaultAsync(x => x.Id == id);
                 _cache.Set(id, wager, TimeSpan.FromSeconds(20));
             }
 
@@ -119,7 +119,7 @@ namespace Wagering.Controllers
                 ModelState.AddModelError("Not Found", _errorMessages.NotFound);
                 return BadRequest(ModelState);
             }
-            if (!wager.Hosts.Any(x => x.UserId == user.Id))
+            if (!wager.Hosts.Any(x => x.ProfileUserId == user.Id))
             {
                 ModelState.AddModelError("Not Host", "You are not a host of this wager.");
                 return BadRequest(ModelState);
@@ -144,7 +144,7 @@ namespace Wagering.Controllers
                 ModelState.AddModelError("Not Found", _errorMessages.NotFound);
                 return BadRequest(ModelState);
             }
-            if (!wager.Hosts.Any(x => x.UserId == user.Id))
+            if (!wager.Hosts.Any(x => x.ProfileUserId == user.Id))
             {
                 ModelState.AddModelError("Not Host", "You are not a host of this wager.");
                 return BadRequest(ModelState);
@@ -185,7 +185,7 @@ namespace Wagering.Controllers
 
             try
             {
-                if (wagerData.Hosts.Single(x => x.UserId == user.Id || x.UserId == null) == null)
+                if (wagerData.Hosts.Single(x => x.ProfileUserId == user.Id || x.ProfileUserId == null) == null)
                     throw new Exception("Host values are unknown.");
                 if (wagerData.Hosts.Single(x => x.IsOwner) == null)
                     throw new Exception("Only 1 owner should be specified.");
@@ -199,7 +199,7 @@ namespace Wagering.Controllers
             DateTime date = DateTime.Now;
             Wager wager = new Wager //prevents overposting
             {
-                GameUrl = wagerData.GameUrl,
+                GameId = wagerData.GameId,
                 Date = date,
                 Description = wagerData.Description,
                 MinimumWager = wagerData.MinimumWager,
@@ -218,7 +218,7 @@ namespace Wagering.Controllers
                     IsOwner = false,
                     ReceivablePt = host.ReceivablePt,
                     PayablePt = host.PayablePt,
-                    UserId = host.UserId ?? user.Id,
+                    ProfileUserId = host.ProfileUserId
                 };
                 if (host.IsOwner)
                 {
@@ -240,8 +240,8 @@ namespace Wagering.Controllers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            IEnumerable<string?> users = wager.HostUsers();
-            _context.AddNotificationToUsers(users, notification);
+            IEnumerable<string> users = wager.HostUsers();
+            //_context.AddNotificationToUsers(users, notification);
             WagerHandler.AddUserGroups(_context, wager.Id, users);
             _context.SaveChanges();
             _cache.Set(wager.Id, wager, TimeSpan.FromSeconds(20));

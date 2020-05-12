@@ -33,7 +33,7 @@ namespace Wagering.Controllers
                 return BadRequest(ModelState);
             }
 
-            List<PersonalNotification> notifications = await _context.Notifications.Where(x => x.UserId == user.Id).OrderByDescending(x => x.Date).ToListAsync();
+            List<PersonalNotification> notifications = await _context.Notifications.Where(x => x.ProfileUserId == user.Id).OrderByDescending(x => x.Date).ToListAsync();
             return Ok(notifications);
         }
     }

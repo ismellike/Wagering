@@ -1,8 +1,8 @@
 interface Wager extends Group {
-    hosts?: WagerHostBid[] | null;
-    challenges?: WagerChallenge[] | null;
-    minimumWager: number | null;
-    maximumWager: number | null;
+    hosts?: WagerHostBid[];
+    challenges?: WagerChallenge[];
+    minimumWager?: number | null;
+    maximumWager?: number | null;
     challengeCount?: number;
-    rules?: WagerRule[] | null;
+    rules?: WagerRule[];
 }

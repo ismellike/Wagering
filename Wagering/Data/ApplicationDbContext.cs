@@ -1,15 +1,12 @@
-﻿using IdentityServer4.EntityFramework.Extensions;
-using IdentityServer4.EntityFramework.Options;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Wagering.Models;
 #nullable disable
+
 namespace Wagering
 {
-    public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
+    public class ApplicationDbContext : DbContext
     {
-        IOptions<OperationalStoreOptions> Options { get; set; }
+        public DbSet<Profile> Profiles { get; set; }
         #region Wagers
         public DbSet<Wager> Wagers { get; set; }
         public DbSet<WagerChallenge> WagerChallenges { get; set; }
@@ -24,18 +21,18 @@ namespace Wagering
         public DbSet<Game> Games { get; set; }
         public DbSet<Rule> Rules { get; set; }
         public DbSet<PersonalNotification> Notifications { get; set; }
-
-        public ApplicationDbContext(
-          DbContextOptions options,
-          IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
+        public ApplicationDbContext(DbContextOptions options) : base(options)
         {
-            Options = operationalStoreOptions;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.ConfigurePersistedGrantContext(Options.Value);
-            Game[] games = new Game[] { new Game { Name = "Fortnite", Url = "fortnite" } };
+            builder.Entity<Profile>().HasIndex(x => x.UserId).IsUnique();
+            builder.Entity<Profile>().HasIndex(x => x.NormalizedDisplayName).IsUnique();
+            builder.Entity<Profile>().HasAlternateKey(x => x.UserId);
+            builder.Entity<Game>().HasIndex(x => x.NormalizedName).IsUnique();
+
+            Game[] games = new Game[] { new Game { Id = 1, Name = "Fortnite", NormalizedName = "fortnite" } };
             builder.Entity<Game>().HasData(games);
             base.OnModelCreating(builder);
         }

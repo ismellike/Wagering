@@ -1,4 +1,4 @@
 interface Rule {
-    id: number;
+    id?: number;
     message: string;
 }

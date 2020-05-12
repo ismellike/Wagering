@@ -8,10 +8,10 @@ namespace Wagering.Models
     {
         public int Id { get; set; }
 
-        public string? GameUrl { get; set; }
+        public int GameId { get; set; }
         public Game? Game { get; set; }
-        public string? UserId { get; set; }
-        public ApplicationUser? User { get; set; }
+        public int ProfileId { get; set; }
+        public Profile? Profile { get; set; }
 
         [Column(TypeName = "decimal(9,2)")]
         public decimal Value { get; set; } = Constants.Rating.Initial;

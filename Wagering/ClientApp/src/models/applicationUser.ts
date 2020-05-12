@@ -2,9 +2,10 @@ interface ApplicationUser {
     id?: string;
     userName?: string;
     isVerified?: boolean;
-    publicKey?: string;
-    platform?: string;
-    input?: string;
-    ratings?: Rating[] | null;
-    notifications?: PersonalNotification[] | null;
+    publicKey?: string | null;
+    platform?: string | null;
+    input?: string | null;
+    ratings?: Rating[];
+    notifications?: PersonalNotification[];
+    userGroups?: UserGroup[];
 }

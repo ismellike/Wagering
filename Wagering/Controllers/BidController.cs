@@ -36,7 +36,7 @@ namespace Wagering.Controllers
 #nullable disable
             var bid = await _context.WagerHostBids.Include(x => x.Wager).ThenInclude(x => x.Hosts).FirstOrDefaultAsync(x => x.Id == id);
 #nullable enable
-            if (bid.UserId != user.Id)
+            if (bid.ProfileUserId != user.Id)
             {
                 ModelState.AddModelError("User", _errorMessages.NotCorresponding);
                 return BadRequest(ModelState);
@@ -72,7 +72,7 @@ namespace Wagering.Controllers
             }
 
             var bid = await _context.WagerHostBids.FirstOrDefaultAsync(x => x.Id == id);
-            if (bid.UserId != user.Id)
+            if (bid.ProfileUserId != user.Id)
             {
                 ModelState.AddModelError("User", _errorMessages.NotCorresponding);
                 return BadRequest(ModelState);

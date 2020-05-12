@@ -131,7 +131,6 @@ namespace Wagering.Areas.Identity.Pages.Account
                 {
                     UserName = Input.Username,
                     Email = Input.Email ?? string.Empty,
-                    IsVerified = false
                 };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)

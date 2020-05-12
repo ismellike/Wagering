@@ -3,8 +3,8 @@ namespace Wagering.Models
     public class UserGroup
     {
         public int Id { get; set; }
-        public string? UserId { get; set; }
-        public ApplicationUser? User { get; set; }
+        public string ProfileUserId { get; set; } = string.Empty;
+        public Profile? Profile { get; set; }
         public int? WagerId { get; set; }
         public Wager? Wager { get; set; }
         public int? TournamentId { get; set; }

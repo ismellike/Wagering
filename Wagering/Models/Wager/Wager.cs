@@ -37,24 +37,24 @@ namespace Wagering.Models
                 return GetGroupName.Wager(Id);
             }
         }
-        public override IEnumerable<string?> HostUsers()
+        public override IEnumerable<string> HostUsers()
         {
             if (Hosts == null)
                 return new List<string>();
-            return Hosts.Select(x => x.UserId);
+            return Hosts.Select(x => x.ProfileUserId);
         }
 
-        public override IEnumerable<string?> ClientUsers()
+        public override IEnumerable<string> ClientUsers()
         {
-            IEnumerable<string?> result = Enumerable.Empty<string>();
+            IEnumerable<string> result = Enumerable.Empty<string>();
             foreach (WagerChallenge challenge in Challenges)
             {
-                result = result.Union(challenge.Challengers.Select(x => x.UserId));
+                result = result.Union(challenge.Challengers.Select(x => x.ProfileUserId));
             }
             return result.Distinct();
         }
 
-        public override IEnumerable<string?> AllUsers()
+        public override IEnumerable<string> AllUsers()
         {
             return HostUsers().Union(ClientUsers());
         }

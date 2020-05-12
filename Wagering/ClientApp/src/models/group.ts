@@ -6,5 +6,4 @@ interface Group extends Approvable {
     date?: Date;
     isPrivate?: boolean;
     groupName?: string;
-    groupLink?: string;
 }
