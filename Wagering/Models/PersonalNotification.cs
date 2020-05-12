@@ -6,7 +6,7 @@ namespace Wagering.Models
     public class PersonalNotification
     {
         public int Id { get; set; }
-        public string ProfileUserId { get; set; } = string.Empty;
+        public string ProfileId { get; set; } = string.Empty;
         public Profile? Profile { get; set; }
         [Required]
         public string Message { get; set; } = string.Empty;

@@ -107,7 +107,7 @@ namespace Wagering.Controllers
                 userGroups.Add(new UserGroup
                 {
                     WagerId = wagerId,
-                    ProfileUserId = id
+                    ProfileId = id
                 });
             }
             _context.AddRange(userGroups);

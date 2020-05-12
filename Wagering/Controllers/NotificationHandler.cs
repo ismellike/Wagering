@@ -19,7 +19,7 @@ namespace Wagering.Controllers
                     DataModel = notification.DataModel,
                     Data = notification.Data,
                     Message = notification.Message,
-                    ProfileUserId = id
+                    ProfileId = id
                 };
                 notifications.Add(personalNotification);
                 await _hubContext.Clients.User(id).SendAsync("ReceiveNotification", personalNotification);

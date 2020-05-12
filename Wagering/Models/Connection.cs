@@ -4,7 +4,7 @@ namespace Wagering.Models
 {
     public class Connection
     {
-        public string ProfileUserId { get; set; } = string.Empty;
+        public string ProfileId { get; set; } = string.Empty;
         public Profile? Profile { get; set; }
         [Required]
         public string ConnectionID { get; set; } = string.Empty;

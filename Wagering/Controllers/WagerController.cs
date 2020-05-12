@@ -93,7 +93,7 @@ namespace Wagering.Controllers
                 ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
                 return BadRequest(ModelState);
             }
-            List<Wager?> results = await _context.UserGroups.AsNoTracking().Where(x => x.ProfileUserId == user.Id).Include(x => x.Wager).Select(x => x.Wager).ToListAsync();
+            List<Wager?> results = await _context.UserGroups.AsNoTracking().Where(x => x.ProfileId == user.Id).Include(x => x.Wager).Select(x => x.Wager).ToListAsync();
             return Ok(results);
         }
 
@@ -119,7 +119,7 @@ namespace Wagering.Controllers
                 ModelState.AddModelError("Not Found", _errorMessages.NotFound);
                 return BadRequest(ModelState);
             }
-            if (!wager.Hosts.Any(x => x.ProfileUserId == user.Id))
+            if (!wager.Hosts.Any(x => x.ProfileId == user.Id))
             {
                 ModelState.AddModelError("Not Host", "You are not a host of this wager.");
                 return BadRequest(ModelState);
@@ -144,7 +144,7 @@ namespace Wagering.Controllers
                 ModelState.AddModelError("Not Found", _errorMessages.NotFound);
                 return BadRequest(ModelState);
             }
-            if (!wager.Hosts.Any(x => x.ProfileUserId == user.Id))
+            if (!wager.Hosts.Any(x => x.ProfileId == user.Id))
             {
                 ModelState.AddModelError("Not Host", "You are not a host of this wager.");
                 return BadRequest(ModelState);
@@ -185,7 +185,7 @@ namespace Wagering.Controllers
 
             try
             {
-                if (wagerData.Hosts.Single(x => x.ProfileUserId == user.Id || x.ProfileUserId == null) == null)
+                if (wagerData.Hosts.Single(x => x.ProfileId == user.Id || x.ProfileId == null) == null)
                     throw new Exception("Host values are unknown.");
                 if (wagerData.Hosts.Single(x => x.IsOwner) == null)
                     throw new Exception("Only 1 owner should be specified.");
@@ -218,7 +218,7 @@ namespace Wagering.Controllers
                     IsOwner = false,
                     ReceivablePt = host.ReceivablePt,
                     PayablePt = host.PayablePt,
-                    ProfileUserId = host.ProfileUserId
+                    ProfileId = host.ProfileId
                 };
                 if (host.IsOwner)
                 {

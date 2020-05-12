@@ -21,15 +21,16 @@ namespace Wagering
         public DbSet<Game> Games { get; set; }
         public DbSet<Rule> Rules { get; set; }
         public DbSet<PersonalNotification> Notifications { get; set; }
+        public DbSet<Connection> Connections { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Profile>().HasIndex(x => x.UserId).IsUnique();
             builder.Entity<Profile>().HasIndex(x => x.NormalizedDisplayName).IsUnique();
-            builder.Entity<Profile>().HasAlternateKey(x => x.UserId);
+            builder.Entity<Profile>().HasAlternateKey(x => x.DisplayName);
             builder.Entity<Game>().HasIndex(x => x.NormalizedName).IsUnique();
 
             Game[] games = new Game[] { new Game { Id = 1, Name = "Fortnite", NormalizedName = "fortnite" } };

@@ -5,9 +5,11 @@ namespace Wagering.Models
 {
     public class Profile
     {
-        public int Id { get; set; }
-        [Required]
-        public string UserId { get; set; } = string.Empty;
+        /// <summary>
+        /// Id should be the same as ApplicationUser.Id
+        /// </summary>
+        /// <value>Id</value>
+        public string Id { get; set; } = string.Empty;
         [Required]
         public string DisplayName { get; set; } = string.Empty;
         [Required]

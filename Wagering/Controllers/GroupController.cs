@@ -32,7 +32,7 @@ namespace Wagering.Controllers
                 ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
                 return BadRequest(ModelState);
             }
-            List<string?> groups = await _context.UserGroups.Where(x => x.ProfileUserId == user.Id).Select(x => x.GroupName).ToListAsync();
+            List<string?> groups = await _context.UserGroups.Where(x => x.ProfileId == user.Id).Select(x => x.GroupName).ToListAsync();
             return Ok(groups);
         }
     }

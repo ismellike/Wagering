@@ -41,7 +41,7 @@ namespace Wagering.Models
         {
             if (Hosts == null)
                 return new List<string>();
-            return Hosts.Select(x => x.ProfileUserId);
+            return Hosts.Select(x => x.ProfileId);
         }
 
         public override IEnumerable<string> ClientUsers()
@@ -49,7 +49,7 @@ namespace Wagering.Models
             IEnumerable<string> result = Enumerable.Empty<string>();
             foreach (WagerChallenge challenge in Challenges)
             {
-                result = result.Union(challenge.Challengers.Select(x => x.ProfileUserId));
+                result = result.Union(challenge.Challengers.Select(x => x.ProfileId));
             }
             return result.Distinct();
         }
