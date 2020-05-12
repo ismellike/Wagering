@@ -39,11 +39,11 @@
                     </v-list-item-content>
                 </v-list-item>
                 <template v-if="$store.getters.isAuthenticated">
-                    <v-list-item to="/host" link>
+                    <v-list-item to="/control" link>
                         <v-list-item-action>
                             <v-badge
-                                :content="hostCount"
-                                :value="hostCount > 0"
+                                :content="groupCount"
+                                :value="groupCount > 0"
                                 offset-x="10"
                                 offset-y="10"
                                 color="error"
@@ -53,24 +53,7 @@
                         </v-list-item-action>
 
                         <v-list-item-content>
-                            <v-list-item-title>Host Panel</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item to="/client" link>
-                        <v-list-item-action>
-                            <v-badge
-                                :content="clientCount"
-                                :value="clientCount > 0"
-                                offset-x="10"
-                                offset-y="10"
-                                color="error"
-                            >
-                                <v-icon>mdi-clipboard-multiple</v-icon>
-                            </v-badge>
-                        </v-list-item-action>
-
-                        <v-list-item-content>
-                            <v-list-item-title>Client Panel</v-list-item-title>
+                            <v-list-item-title>Control Panel</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </template>
@@ -198,8 +181,7 @@ export default Vue.extend({
             drawer: false as boolean,
             notifications: [] as PersonalNotification[],
             dialog: false as boolean,
-            hostCount: 0 as number,
-            clientCount: 0 as number
+            groupCount: 0 as number
         };
     },
     methods: {
@@ -210,6 +192,8 @@ export default Vue.extend({
                     this.notifications.push(notification);
                 }
             );
+        },
+        getNotifications(): void {
             this.$axios.get("/api/notification").then(response => {
                 response.data.forEach((notification: PersonalNotification) => {
                     this.notifications.push(notification);
@@ -231,14 +215,10 @@ export default Vue.extend({
         },
         addGroups(): void {
             this.$axios.get("/api/group").then(response => {
-                response.data.hostGroups.forEach((group: string) => {
+                response.data.forEach((group: string) => {
                     this.$microsoft.signalr.invoke("AddToGroup", group);
+                    this.groupCount++;
                 });
-                this.hostCount = response.data.hostGroups.length;
-                response.data.clientGroups.forEach((group: string) => {
-                    this.$microsoft.signalr.invoke("AddToGroup", group);
-                });
-                this.clientCount = response.data.clientGroups.length;
             });
         },
         listen(): void {
@@ -249,6 +229,7 @@ export default Vue.extend({
     created(): void {
         if (!this.$route.path.includes("authentication")) {
             this.$store.dispatch("init").then(result => {
+                //if authenticated
                 if (result) {
                     this.$microsoft.signalr = new HubConnectionBuilder()
                         .withUrl("/group-hub", {
@@ -261,6 +242,7 @@ export default Vue.extend({
                         this.listen();
                         this.addGroups();
                     });
+                    this.getNotifications();
                 }
             });
         }

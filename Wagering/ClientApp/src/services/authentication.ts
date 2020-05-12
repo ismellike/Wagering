@@ -166,7 +166,7 @@ export class AuthorizeService {
         if (user) {
             store.dispatch("setLogin", {
                 id: user.profile.sub,
-                username: user.profile.name,
+                username: user.profile.display_name,
                 token: user.access_token,
             });
         } else {

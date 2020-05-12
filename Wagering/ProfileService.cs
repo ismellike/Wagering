@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Wagering.Models;
+using System.Linq;
 
 namespace Wagering
 {
@@ -20,10 +21,7 @@ namespace Wagering
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             var user = await _userManager.GetUserAsync(context.Subject);
-            var claims = new List<Claim>
-            {
-                new Claim("name", user.UserName)
-            };
+            var claims = await _userManager.GetClaimsAsync(user);
             context.IssuedClaims.AddRange(claims);
         }
 

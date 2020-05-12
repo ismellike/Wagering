@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Wagering
 {
@@ -9,6 +10,11 @@ namespace Wagering
         {
             var hs = new HashSet<T>();
             return list.All(hs.Add);
+        }
+
+        public static string? GetId(this ClaimsPrincipal User)
+        {
+            return User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
         }
     }
 }

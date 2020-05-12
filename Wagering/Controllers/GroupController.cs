@@ -26,13 +26,8 @@ namespace Wagering.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGroups()
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (user == null)
-            {
-                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
-                return BadRequest(ModelState);
-            }
-            List<string?> groups = await _context.UserGroups.Where(x => x.ProfileId == user.Id).Select(x => x.GroupName).ToListAsync();
+            var id = User.GetId();
+            List<string?> groups = await _context.UserGroups.Where(x => x.ProfileId == id).Select(x => x.GroupName).ToListAsync();
             return Ok(groups);
         }
     }

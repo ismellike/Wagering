@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Wagering.Controllers
 {
@@ -26,14 +27,8 @@ namespace Wagering.Controllers
         [HttpGet]
         public async Task<IActionResult> GetNotifications()
         {
-            ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (user == null)
-            {
-                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
-                return BadRequest(ModelState);
-            }
-
-            List<PersonalNotification> notifications = await _context.Notifications.Where(x => x.ProfileId == user.Id).OrderByDescending(x => x.Date).ToListAsync();
+            string? id = User.GetId();
+            List<PersonalNotification> notifications = await _context.Notifications.Where(x => x.ProfileId == id).OrderByDescending(x => x.Date).ToListAsync();
             return Ok(notifications);
         }
     }

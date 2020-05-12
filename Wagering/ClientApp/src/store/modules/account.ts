@@ -47,7 +47,7 @@ const actions: ActionTree<State, any> = {
         if (user) {
             const token = await AuthService.getAccessToken();
             const payload = {
-                username: user.name,
+                username: user.display_name,
                 id: user.sub,
                 isAuthenticated: true,
                 token: token,
