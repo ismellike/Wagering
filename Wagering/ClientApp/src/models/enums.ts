@@ -1,4 +1,4 @@
-const enum Status {
+export enum Status {
     Created = 0,
     Confirmed = 1,
     Canceled = 2,
@@ -7,7 +7,7 @@ const enum Status {
     Completed = 8,
 }
 
-const enum DataModel {
+export enum DataModel {
     None = 0,
     ApplicationUser = 10,
     Wager = 20,

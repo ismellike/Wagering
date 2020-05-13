@@ -24,7 +24,7 @@ namespace Wagering.Controllers
         {
             public int gameId;
             public int page;
-            public string username;
+            public string? displayName;
             public int? minimumWager;
             public int? maximumWager;
             public int? playerCount;
@@ -64,8 +64,14 @@ namespace Wagering.Controllers
                 wagerQuery = wagerQuery.Where(x => x.MinimumWager == null || (x.MinimumWager.HasValue && x.MinimumWager > query.minimumWager) || (x.MaximumWager.HasValue && x.MaximumWager > query.minimumWager));
             if (query.maximumWager.HasValue)
                 wagerQuery = wagerQuery.Where(x => x.MaximumWager == null || (x.MinimumWager.HasValue && x.MinimumWager < query.maximumWager) || (x.MaximumWager.HasValue && x.MaximumWager < query.maximumWager));
-
             wagerQuery = wagerQuery.Include(x => x.Hosts).ThenInclude(x => x.Profile);
+            if (query.displayName != null)
+            {
+#nullable disable
+                query.displayName = query.displayName.ToUpper();
+                wagerQuery = wagerQuery.Where(x => x.Hosts.Any(x => x.Profile.NormalizedDisplayName.Contains(query.displayName)));
+#nullable enable
+            }
             PaginatedList<Wager> results = await PaginatedList<Wager>.CreateAsync(wagerQuery.OrderByDescending(x => x.Date), query.page, ResultSize);
             return Ok(results);
         }
@@ -74,10 +80,10 @@ namespace Wagering.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetWager(int id)
         {
-            var wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.Profile).Include(x => x.Challenges).FirstOrDefaultAsync(x => x.Id == id);
+            var wager = await _context.Wagers.AsNoTracking().Where(x => x.Id == id).Include(x => x.Hosts).ThenInclude(x => x.Profile).Include(x => x.Challenges).FirstOrDefaultAsync();
             if (wager == null)
             {
-                ModelState.AddModelError("Not Found", _errorMessages.NotFound);
+                ModelState.AddModelError(string.Empty, _errorMessages.NotFound);
                 return BadRequest(ModelState);
             }
             return Ok(wager);
@@ -87,13 +93,10 @@ namespace Wagering.Controllers
         [Authorize]
         public async Task<IActionResult> ControlWagers()
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (user == null)
-            {
-                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
-                return BadRequest(ModelState);
-            }
-            List<Wager?> results = await _context.UserGroups.AsNoTracking().Where(x => x.ProfileId == user.Id).Include(x => x.Wager).Select(x => x.Wager).ToListAsync();
+            string? userId = User.GetId();
+#nullable disable
+            List<Wager> results = await _context.UserGroups.AsNoTracking().Where(x => x.ProfileId == userId).Include(x => x.Wager).ThenInclude(x => x.Hosts).ThenInclude(x => x.Profile).Select(x => x.Wager).ToListAsync();
+#nullable enable
             return Ok(results);
         }
 
@@ -101,12 +104,7 @@ namespace Wagering.Controllers
         [Authorize]
         public async Task<IActionResult> GetControlWager(int id)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (user == null)
-            {
-                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
-                return BadRequest(ModelState);
-            }
+            string? userId = User.GetId();
 
             if (!_cache.TryGetValue(id, out Wager wager))
             {
@@ -116,12 +114,12 @@ namespace Wagering.Controllers
 
             if (wager == null)
             {
-                ModelState.AddModelError("Not Found", _errorMessages.NotFound);
+                ModelState.AddModelError(string.Empty, _errorMessages.NotFound);
                 return BadRequest(ModelState);
             }
-            if (!wager.Hosts.Any(x => x.ProfileId == user.Id))
+            if (!wager.Hosts.Any(x => x.ProfileId == userId))
             {
-                ModelState.AddModelError("Not Host", "You are not a host of this wager.");
+                ModelState.AddModelError(string.Empty, "You are not a host of this wager.");
                 return BadRequest(ModelState);
             }
             return Ok(wager);
@@ -131,25 +129,26 @@ namespace Wagering.Controllers
         [Authorize]
         public async Task<IActionResult> CancelWager(int id)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (user == null)
-            {
-                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
-                return BadRequest(ModelState);
-            }
-            Wager wager = await _context.Wagers.Include(x => x.Hosts).FirstOrDefaultAsync(x => x.Id == id);
+            string? userId = User.GetId();
+            string? userName = User.GetName();
+            Wager wager = await _context.Wagers.Where(x => x.Id == id).Include(x => x.Hosts).FirstOrDefaultAsync();
 
             if (wager == null)
             {
-                ModelState.AddModelError("Not Found", _errorMessages.NotFound);
+                ModelState.AddModelError(string.Empty, _errorMessages.NotFound);
                 return BadRequest(ModelState);
             }
-            if (!wager.Hosts.Any(x => x.ProfileId == user.Id))
+            if (wager.Status != (byte)Status.Created)
             {
-                ModelState.AddModelError("Not Host", "You are not a host of this wager.");
+                ModelState.AddModelError(string.Empty, "Wager is not in the created.");
                 return BadRequest(ModelState);
             }
-            await WagerHandler.Decline(_context, id, user.UserName);
+            if (!wager.Hosts.Any(x => x.ProfileId == userId))
+            {
+                ModelState.AddModelError(string.Empty, "You are not a host of this wager.");
+                return BadRequest(ModelState);
+            }
+            await WagerHandler.Decline(_context, id, userName);
             return Ok();
         }
 
@@ -163,9 +162,9 @@ namespace Wagering.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            string? id = User.GetId();
-            string? name = User.GetName();
-            WagerHostBid caller = wagerData.Hosts.FirstOrDefault(x => x.ProfileId == id);
+            string? userId = User.GetId();
+            string? userName = User.GetName();
+            WagerHostBid caller = wagerData.Hosts.FirstOrDefault(x => x.ProfileId == userId);
 
             if (wagerData.Hosts.Sum(x => x.ReceivablePt) != 100)
                 ModelState.AddModelError(string.Empty, "The hosts receivable percentages do not add up to 100.");
@@ -186,6 +185,7 @@ namespace Wagering.Controllers
             {
                 ModelState.AddModelError(string.Empty, e.Message);
             }
+            //TODO: check sufficient funds on horizon
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -230,12 +230,12 @@ namespace Wagering.Controllers
             PersonalNotification notification = new PersonalNotification
             {
                 Date = date,
-                Message = $"{name} created a wager with you.",
+                Message = $"{userName} created a wager with you.",
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
             IEnumerable<string> users = wager.HostIds();
-            IEnumerable<string> others = users.Where(x => x != id);
+            IEnumerable<string> others = users.Where(x => x != userId);
             NotificationHandler.AddNotificationToUsers(_context, others, notification);
             WagerHandler.AddUserGroups(_context, wager.Id, users);
             _context.SaveChanges();

@@ -1,22 +1,27 @@
 ﻿<template>
-    <v-container>
-        <p
-            v-for="(error, i) in errors"
+    <v-container v-if="error">
+        <span
+            v-for="(errorType, i) in error.response.data.errors"
             v-bind:key="i"
-            class="body-1 error--text"
         >
-            {{ error }}
-        </p>
+            <v-alert
+                v-for="(error, j) in errorType"
+                v-bind:key="j"
+                type="error"
+            >
+                {{ error }}
+            </v-alert>
+        </span>
     </v-container>
 </template>
 <script lang="ts">
-    import Vue from "vue";
+import Vue from "vue";
 
-    export default Vue.extend({
-        props: {
-            errors: {
-                required: true,
-            },
-        },
-    });
+export default Vue.component("error-display", {
+    props: {
+        error: {
+            required: true
+        }
+    }
+});
 </script>

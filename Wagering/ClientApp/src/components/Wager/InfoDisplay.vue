@@ -20,7 +20,7 @@
             <tbody>
                 <tr>
                     <td>
-                        {{wager.description}}
+                        {{ wager.description }}
                     </td>
                     <td>
                         {{ moneyDisplay(wager.minimumWager) }}
@@ -37,17 +37,17 @@
     </v-simple-table>
 </template>
 <script>
-    export default {
-        props: {
-            wager: {
-                required: true
-            }
-        },
-        methods: {
-            moneyDisplay(num) {
-                if (num == null) return "-";
-                return "$" + num;
-            }
+export default {
+    props: {
+        wager: {
+            required: true
         }
-    };
+    },
+    methods: {
+        moneyDisplay(num) {
+            if (num == null) return "-";
+            return num + " XLM";
+        }
+    }
+};
 </script>

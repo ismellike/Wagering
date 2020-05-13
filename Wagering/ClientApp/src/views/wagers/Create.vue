@@ -1,5 +1,6 @@
 <template>
     <content-display>
+        <error-display :error="error" />
         <v-container>
             <v-data-table
                 :headers="headers"
@@ -31,7 +32,7 @@
                                                 hide-no-data
                                                 clearable
                                                 label="User Name"
-                                                item-text="bid.profile.displayName"
+                                                item-text="profile.displayName"
                                                 return-object
                                             ></v-autocomplete>
                                             <v-text-field
@@ -162,7 +163,7 @@
                             <v-row>
                                 <v-col cols="12" sm="6" md="3">
                                     <validation-provider
-                                        rules="less_than:@maxWager|min_amount"
+                                        rules="less_than:@maxWager|min_value:.001"
                                         vid="minWager"
                                         name="Minimum Wager"
                                         v-slot="{ errors }"
@@ -170,14 +171,13 @@
                                         <v-text-field
                                             v-model="wager.minimumWager"
                                             label="Minimum Wager"
-                                            type="number"
                                             :error-messages="errors"
                                         ></v-text-field>
                                     </validation-provider>
                                 </v-col>
                                 <v-col cols="12" sm="6" md="3">
                                     <validation-provider
-                                        rules="greater_than:@minWager|min_amount"
+                                        rules="greater_than:@minWager|min_value:.001"
                                         vid="maxWager"
                                         name="Maximum Wager"
                                         v-slot="{ errors }"
@@ -185,17 +185,24 @@
                                         <v-text-field
                                             v-model="wager.maximumWager"
                                             label="Maximum Wager"
-                                            type="number"
                                             :error-messages="errors"
                                         ></v-text-field>
                                     </validation-provider>
                                 </v-col>
                                 <v-col cols="12" md="6">
-                                    <v-textarea
-                                        v-model="wager.description"
-                                        label="Description"
-                                        rows="1"
-                                    ></v-textarea>
+                                    <validation-provider
+                                        rules="min:5|max:50"
+                                        name="Description"
+                                        v-slot="{ errors }"
+                                    >
+                                        <v-textarea
+                                            v-model="wager.description"
+                                            label="Description"
+                                            counter="50"
+                                            rows="1"
+                                            :error-messages="errors"
+                                        ></v-textarea>
+                                    </validation-provider>
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -215,12 +222,12 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { AxiosResponse } from "axios";
+import { AxiosResponse, AxiosError } from "axios";
 import { RawLocation } from "vue-router";
 
 interface Search {
     users: Profile[];
-    userName: string | null;
+    displayName: string | null;
     interval: number;
     loading: boolean;
     select: Profile | null;
@@ -249,7 +256,7 @@ export default Vue.extend({
             } as Wager,
             search: {
                 users: [],
-                userName: null,
+                displayName: null,
                 interval: 500,
                 loading: false,
                 select: null,
@@ -287,7 +294,8 @@ export default Vue.extend({
                 { text: "Receivable (%)", value: "receivablePt" },
                 { text: "Approved", value: "approved" },
                 { text: "Actions", value: "actions", sortable: false }
-            ]
+            ],
+            error: null as AxiosError | null
         };
     },
     watch: {
@@ -297,9 +305,9 @@ export default Vue.extend({
                 val &&
                 val.trim() &&
                 val !== this.search.select &&
-                this.search.userName != val
+                this.search.displayName != val
             ) {
-                this.search.userName = val;
+                this.search.displayName = val;
                 this.search.loading = true;
                 this.search.timer = setTimeout(
                     this.getUsers,
@@ -341,7 +349,7 @@ export default Vue.extend({
     methods: {
         getUsers(): void {
             this.$axios
-                .get("/api/user/search/" + this.search.userName)
+                .get("/api/user/search/" + this.search.displayName)
                 .then((response: AxiosResponse) => {
                     this.search.users = response.data;
                 })
@@ -438,6 +446,9 @@ export default Vue.extend({
                         name: pathName,
                         params: { id: response.data.id }
                     } as RawLocation);
+                })
+                .catch((e: AxiosError) => {
+                    this.error = e;
                 });
         }
     }

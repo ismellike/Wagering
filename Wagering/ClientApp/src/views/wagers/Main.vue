@@ -27,12 +27,12 @@
                                     <v-col cols="12" sm="6" md="3">
                                         <validation-provider
                                             rules="alpha_num"
-                                            name="Username"
+                                            name="User Name"
                                             v-slot="{ errors }"
                                         >
                                             <v-text-field
-                                                v-model="form.username"
-                                                label="Username"
+                                                v-model="form.displayName"
+                                                label="User Name"
                                                 :error-messages="errors"
                                             ></v-text-field>
                                         </validation-provider>
@@ -150,14 +150,14 @@ import { RawLocation, Route } from "vue-router";
 
 class Query {
     page?: number;
-    username?: string | null;
+    displayName?: string | null;
     playerCount?: number | null;
     minimumWager?: number | null;
     maximumWager?: number | null;
     gameId?: number;
     constructor(gameId: number) {
         this.page = 1;
-        this.username = null;
+        this.displayName = null;
         this.gameId = gameId;
         this.playerCount = null;
         this.minimumWager = null;
@@ -165,7 +165,9 @@ class Query {
     }
     setVars(route: Record<string, string | (string | null)[]>): void {
         this.page = route.Page ? Number(route.page) : 1;
-        this.username = route.username ? String(route.username) : undefined;
+        this.displayName = route.displayName
+            ? String(route.displayName)
+            : undefined;
         this.playerCount = route.playerCount
             ? Number(route.playerCount)
             : undefined;
@@ -178,13 +180,13 @@ class Query {
     }
     copyForm(query: Query): void {
         this.page = 1;
-        this.username = query.username;
+        this.displayName = query.displayName;
         this.playerCount = query.playerCount;
         this.minimumWager = query.minimumWager;
         this.maximumWager = query.maximumWager;
     }
     clear(): void {
-        this.username = null;
+        this.displayName = null;
         this.playerCount = null;
         this.minimumWager = null;
         this.maximumWager = null;
@@ -192,7 +194,7 @@ class Query {
     routeQuery(): Record<string, string | (string | null)[]> {
         return {
             page: this.page && this.page > 1 ? String(this.page) : undefined,
-            username: this.username ? this.username : undefined,
+            displayName: this.displayName ? this.displayName : undefined,
             playerCount:
                 this.playerCount && this.playerCount > 0
                     ? String(this.playerCount)
@@ -217,7 +219,7 @@ export default Vue.extend({
         return {
             query: new Query(this.$games.getId(this.$route.params.game)),
             form: {
-                username: null,
+                displayName: null,
                 playerCount: null,
                 minimumWager: null,
                 maximumWager: null

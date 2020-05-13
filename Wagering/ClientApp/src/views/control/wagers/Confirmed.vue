@@ -82,7 +82,7 @@ export default Vue.extend({
     methods: {
         getData(): void {
             this.$axios
-                .get("/api/wager/host/" + this.$route.params.id)
+                .get("/api/wager/control/" + this.$route.params.id)
                 .then(response => {
                     this.wager = response.data;
                     this.loading = false;

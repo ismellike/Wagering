@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Wagering.Models
 {
@@ -10,9 +9,7 @@ namespace Wagering.Models
         /// </summary>
         /// <value>Id</value>
         public string Id { get; set; } = string.Empty;
-        [Required]
         public string DisplayName { get; set; } = string.Empty;
-        [Required]
         public string NormalizedDisplayName { get; set; } = string.Empty;
         public bool IsVerified { get; set; }
         public string? PublicKey { get; set; }

@@ -9,7 +9,7 @@ namespace Wagering.Controllers
 {
     public static class WagerHandler
     {
-        public static async Task Confirm(ApplicationDbContext _context, int wagerId, string username)
+        public static async Task Confirm(ApplicationDbContext _context, int wagerId, string? username)
         {
             var wager = await _context.Wagers.Where(x => x.Id == wagerId).Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync();
             if (wager == null)
@@ -17,7 +17,7 @@ namespace Wagering.Controllers
             Confirm(_context, wager, username);
         }
 
-        public static void Confirm(ApplicationDbContext _context, Wager wager, string username)
+        public static void Confirm(ApplicationDbContext _context, Wager wager, string? username)
         {
             wager.Status = (byte)Status.Confirmed;
             PersonalNotification notification = new PersonalNotification
@@ -30,14 +30,14 @@ namespace Wagering.Controllers
             //_context.AddNotificationToUsers(wager.AllUsers(), notification);
         }
 
-        public static async Task Decline(ApplicationDbContext _context, int wagerId, string username)
+        public static async Task Decline(ApplicationDbContext _context, int wagerId, string? username)
         {
             var wager = await _context.Wagers.Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync(x => x.Id == wagerId);
             if (wager == null)
                 return;
             Decline(_context, wager, username);
         }
-        public static void Decline(ApplicationDbContext _context, Wager wager, string username)
+        public static void Decline(ApplicationDbContext _context, Wager wager, string? username)
         {
             wager.Status = (byte)Status.Closed;
             PersonalNotification notification = new PersonalNotification

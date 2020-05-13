@@ -26,8 +26,8 @@ namespace Wagering.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGroups()
         {
-            var id = User.GetId();
-            List<string?> groups = await _context.UserGroups.Where(x => x.ProfileId == id).Select(x => x.GroupName).ToListAsync();
+            var userId = User.GetId();
+            List<string?> groups = await _context.UserGroups.Where(x => x.ProfileId == userId).Select(x => x.GroupName).ToListAsync();
             return Ok(groups);
         }
     }

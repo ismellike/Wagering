@@ -10,10 +10,10 @@
                         color="secondary"
                         :to="{
                             name: 'user_view',
-                            params: { name: host.user.userName },
+                            params: { name: host.profile.displayName }
                         }"
                         class="ma-1"
-                        >{{ host.user.userName }}</v-btn
+                        >{{ host.profile.displayName }}</v-btn
                     >
                 </v-list-item-title>
             </v-list-item>
@@ -21,13 +21,13 @@
     </v-menu>
 </template>
 <script lang="ts">
-    import Vue from "vue";
+import Vue from "vue";
 
-    export default Vue.extend({
-        props: {
-            hosts: {
-                required: true,
-            },
-        },
-    });
+export default Vue.extend({
+    props: {
+        hosts: {
+            required: true
+        }
+    }
+});
 </script>

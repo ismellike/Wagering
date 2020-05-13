@@ -7,6 +7,8 @@ import {
     confirmed,
     min,
     alpha_num,
+    min_value,
+    max,
 } from "vee-validate/dist/rules";
 
 //import rules
@@ -30,6 +32,14 @@ extend("min", {
     ...min,
     message: "{_field_} field must have a minimum length of {length}.",
 });
+extend("max", {
+    ...max,
+    message: "{_field_} field must have a maximum length of {length}.",
+});
+extend("min_value", {
+    ...min_value,
+    message: "{_field_} field must have a minimum value of {min}.",
+});
 
 // Add a rule.
 extend("less_than", {
@@ -47,10 +57,6 @@ extend("greater_than", {
         return value >= params["target"];
     },
     message: "{_field_} must be greater than {target}.",
-});
-extend("min_amount", {
-    validate: (value) => value >= 0.001,
-    message: "The minimum amount is .001",
 });
 
 Vue.component("validation-provider", ValidationProvider);

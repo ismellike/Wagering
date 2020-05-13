@@ -7,23 +7,23 @@ import "./registerServiceWorker";
 import vuetify from "./plugins/vuetify";
 import "./services/validation";
 import VueTimeago from "vue-timeago";
-import "./components/ContentDisplay.vue";
+import "./components/globalComponents";
 import Games from "./constants/games";
 
 Vue.use(VueTimeago, {
-  name: "Timeago",
-  locale: "en",
-  locales: {
-    "en-US": require("date-fns/locale/en"),
-  },
+    name: "Timeago",
+    locale: "en",
+    locales: {
+        "en-US": require("date-fns/locale/en"),
+    },
 });
 Vue.prototype.$axios = axios;
 Vue.prototype.$microsoft = { signalr: null };
 Vue.prototype.$games = new Games();
 
 new Vue({
-  store,
-  router,
-  vuetify,
-  render: (h) => h(App),
+    store,
+    router,
+    vuetify,
+    render: (h) => h(App),
 }).$mount("#app");

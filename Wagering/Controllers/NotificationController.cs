@@ -27,8 +27,9 @@ namespace Wagering.Controllers
         [HttpGet]
         public async Task<IActionResult> GetNotifications()
         {
-            string? id = User.GetId();
-            List<PersonalNotification> notifications = await _context.Notifications.Where(x => x.ProfileId == id).OrderByDescending(x => x.Date).ToListAsync();
+            //maybe take x and reload when under n amount on client
+            string? userId = User.GetId();
+            List<PersonalNotification> notifications = await _context.Notifications.Where(x => x.ProfileId == userId).OrderByDescending(x => x.Date).ToListAsync();
             return Ok(notifications);
         }
     }

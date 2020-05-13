@@ -25,7 +25,7 @@ namespace Wagering.Controllers
             var user = await _context.Profiles.Where(x => x.NormalizedDisplayName == name).Include(x => x.Ratings).FirstOrDefaultAsync();
             if (user == null)
             {
-                ModelState.AddModelError("Not found", _errorMessages.NotFound);
+                ModelState.AddModelError(string.Empty, _errorMessages.NotFound);
                 return BadRequest(ModelState);
             }
             return Ok(user);

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Wagering.Models;
 
@@ -26,36 +26,37 @@ namespace Wagering.Controllers
         [HttpPost("wager/accept")]
         public async Task<IActionResult> AcceptBid(int id)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (user == null)
-            {
-                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
-                return BadRequest(ModelState);
-            }
+            string? userId = User.GetId();
+            string? userName = User.GetName();
 
 #nullable disable
-            var bid = await _context.WagerHostBids.Include(x => x.Wager).ThenInclude(x => x.Hosts).FirstOrDefaultAsync(x => x.Id == id);
+            var bid = await _context.WagerHostBids.Where(x => x.Id == id).Include(x => x.Wager).ThenInclude(x => x.Hosts).FirstOrDefaultAsync();
 #nullable enable
-            if (bid.ProfileId != user.Id)
-            {
-                ModelState.AddModelError("User", _errorMessages.NotCorresponding);
-                return BadRequest(ModelState);
-            }
             if (bid == null)
             {
-                ModelState.AddModelError("Not Found", _errorMessages.NotFound);
+                ModelState.AddModelError(string.Empty, _errorMessages.NotFound);
+                return BadRequest(ModelState);
+            }
+            if (bid.Wager.Status != (byte)Status.Created)
+            {
+                ModelState.AddModelError(string.Empty, "Wager is not in the created state.");
+                return BadRequest(ModelState);
+            }
+            if (bid.ProfileId != userId)
+            {
+                ModelState.AddModelError(string.Empty, _errorMessages.NotCorresponding);
                 return BadRequest(ModelState);
             }
             if (bid.Approved != null)
             {
-                ModelState.AddModelError("Sent", _errorMessages.AlreadySent);
+                ModelState.AddModelError(string.Empty, _errorMessages.AlreadySent);
                 return BadRequest(ModelState);
             }
 
             bid.Approved = true;
             if (bid.Wager != null)
                 if (bid.Wager.IsApproved())
-                    await WagerHandler.Confirm(_context, bid.WagerId, user.UserName);
+                    await WagerHandler.Confirm(_context, bid.WagerId, userName);
             _context.SaveChanges();
             return Ok();
         }
@@ -64,31 +65,32 @@ namespace Wagering.Controllers
         [HttpPost("wager/decline")]
         public async Task<IActionResult> DeclineBid(int id)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (user == null)
-            {
-                ModelState.AddModelError("Unauthorized", ErrorMessages.Unauthorized);
-                return BadRequest(ModelState);
-            }
+            string? userId = User.GetId();
+            string? userName = User.GetName();
 
-            var bid = await _context.WagerHostBids.FirstOrDefaultAsync(x => x.Id == id);
-            if (bid.ProfileId != user.Id)
-            {
-                ModelState.AddModelError("User", _errorMessages.NotCorresponding);
-                return BadRequest(ModelState);
-            }
+            var bid = await _context.WagerHostBids.Where(x => x.Id == id).Include(x => x.Wager).FirstOrDefaultAsync();
             if (bid == null)
             {
-                ModelState.AddModelError("Not Found", _errorMessages.NotFound);
+                ModelState.AddModelError(string.Empty, _errorMessages.NotFound);
+                return BadRequest(ModelState);
+            }
+            if (bid.Wager.Status != (byte)Status.Created)
+            {
+                ModelState.AddModelError(string.Empty, "Wager is not in the created state.");
+                return BadRequest(ModelState);
+            }
+            if (bid.ProfileId != userId)
+            {
+                ModelState.AddModelError(string.Empty, _errorMessages.NotCorresponding);
                 return BadRequest(ModelState);
             }
             if (bid.Approved != null)
             {
-                ModelState.AddModelError("Sent", _errorMessages.AlreadySent);
+                ModelState.AddModelError(string.Empty, _errorMessages.AlreadySent);
                 return BadRequest(ModelState);
             }
             bid.Approved = false;
-            await WagerHandler.Decline(_context, bid.WagerId, user.UserName);
+            await WagerHandler.Decline(_context, bid.WagerId, userName);
             _context.SaveChanges();
             return Ok();
         }

@@ -48,7 +48,7 @@ const routes = [
         ],
     },
     {
-        path: "/control/wagers/:id",
+        path: "/control/wagers/pending/:id",
         name: "wager_pending",
         component: () => import("@/views/control/wagers/Pending.vue"),
         meta: {
@@ -56,7 +56,7 @@ const routes = [
         },
     },
     {
-        path: "/control/wagers/:id",
+        path: "/control/wagers/confirmed/:id",
         name: "wager_confirmed",
         component: () => import("@/views/control/wagers/Confirmed.vue"),
         meta: {
@@ -183,8 +183,8 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-    if (to.matched.some((record) => record.meta.requiresAuth)) {
-        if (store.getters.isInitialized && !store.getters.isAuthenticated) {
+    if (to.meta?.requiresAuth) {
+        if (store.getters.shouldGuard) {
             next({
                 path: ApplicationPaths.Login,
                 query: { returnUrl: from.path },

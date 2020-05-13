@@ -80,6 +80,7 @@
 <script lang="ts">
 import Vue from "vue";
 import WagerDisplay from "@/components/Wager/WagerDisplay.vue";
+import { Status } from "@/models/enums";
 
 export default Vue.extend({
     components: {

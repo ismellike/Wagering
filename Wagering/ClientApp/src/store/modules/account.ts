@@ -24,6 +24,9 @@ const getters: GetterTree<State, any> = {
     id: (state) => {
         return state.id;
     },
+    shouldGuard: (state) => {
+        return state.isInitialized && !state.isAuthenticated;
+    },
 };
 const mutations: MutationTree<State> = {
     setLogin(state, payload: State) {
@@ -50,8 +53,8 @@ const actions: ActionTree<State, any> = {
         commit("setLogout");
     },
     async init({ commit }) {
+        commit("setInitialized");
         const user = await AuthService.getUser();
-        var value = false;
         if (user) {
             const token = await AuthService.getAccessToken();
             const payload = {
@@ -61,10 +64,9 @@ const actions: ActionTree<State, any> = {
                 token: token,
             } as State;
             commit("setLogin", payload);
-            value = true;
+            return true;
         }
-        commit("setInitialized");
-        return value;
+        return false;
     },
 };
 export default {

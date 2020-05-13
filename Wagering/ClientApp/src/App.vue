@@ -71,7 +71,7 @@
         </v-app-bar>
         <v-content>
             <v-container
-                v-if="$store.getters.isInitialized"
+                v-if="!this.$store.getters.shouldGuard"
                 fluid
                 class="full-height"
             >
@@ -164,7 +164,7 @@ export default Vue.extend({
     created(): void {
         if (!this.$route.path.includes("authentication")) {
             this.$store.dispatch("init").then(result => {
-                if (result) {
+                if (this.$store.getters.isAuthenticated) {
                     this.$microsoft.signalr = new HubConnectionBuilder()
                         .withUrl("/group-hub", {
                             accessTokenFactory: () => this.$store.getters.token

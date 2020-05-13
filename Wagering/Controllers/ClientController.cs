@@ -23,10 +23,7 @@ namespace Wagering.Controllers
         [HttpGet("wagers")]
         public async Task<IActionResult> ClientWagers()
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (user == null)
-                return Unauthorized();
-
+            string? userId = User.GetId();
             //look through challengebids
             return Ok();
         }
