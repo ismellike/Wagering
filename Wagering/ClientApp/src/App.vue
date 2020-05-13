@@ -70,7 +70,11 @@
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         </v-app-bar>
         <v-content>
-            <v-container fluid class="full-height">
+            <v-container
+                v-if="$store.getters.isInitialized"
+                fluid
+                class="full-height"
+            >
                 <router-view />
             </v-container>
         </v-content>
@@ -160,7 +164,6 @@ export default Vue.extend({
     created(): void {
         if (!this.$route.path.includes("authentication")) {
             this.$store.dispatch("init").then(result => {
-                //if authenticated
                 if (result) {
                     this.$microsoft.signalr = new HubConnectionBuilder()
                         .withUrl("/group-hub", {

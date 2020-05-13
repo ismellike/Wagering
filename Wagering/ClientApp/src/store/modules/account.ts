@@ -5,11 +5,15 @@ class State {
     displayName: string | null = null;
     id: string | null = null;
     isAuthenticated = false;
+    isInitialized = false;
     token: string | null = null;
 }
 const getters: GetterTree<State, any> = {
     isAuthenticated: (state) => {
         return state.isAuthenticated;
+    },
+    isInitialized: (state) => {
+        return state.isInitialized;
     },
     displayName: (state) => {
         return state.displayName;
@@ -34,6 +38,9 @@ const mutations: MutationTree<State> = {
         state.token = null;
         state.isAuthenticated = false;
     },
+    setInitialized(state) {
+        state.isInitialized = true;
+    },
 };
 const actions: ActionTree<State, any> = {
     setLogin({ commit }, payload: State) {
@@ -44,6 +51,7 @@ const actions: ActionTree<State, any> = {
     },
     async init({ commit }) {
         const user = await AuthService.getUser();
+        var value = false;
         if (user) {
             const token = await AuthService.getAccessToken();
             const payload = {
@@ -53,9 +61,10 @@ const actions: ActionTree<State, any> = {
                 token: token,
             } as State;
             commit("setLogin", payload);
-            return false;
+            value = true;
         }
-        return true;
+        commit("setInitialized");
+        return value;
     },
 };
 export default {

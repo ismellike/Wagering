@@ -184,13 +184,13 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some((record) => record.meta.requiresAuth)) {
-        if (store.getters.isAuthenticated) {
-            next();
-        } else {
+        if (store.getters.isInitialized && !store.getters.isAuthenticated) {
             next({
                 path: ApplicationPaths.Login,
                 query: { returnUrl: from.path },
             });
+        } else {
+            next();
         }
     } else {
         next();
