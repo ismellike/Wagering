@@ -9,5 +9,7 @@
             "path": "./Wagering"
         }
     ],
-    "settings": {}
+    "settings": {
+        "liveServer.settings.multiRootWorkspaceName": "Server"
+    }
 }

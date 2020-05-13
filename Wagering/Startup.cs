@@ -37,7 +37,7 @@ namespace Wagering
                 options.UseSqlServer(_config.GetConnectionString("Identity"));
             });
 
-            services.AddDefaultIdentity<ApplicationUser>()
+            services.AddIdentityCore<ApplicationUser>()
                 .AddEntityFrameworkStores<IdentityDbContext>();
 
             services.AddIdentityServer()
