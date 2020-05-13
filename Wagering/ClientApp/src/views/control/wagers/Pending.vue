@@ -85,7 +85,7 @@ export default Vue.extend({
                             "wager_" + this.$route.params.id,
                             {
                                 message:
-                                    this.$store.getters.username +
+                                    this.$store.getters.displayName +
                                     " has accepted the wager.",
                                 isRead: false,
                                 link: this.$route.path
@@ -104,7 +104,7 @@ export default Vue.extend({
                             "wager_" + this.$route.params.id,
                             {
                                 message:
-                                    this.$store.getters.username +
+                                    this.$store.getters.displayName +
                                     " has declined the wager.",
                                 isRead: false,
                                 link: this.$route.path
@@ -121,7 +121,7 @@ export default Vue.extend({
                         "wager_" + this.$route.params.id,
                         {
                             message:
-                                this.$store.getters.username +
+                                this.$store.getters.displayName +
                                 " has canceled the wager.",
                             isRead: false,
                             link: this.$route.path
@@ -134,7 +134,7 @@ export default Vue.extend({
         userBid(): WagerHostBid | null {
             return (
                 this.wager?.hosts?.find((host: WagerHostBid) => {
-                    return host.userId == this.$store.getters.id;
+                    return host.profileId == this.$store.getters.id;
                 }) ?? null
             );
         },

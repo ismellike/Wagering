@@ -19,15 +19,15 @@ namespace Wagering.Models
                 return GetGroupName.Tournament(Id);
             }
         }
-        public override IEnumerable<string> HostUsers()
+        public override IEnumerable<string> HostIds()
         {
             return new List<string>();
         }
-        public override IEnumerable<string> ClientUsers()
+        public override IEnumerable<string> ClientIds()
         {
             return new List<string>();
         }
-        public override IEnumerable<string> AllUsers()
+        public override IEnumerable<string> AllIds()
         {
             return new List<string>();
         }

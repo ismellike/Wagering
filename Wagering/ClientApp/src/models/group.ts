@@ -1,6 +1,6 @@
 interface Group extends Approvable {
     id?: number;
-    gameUrl?: string;
+    gameId?: number;
     game?: Game | null;
     description?: string;
     date?: Date;

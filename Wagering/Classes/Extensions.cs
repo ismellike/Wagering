@@ -16,5 +16,10 @@ namespace Wagering
         {
             return User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
         }
+
+        public static string? GetName(this ClaimsPrincipal User)
+        {
+            return User.Claims.FirstOrDefault(x => x.Type == "display_name")?.Value;
+        }
     }
 }

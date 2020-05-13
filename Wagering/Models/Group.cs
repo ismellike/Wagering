@@ -20,8 +20,8 @@ namespace Wagering.Models
 
         public abstract string GroupName { get; }
 
-        public abstract IEnumerable<string> HostUsers();
-        public abstract IEnumerable<string> ClientUsers();
-        public abstract IEnumerable<string> AllUsers();
+        public abstract IEnumerable<string> HostIds();
+        public abstract IEnumerable<string> ClientIds();
+        public abstract IEnumerable<string> AllIds();
     }
 }

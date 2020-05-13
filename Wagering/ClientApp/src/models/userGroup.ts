@@ -1,7 +1,7 @@
 interface UserGroup {
     id: number;
     userId: string;
-    user?: ApplicationUser;
+    user?: Profile;
     wagerId?: number;
     wager?: Wager;
     groupName: string | null;

@@ -2,7 +2,7 @@ import { GetterTree, MutationTree, ActionTree } from "vuex";
 import AuthService from "@/services/authentication";
 
 class State {
-    username: string | null = null;
+    displayName: string | null = null;
     id: string | null = null;
     isAuthenticated = false;
     token: string | null = null;
@@ -11,8 +11,8 @@ const getters: GetterTree<State, any> = {
     isAuthenticated: (state) => {
         return state.isAuthenticated;
     },
-    username: (state) => {
-        return state.username;
+    displayName: (state) => {
+        return state.displayName;
     },
     token: (state) => {
         return state.token;
@@ -23,13 +23,13 @@ const getters: GetterTree<State, any> = {
 };
 const mutations: MutationTree<State> = {
     setLogin(state, payload: State) {
-        state.username = payload.username;
+        state.displayName = payload.displayName;
         state.id = payload.id;
         state.isAuthenticated = true;
         state.token = payload.token;
     },
     setLogout(state) {
-        state.username = null;
+        state.displayName = null;
         state.id = null;
         state.token = null;
         state.isAuthenticated = false;
@@ -47,15 +47,15 @@ const actions: ActionTree<State, any> = {
         if (user) {
             const token = await AuthService.getAccessToken();
             const payload = {
-                username: user.display_name,
+                displayName: user.display_name,
                 id: user.sub,
                 isAuthenticated: true,
                 token: token,
             } as State;
             commit("setLogin", payload);
-            return true;
+            return false;
         }
-        return false;
+        return true;
     },
 };
 export default {

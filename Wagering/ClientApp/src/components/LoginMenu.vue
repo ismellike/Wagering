@@ -7,7 +7,8 @@
                 </v-list-item-action>
                 <v-list-item-content>
                     <v-list-item-title
-                        >Hello {{ $store.getters.username }}</v-list-item-title
+                        >Hello
+                        {{ $store.getters.displayName }}</v-list-item-title
                     >
                 </v-list-item-content>
             </v-list-item>
@@ -41,7 +42,7 @@
     </v-list>
 </template>
 <script lang="ts">
-    import Vue from "vue";
+import Vue from "vue";
 
-    export default Vue.extend({});
+export default Vue.extend({});
 </script>

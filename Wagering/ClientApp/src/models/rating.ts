@@ -3,7 +3,7 @@ interface Rating {
     gameUrl: string;
     game: Game | null;
     userId: string;
-    user: ApplicationUser | null;
+    user: Profile | null;
     value: number;
     gamesPlayed: number;
 }

@@ -1,6 +1,6 @@
-interface ApplicationUser {
+interface Profile {
     id?: string;
-    userName?: string;
+    displayName?: string;
     isVerified?: boolean;
     publicKey?: string | null;
     platform?: string | null;

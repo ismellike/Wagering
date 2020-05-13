@@ -37,14 +37,14 @@ namespace Wagering.Models
                 return GetGroupName.Wager(Id);
             }
         }
-        public override IEnumerable<string> HostUsers()
+        public override IEnumerable<string> HostIds()
         {
             if (Hosts == null)
                 return new List<string>();
             return Hosts.Select(x => x.ProfileId);
         }
 
-        public override IEnumerable<string> ClientUsers()
+        public override IEnumerable<string> ClientIds()
         {
             IEnumerable<string> result = Enumerable.Empty<string>();
             foreach (WagerChallenge challenge in Challenges)
@@ -54,9 +54,9 @@ namespace Wagering.Models
             return result.Distinct();
         }
 
-        public override IEnumerable<string> AllUsers()
+        public override IEnumerable<string> AllIds()
         {
-            return HostUsers().Union(ClientUsers());
+            return HostIds().Union(ClientIds());
         }
     }
 }

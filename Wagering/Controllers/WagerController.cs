@@ -158,43 +158,37 @@ namespace Wagering.Controllers
         // more details see https://aka.ms/RazorPagesCRUD.
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> PostWager(Wager wagerData)
+        public IActionResult PostWager(Wager wagerData)
         {
-            //validate wager
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (user == null)
-                return Unauthorized();
+
+            string? id = User.GetId();
+            string? name = User.GetName();
+            WagerHostBid caller = wagerData.Hosts.FirstOrDefault(x => x.ProfileId == id);
 
             if (wagerData.Hosts.Sum(x => x.ReceivablePt) != 100)
-            {
-                ModelState.AddModelError("Receivable", "The hosts receivable percentages do not add up to 100.");
-                return BadRequest(ModelState);
-            }
+                ModelState.AddModelError(string.Empty, "The hosts receivable percentages do not add up to 100.");
             if (wagerData.Hosts.Sum(x => x.PayablePt) != 100)
-            {
-                ModelState.AddModelError("Payable", "The hosts payable percentages do not add up to 100.");
-                return BadRequest(ModelState);
-            }
-            if (!wagerData.HostUsers().IsUnique())
-            {
-                ModelState.AddModelError("Unique", "The hosts are not unique.");
-                return BadRequest(ModelState);
-            }
-
+                ModelState.AddModelError(string.Empty, "The hosts payable percentages do not add up to 100.");
+            if (caller == null)
+                ModelState.AddModelError(string.Empty, "Caller must be a host.");
+            else if (!caller.IsOwner)
+                ModelState.AddModelError(string.Empty, "Caller must be the owner.");
+            if (!wagerData.HostIds().IsUnique())
+                ModelState.AddModelError(string.Empty, "The hosts are not unique.");
             try
             {
-                if (wagerData.Hosts.Single(x => x.ProfileId == user.Id || x.ProfileId == null) == null)
-                    throw new Exception("Host values are unknown.");
                 if (wagerData.Hosts.Single(x => x.IsOwner) == null)
                     throw new Exception("Only 1 owner should be specified.");
             }
             catch (Exception e)
             {
-                ModelState.AddModelError("Wrong Owner", e.Message);
-                return BadRequest(ModelState);
+                ModelState.AddModelError(string.Empty, e.Message);
             }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             DateTime date = DateTime.Now;
             Wager wager = new Wager //prevents overposting
@@ -236,17 +230,18 @@ namespace Wagering.Controllers
             PersonalNotification notification = new PersonalNotification
             {
                 Date = date,
-                Message = $"{user.UserName} created the wager.",
+                Message = $"{name} created a wager with you.",
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            IEnumerable<string> users = wager.HostUsers();
-            //_context.AddNotificationToUsers(users, notification);
+            IEnumerable<string> users = wager.HostIds();
+            IEnumerable<string> others = users.Where(x => x != id);
+            NotificationHandler.AddNotificationToUsers(_context, others, notification);
             WagerHandler.AddUserGroups(_context, wager.Id, users);
             _context.SaveChanges();
             _cache.Set(wager.Id, wager, TimeSpan.FromSeconds(20));
 
-            return Ok(new { wager = wager, notification = notification });
+            return Ok(new { id = wager.Id, groupName = wager.GroupName, others = others, notification = notification });
         }
     }
 }
