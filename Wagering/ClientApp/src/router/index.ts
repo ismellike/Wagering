@@ -111,6 +111,11 @@ const routes = [
         },
     },
     {
+        path: "/authentication/signin",
+        name: "signIn",
+        component: () => import("@/views/authentication/SignIn.vue"),
+    },
+    {
         path: ApplicationPaths.LoginFailed,
         component: Login,
         props: {

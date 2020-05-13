@@ -71,7 +71,7 @@
         </v-app-bar>
         <v-content>
             <v-container
-                v-if="!this.$store.getters.shouldGuard"
+                v-if="this.$store.getters.shouldGuard"
                 fluid
                 class="full-height"
             >
