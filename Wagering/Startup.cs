@@ -83,11 +83,6 @@ namespace Wagering
                         }
                     };
                 });
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/authentication/signin";
-                options.AccessDeniedPath = "/access-denied";
-            });
 
             services.AddSpaStaticFiles(configuration =>
             {
