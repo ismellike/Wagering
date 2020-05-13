@@ -1,15 +1,16 @@
 using System.ComponentModel.DataAnnotations;
+#nullable disable
 
 namespace Wagering.Models
 {
     public class Connection
     {
-        public string ProfileId { get; set; } = string.Empty;
-        public Profile? Profile { get; set; }
+        public string ProfileId { get; set; }
+        public Profile Profile { get; set; }
         [Required]
-        public string ConnectionID { get; set; } = string.Empty;
+        public string ConnectionID { get; set; }
         [Required]
-        public string UserAgent { get; set; } = string.Empty;
+        public string UserAgent { get; set; }
         public bool Connected { get; set; }
     }
 }

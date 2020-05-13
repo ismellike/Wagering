@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+#nullable disable
 
 namespace Wagering.Models
 {
@@ -9,9 +10,9 @@ namespace Wagering.Models
         public int Id { get; set; }
 
         public int GameId { get; set; }
-        public Game? Game { get; set; }
+        public Game Game { get; set; }
         public int ProfileId { get; set; }
-        public Profile? Profile { get; set; }
+        public Profile Profile { get; set; }
 
         [Column(TypeName = "decimal(9,2)")]
         public decimal Value { get; set; } = Constants.Rating.Initial;

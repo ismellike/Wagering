@@ -29,9 +29,7 @@ namespace Wagering.Controllers
             string? userId = User.GetId();
             string? userName = User.GetName();
 
-#nullable disable
             var bid = await _context.WagerHostBids.Where(x => x.Id == id).Include(x => x.Wager).ThenInclude(x => x.Hosts).FirstOrDefaultAsync();
-#nullable enable
             if (bid == null)
             {
                 ModelState.AddModelError(string.Empty, _errorMessages.NotFound);

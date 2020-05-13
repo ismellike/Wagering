@@ -59,7 +59,7 @@ namespace Wagering.Areas.Identity.Pages.Account
             [RegularExpression(Constants.NameRegex)]
             [StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
             [Display(Name = "Display Name")]
-            public string DisplayName { get; set; } = string.Empty;
+            public string? DisplayName { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -83,7 +83,7 @@ namespace Wagering.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            string normalizedDisplayName = Input.DisplayName.ToUpper();
+            string? normalizedDisplayName = Input.DisplayName?.ToUpper();
             if (await _context.Profiles.Where(x => x.NormalizedDisplayName == normalizedDisplayName).FirstOrDefaultAsync() != null)
                 ModelState.AddModelError("Username", "Display name is already taken.");
             if (!ModelState.IsValid)

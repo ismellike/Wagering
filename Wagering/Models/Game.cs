@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+#nullable disable
 
 namespace Wagering.Models
 {
@@ -6,8 +7,8 @@ namespace Wagering.Models
     {
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; }
         [Required]
-        public string NormalizedName { get; set; } = string.Empty;
+        public string NormalizedName { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Wagering.Models;
+using stellar_dotnet_sdk;
 
 namespace Wagering.Controllers
 {
@@ -18,6 +19,7 @@ namespace Wagering.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _cache;
+        private readonly Server _server;
         private const int ResultSize = 15;
         private readonly ErrorMessages _errorMessages = new ErrorMessages { Name = "wager" };
         public struct Query
@@ -30,11 +32,12 @@ namespace Wagering.Controllers
             public int? playerCount;
         }
 
-        public WagerController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IMemoryCache cache)
+        public WagerController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IMemoryCache cache, Server server)
         {
             _userManager = userManager;
             _context = context;
             _cache = cache;
+            _server = server;
         }
 
         //POST: api/wagers/search
@@ -67,10 +70,8 @@ namespace Wagering.Controllers
             wagerQuery = wagerQuery.Include(x => x.Hosts).ThenInclude(x => x.Profile);
             if (query.displayName != null)
             {
-#nullable disable
                 query.displayName = query.displayName.ToUpper();
                 wagerQuery = wagerQuery.Where(x => x.Hosts.Any(x => x.Profile.NormalizedDisplayName.Contains(query.displayName)));
-#nullable enable
             }
             PaginatedList<Wager> results = await PaginatedList<Wager>.CreateAsync(wagerQuery.OrderByDescending(x => x.Date), query.page, ResultSize);
             return Ok(results);
@@ -94,9 +95,7 @@ namespace Wagering.Controllers
         public async Task<IActionResult> ControlWagers()
         {
             string? userId = User.GetId();
-#nullable disable
             List<Wager> results = await _context.UserGroups.AsNoTracking().Where(x => x.ProfileId == userId).Include(x => x.Wager).ThenInclude(x => x.Hosts).ThenInclude(x => x.Profile).Select(x => x.Wager).ToListAsync();
-#nullable enable
             return Ok(results);
         }
 

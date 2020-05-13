@@ -10,28 +10,31 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VueCliMiddleware;
 using Wagering.Models;
+using stellar_dotnet_sdk;
 
 namespace Wagering
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration config, IWebHostEnvironment env)
         {
-            Configuration = configuration;
+            _config = config;
+            _env = env;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration _config { get; }
+        public IWebHostEnvironment _env { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextPool<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("Application"));
+                options.UseSqlServer(_config.GetConnectionString("Application"));
             });
             services.AddDbContext<IdentityDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("Identity"));
+                options.UseSqlServer(_config.GetConnectionString("Identity"));
             });
 
             services.AddDefaultIdentity<ApplicationUser>()
@@ -45,7 +48,7 @@ namespace Wagering
                 .AddGoogle(options =>
                 {
                     IConfigurationSection section =
-                        Configuration.GetSection("Authentication:Google");
+                        _config.GetSection("Authentication:Google");
 
                     options.ClientId = section["ClientId"];
                     options.ClientSecret = section["ClientSecret"];
@@ -53,7 +56,7 @@ namespace Wagering
                 .AddTwitter(options =>
                 {
                     IConfigurationSection section =
-                        Configuration.GetSection("Authentication:Twitter");
+                        _config.GetSection("Authentication:Twitter");
 
                     options.ConsumerKey = section["ClientId"];
                     options.ConsumerSecret = section["ClientSecret"];
@@ -88,12 +91,19 @@ namespace Wagering
             services.AddMvc()
                .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddSignalR();
+
+            string network = "https://horizon.stellar.org/";
+            if (_env.IsDevelopment())
+            {
+                network = "https://horizon-testnet.stellar.org/";
+            }
+            services.AddSingleton<Server>(new Server(network));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();

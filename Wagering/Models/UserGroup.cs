@@ -1,16 +1,17 @@
+#nullable disable
 namespace Wagering.Models
 {
     public class UserGroup
     {
         public int Id { get; set; }
         public string ProfileId { get; set; } = string.Empty;
-        public Profile? Profile { get; set; }
+        public Profile Profile { get; set; }
         public int? WagerId { get; set; }
-        public Wager? Wager { get; set; }
+        public Wager Wager { get; set; }
         public int? TournamentId { get; set; }
-        public Tournament? Tournament { get; set; }
+        public Tournament Tournament { get; set; }
 
-        public string? GroupName
+        public string GroupName
         {
             get
             {

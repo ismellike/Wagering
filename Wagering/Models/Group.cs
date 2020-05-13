@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+#nullable disable
 
 namespace Wagering.Models
 {
@@ -8,11 +9,11 @@ namespace Wagering.Models
     {
         public int Id { get; set; }
         public int GameId { get; set; }
-        public Game? Game { get; set; }
+        public Game Game { get; set; }
 
         [Required]
         [StringLength(50, MinimumLength = 5)]
-        public string Description { get; set; } = string.Empty;
+        public string Description { get; set; }
 
         [Required]
         public DateTime Date { get; set; }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+#nullable disable
 namespace Wagering.Models
 {
     public class WagerChallenge : Approvable
@@ -10,7 +11,7 @@ namespace Wagering.Models
         public int Id { get; set; }
 
         public int WagerId { get; set; }
-        public Wager? Wager { get; set; }
+        public Wager Wager { get; set; }
 
         public ICollection<WagerChallengeBid> Challengers { get; set; } = new List<WagerChallengeBid>();
 

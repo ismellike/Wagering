@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+#nullable disable
 
 namespace Wagering.Models
 {
@@ -8,13 +9,13 @@ namespace Wagering.Models
         /// Id should be the same as ApplicationUser.Id
         /// </summary>
         /// <value>Id</value>
-        public string Id { get; set; } = string.Empty;
-        public string DisplayName { get; set; } = string.Empty;
-        public string NormalizedDisplayName { get; set; } = string.Empty;
+        public string Id { get; set; }
+        public string DisplayName { get; set; }
+        public string NormalizedDisplayName { get; set; }
         public bool IsVerified { get; set; }
-        public string? PublicKey { get; set; }
-        public string? Platform { get; set; }
-        public string? Input { get; set; }
+        public string PublicKey { get; set; }
+        public string Platform { get; set; }
+        public string Input { get; set; }
         public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
         public IList<PersonalNotification> Notifications { get; set; } = new List<PersonalNotification>();
         public ICollection<UserGroup> UserGroups { get; set; } = new List<UserGroup>();
