@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using VueCliMiddleware;
 using Wagering.Models;
 using stellar_dotnet_sdk;
+using Microsoft.AspNetCore.Identity;
 
 namespace Wagering
 {

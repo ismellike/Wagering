@@ -38,6 +38,7 @@ namespace Wagering.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [DataType(DataType.EmailAddress)]
             public string? Email { get; set; }
 
             [Required]
