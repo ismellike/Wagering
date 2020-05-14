@@ -10,16 +10,14 @@
         }
     ],
     "settings": {
-        "liveServer.settings.multiRootWorkspaceName": "Server",
         "workbench.sideBar.location": "right",
         "workbench.iconTheme": "vscode-icons",
-        "git.enableSmartCommit": true,
         "vsicons.dontShowNewVersionMessage": true,
         "editor.formatOnSave": true,
         "prettier.tabWidth": 4,
         "prettier.vueIndentScriptAndStyle": true,
         "eslint.alwaysShowStatus": true,
-        "eslint.packageManager": "yarn",
+        "eslint.packageManager": "npm",
         "eslint.run": "onSave",
         "prettier.quoteProps": "consistent",
         "omnisharp.defaultLaunchSolution": "null",
