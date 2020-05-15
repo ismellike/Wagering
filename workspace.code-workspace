@@ -28,6 +28,7 @@
         "prettier.disableLanguages": ["css", "sass"],
         "sass.format.enabled": false,
         "html.format.indentInnerHtml": true,
-        "html.format.indentHandlebars": true
+        "html.format.indentHandlebars": true,
+        "razor.format.enable": false
     }
 }
