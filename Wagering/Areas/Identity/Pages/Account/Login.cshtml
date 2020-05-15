@@ -21,7 +21,7 @@
                     <span asp-validation-for="Input.Email" class="help is-danger"></span>
                 </div>
                 <div class="field">
-                    <p class="control has-icons-left has-icons-right">
+                    <p class="control has-icons-left">
                         <input asp-for="Input.Password" placeholder="Password" class="input" />
                         <span class="icon is-left">
                             <i class="mdi mdi-lock"></i>
@@ -50,35 +50,9 @@
                     </div>
                 </div>
             </form>
-            <p>
-                Not a member? <a asp-page="./Register" class="has-text-grey" asp-route-returnUrl="@Model.ReturnUrl">Register now</a>
-            </p>
-            <div class="divider">OR</div>
+            <div class="divider">OR LOGIN WITH</div>
             <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                <div class="field">
-                    <div class="control">
-                        <button class="button is-fullwidth is-white has-text-weight-medium" name="provider" value="Google" type="submit">
-                            <span class="icon">
-                                <img class="image is-16x16" src="~/logos/google.svg" />
-                            </span>
-                            <span style="padding-left:.2em;">
-                                Login with Google
-                            </span>
-                        </button>
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="control">
-                        <button class="button is-fullwidth is-twitter has-text-weight-medium has-text-white" name="provider" value="Twitter" type="submit">
-                            <span class="icon">
-                                <i class="mdi mdi-twitter"></i>
-                            </span>
-                            <span style="padding-left:.2em;">
-                                Login with Twitter
-                            </span>
-                        </button>
-                    </div>
-                </div>
+                <partial name="_ExternalPartial" />
             </form>
         </div>
     </div>
@@ -87,5 +61,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
 }
