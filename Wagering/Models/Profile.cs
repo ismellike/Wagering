@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 #nullable disable
 
 namespace Wagering.Models
@@ -10,6 +11,8 @@ namespace Wagering.Models
         /// </summary>
         /// <value>Id</value>
         public string Id { get; set; }
+        [RegularExpression(Constants.NameRegex)]
+        [StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
         public string DisplayName { get; set; }
         public string NormalizedDisplayName { get; set; }
         public bool IsVerified { get; set; }
