@@ -81,11 +81,11 @@ namespace Wagering.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            returnUrl ??= Url.Content("~/authentication/login");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             string? normalizedDisplayName = Input.DisplayName?.ToUpper();
-            if (await _context.Profiles.Where(x => x.NormalizedDisplayName == normalizedDisplayName).FirstOrDefaultAsync() != null)
-                ModelState.AddModelError("Username", "Display name is already taken.");
+            if (await _context.Profiles.FirstOrDefaultAsync(x => x.NormalizedDisplayName == normalizedDisplayName) != null)
+                ModelState.AddModelError(string.Empty, "Display name is already taken.");
             if (!ModelState.IsValid)
                 return Page();
 

@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Wagering.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Wagering.Areas.Identity.Pages.Account
 {
@@ -56,8 +57,8 @@ namespace Wagering.Areas.Identity.Pages.Account
             [Required]
             [RegularExpression(Constants.NameRegex)]
             [StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
-            [Display(Name = "Username")]
-            public string? Username { get; set; }
+            [Display(Name = "Display Name")]
+            public string? DisplayName { get; set; }
         }
 
         public IActionResult OnGetAsync()
@@ -75,7 +76,7 @@ namespace Wagering.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnGetCallbackAsync(string? returnUrl = null, string? remoteError = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/login-callback");
+            returnUrl ??= Url.Content("~/authentication/login");
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
@@ -117,7 +118,7 @@ namespace Wagering.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostConfirmationAsync(string? returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/login-callback");
+            returnUrl ??= Url.Content("~/authentication/login");
             // Get the information about the user from the external login provider
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
@@ -125,47 +126,63 @@ namespace Wagering.Areas.Identity.Pages.Account
                 ErrorMessage = "Error loading external login information during confirmation.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
+            string? normalizedDisplayName = Input.DisplayName?.ToUpper();
+            if (await _context.Profiles.FirstOrDefaultAsync(x => x.NormalizedDisplayName == normalizedDisplayName) != null)
+                ModelState.AddModelError(string.Empty, "Display name is already taken.");
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
                 {
-                    UserName = Input.Username,
-                    Email = Input.Email ?? string.Empty,
+                    UserName = Input.Email,
+                    Email = Input.Email,
                 };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
-                    if (result.Succeeded)
+                    var claimsResult = await _userManager.AddClaimAsync(user, new Claim("display_name", Input.DisplayName));
+                    if (!result.Succeeded || !claimsResult.Succeeded)
                     {
-                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
-
-                        // If account confirmation is required, we need to show the link if we don't have a real email sender
-                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                        {
-                            return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
-                        }
-
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        var userId = await _userManager.GetUserIdAsync(user);
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page(
-                            "/Account/ConfirmEmail",
-                            pageHandler: null,
-                            values: new { area = "Identity", userId = userId, code = code },
-                            protocol: Request.Scheme);
-
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                        return LocalRedirect(returnUrl);
+                        foreach (var error in result.Errors)
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        foreach (var error in claimsResult.Errors)
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        return Page();
                     }
+                    _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+
+                    // If account confirmation is required, we need to show the link if we don't have a real email sender
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    {
+                        return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
+                    }
+
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    var userId = await _userManager.GetUserIdAsync(user);
+                    var profile = new Profile
+                    {
+                        DisplayName = Input.DisplayName,
+                        NormalizedDisplayName = normalizedDisplayName,
+                        Id = user.Id,
+                        IsVerified = false,
+                    };
+                    _context.Profiles.Add(profile);
+                    _context.SaveChanges();
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    var callbackUrl = Url.Page(
+                        "/Account/ConfirmEmail",
+                        pageHandler: null,
+                        values: new { area = "Identity", userId = userId, code = code },
+                        protocol: Request.Scheme);
+
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    return LocalRedirect(returnUrl);
                 }
                 foreach (var error in result.Errors)
-                {
                     ModelState.AddModelError(string.Empty, error.Description);
-                }
             }
 
             LoginProvider = info.LoginProvider;
