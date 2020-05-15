@@ -6,10 +6,9 @@
                     <v-icon>mdi-account</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title
-                        >Hello
-                        {{ $store.getters.displayName }}</v-list-item-title
-                    >
+                    <v-list-item-title>
+                        {{ $store.getters.displayName }}
+                    </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item to="/authentication/logout" link>
