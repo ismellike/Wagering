@@ -11,7 +11,9 @@ using Microsoft.Extensions.Hosting;
 using VueCliMiddleware;
 using Wagering.Models;
 using stellar_dotnet_sdk;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Wagering.Services;
+#nullable disable
 
 namespace Wagering
 {
@@ -23,8 +25,8 @@ namespace Wagering
             _env = env;
         }
 
-        public IConfiguration _config { get; }
-        public IWebHostEnvironment _env { get; }
+        private readonly IConfiguration _config;
+        private readonly IWebHostEnvironment _env;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -98,7 +100,9 @@ namespace Wagering
             {
                 network = "https://horizon-testnet.stellar.org/";
             }
-            services.AddSingleton<Server>(new Server(network));
+            services.AddSingleton(new Server(network));
+            services.AddSingleton(_config.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+            services.AddScoped<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
