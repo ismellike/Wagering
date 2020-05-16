@@ -54,7 +54,7 @@
             </form>
             <div class="divider">OR REGISTER WITH</div>
             <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                <partial name="_ExternalPartial" />
+                <partial name="_ExternalPartial" model="Model.ExternalLogins" />
             </form>
         </div>
     </div>

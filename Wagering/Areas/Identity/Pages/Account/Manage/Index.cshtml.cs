@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Wagering.Models;
-using System;
 
 namespace Wagering.Areas.Identity.Pages.Account.Manage
 {
@@ -21,26 +22,30 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
-        public string? Username { get; set; }
-
         [TempData]
         public string? StatusMessage { get; set; }
 
         [BindProperty]
         public InputModel Input { get; set; } = new InputModel();
 
+        //Maybe allow for name changes later ?
         public class InputModel
         {
-            [Display(Name = "Phone")]
+            //[RegularExpression(Constants.NameRegex)]
+            //[StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
+            public string? DisplayName { get; set; }
+            public string? Email { get; set; }
+            [DataType(DataType.PhoneNumber)]
             public string? PhoneNumber { get; set; }
         }
 
-        private void Load(ApplicationUser user)
+        private async Task Load(ApplicationUser user)
         {
-            Username = user.UserName;
-
+            var claims = await _userManager.GetClaimsAsync(user);
             Input = new InputModel
             {
+                DisplayName = claims.FirstOrDefault(x => x.Type == "display_name")?.Value,
+                Email = user.Email,
                 PhoneNumber = user.PhoneNumber
             };
         }
@@ -53,7 +58,7 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user.");
             }
 
-            Load(user);
+            await Load(user);
             return Page();
         }
 
@@ -67,7 +72,7 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
 
             if (!ModelState.IsValid)
             {
-                Load(user);
+                await Load(user);
                 return Page();
             }
 

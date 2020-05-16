@@ -6,10 +6,10 @@
 }
 
 <partial name="_StatusMessage" for="StatusMessage" />
-<h4>@ViewData["Title"]</h4>
-<div>
-    <p>To use an authenticator app go through the following steps:</p>
-    <ol class="list">
+<h1 class="title">@ViewData["Title"]</h1>
+<p class="subtitle">To use an authenticator app go through the following steps:</p>
+<div class="content">
+    <ol type="1">
         <li>
             <p>
                 Download a two-factor authenticator app like Microsoft Authenticator for
@@ -32,19 +32,20 @@
                 Once you have scanned the QR code or input the key above, your two factor authentication app will provide you
                 with a unique code. Enter the code in the confirmation box below.
             </p>
-            <div class="row">
-                <div class="col-md-6">
-                    <form id="send-code" method="post">
-                        <div class="form-group">
-                            <label asp-for="Input.Code" class="control-label">Verification Code</label>
-                            <input asp-for="Input.Code" class="form-control" autocomplete="off" />
-                            <span asp-validation-for="Input.Code" class="text-danger"></span>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Verify</button>
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    </form>
+            <form id="send-code" method="post">
+                <div class="field">
+                    <p class="control has-icons-left">
+                        <input asp-for="Input.Code" placeholder="Authentication Code" class="form-control" autocomplete="off" />
+                    </p>
+                    <span asp-validation-for="Input.Code" class="has-text-danger"></span>
                 </div>
-            </div>
+                <div class="field">
+                    <div class="control">
+                        <button type="submit" class="button is-success is-fullwidth">Verify</button>
+                    </div>
+                </div>
+                <div asp-validation-summary="ModelOnly" class="has-text-danger"></div>
+            </form>
         </li>
     </ol>
 </div>

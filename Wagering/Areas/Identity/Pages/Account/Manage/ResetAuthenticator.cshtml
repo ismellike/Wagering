@@ -6,19 +6,23 @@
 }
 
 <partial name="_StatusMessage" for="StatusMessage" />
-<h4>@ViewData["Title"]</h4>
-<div class="alert alert-warning" role="alert">
+<h1 class="title">@ViewData["Title"]</h1>
+<div class="notification is-warning" role="alert">
     <p>
-        <span class="glyphicon glyphicon-warning-sign"></span>
-        <strong>If you reset your authenticator key your authenticator app will not work until you reconfigure it.</strong>
+        <span class="icon">
+            <i class="mdi mdi-alert"></i>
+        </span>
+        <span class="font-weight-bold">If you reset your authenticator key your authenticator app will not work until you reconfigure it.</span>
     </p>
     <p>
         This process disables 2FA until you verify your authenticator app.
         If you do not complete your authenticator app configuration you may lose access to your account.
     </p>
 </div>
-<div>
-    <form id="reset-authenticator-form" method="post" class="form-group">
-        <button id="reset-authenticator-button" class="btn btn-danger" type="submit">Reset authenticator key</button>
-    </form>
+<div class="field">
+    <div class="control">
+        <form id="reset-authenticator-form" method="post" class="form-group">
+            <button id="reset-authenticator-button" class="button is-danger is-fullwidth" type="submit">Reset authenticator key</button>
+        </form>
+    </div>
 </div>

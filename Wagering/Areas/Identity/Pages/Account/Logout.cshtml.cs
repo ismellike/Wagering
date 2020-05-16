@@ -26,16 +26,13 @@ namespace Wagering.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPost(string? returnUrl = null)
         {
+            var logout = "~/authentication/logout";
+            returnUrl ??= logout;
+            if (returnUrl == "/")
+                returnUrl = logout;
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-            if (returnUrl != null)
-            {
-                return LocalRedirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToPage();
-            }
+            return LocalRedirect(returnUrl);
         }
     }
 }

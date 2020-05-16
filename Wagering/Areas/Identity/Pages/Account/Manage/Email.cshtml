@@ -5,38 +5,55 @@
     ViewData["ActivePage"] = ManageNavPages.Email;
 }
 
-<h4>@ViewData["Title"]</h4>
+<h1 class="title">@ViewData["Title"]</h1>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="email-form" method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Email"></label>
-                @if (Model.IsEmailConfirmed)
-                {
-                    <div class="input-group">
-                        <input asp-for="Email" class="form-control" disabled />
-                        <div class="input-group-append">
-                            <span class="input-group-text text-success font-weight-bold">✓</span>
-                        </div>
-                    </div>
-                }
-                 else
-                {
-                    <input asp-for="Email" class="form-control" disabled />
-                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
-                }
+<form id="email-form" method="post">
+    <div asp-validation-summary="All" class="has-text-danger"></div>
+    @if (Model.IsEmailConfirmed)
+    {
+        <div class="field">
+            <div class="control has-icons-left has-icons-right">
+                <input asp-for="Email" class="input" disabled />
+                <span class="icon is-left">
+                    <i class="mdi mdi-email"></i>
+                </span>
+                <span class="icon is-right has-text-success">
+                    <i class="mdi mdi-check"></i>
+                </span>
             </div>
-            <div class="form-group">
-                <label asp-for="Input.NewEmail"></label>
-                <input asp-for="Input.NewEmail" class="form-control" />
-                <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+        </div>
+    }
+    else
+    {
+        <div class="field">
+            <div class="control has-icons-left">
+                <input asp-for="Email" class="input" disabled />
+                <span class="icon is-left">
+                    <i class="mdi mdi-email"></i>
+                </span>
             </div>
-            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="btn btn-primary">Change email</button>
-        </form>
+        </div>
+        <div class="field">
+            <div class="control">
+                <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="button is-link is-fullwidth">Send verification email</button>
+            </div>
+        </div>
+    }
+    <div class="field">
+        <p class="control has-icons-left">
+            <input asp-for="Input.NewEmail" placeholder="New Email" class="input" />
+            <span class="icon is-left">
+                <i class="mdi mdi-email"></i>
+            </span>
+        </p>
+        <span asp-validation-for="Input.NewEmail" class="has-text-danger"></span>
     </div>
-</div>
+    <div class="field">
+        <div class="control">
+            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="button is-success is-fullwidth">Change email</button>
+        </div>
+    </div>
+</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

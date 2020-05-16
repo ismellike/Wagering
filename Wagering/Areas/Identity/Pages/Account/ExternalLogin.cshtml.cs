@@ -57,7 +57,6 @@ namespace Wagering.Areas.Identity.Pages.Account
             [Required]
             [RegularExpression(Constants.NameRegex)]
             [StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
-            [Display(Name = "Display Name")]
             public string? DisplayName { get; set; }
         }
 
