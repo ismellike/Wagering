@@ -20,6 +20,8 @@ namespace Wagering
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<ApplicationUser>().Ignore(x => x.PhoneNumber);
+            builder.Entity<ApplicationUser>().Ignore(x => x.PhoneNumberConfirmed);
             builder.ConfigurePersistedGrantContext(Options.Value);
             base.OnModelCreating(builder);
         }

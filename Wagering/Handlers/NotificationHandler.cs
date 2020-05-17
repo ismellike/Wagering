@@ -1,7 +1,7 @@
-using Wagering.Models;
 using System.Collections.Generic;
+using Wagering.Models;
 
-namespace Wagering.Controllers
+namespace Wagering.Handlers
 {
     public static class NotificationHandler
     {

@@ -5,16 +5,16 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Wagering.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Wagering.Areas.Identity.Pages.Account
 {
@@ -126,6 +126,7 @@ namespace Wagering.Areas.Identity.Pages.Account
                 Id = user.Id,
                 IsVerified = false,
             };
+            await _userManager.AddClaimAsync(user, new Claim("is_verified", "false"));
             _context.Profiles.Add(profile);
             _context.SaveChanges();
 

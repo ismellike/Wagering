@@ -17,8 +17,6 @@ namespace Wagering.Models
         public string NormalizedDisplayName { get; set; }
         public bool IsVerified { get; set; }
         public string PublicKey { get; set; }
-        public string Platform { get; set; }
-        public string Input { get; set; }
         public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
         public IList<PersonalNotification> Notifications { get; set; } = new List<PersonalNotification>();
         public ICollection<UserGroup> UserGroups { get; set; } = new List<UserGroup>();

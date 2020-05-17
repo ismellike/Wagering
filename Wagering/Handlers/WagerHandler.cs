@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Threading.Tasks;
-using Wagering.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Wagering.Models;
 
-namespace Wagering.Controllers
+namespace Wagering.Handlers
 {
     public static class WagerHandler
     {

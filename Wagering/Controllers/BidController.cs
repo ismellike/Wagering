@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using Wagering.Handlers;
 using Wagering.Models;
 
 namespace Wagering.Controllers

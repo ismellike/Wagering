@@ -11,14 +11,6 @@
     <div asp-validation-summary="All" class="has-text-danger"></div>
     <div class="field">
         <p class="control has-icons-left">
-            <input asp-for="Input.DisplayName" disabled class="input" />
-            <span class="icon is-left">
-                <i class="mdi mdi-account"></i>
-            </span>
-        </p>
-    </div>
-    <div class="field">
-        <p class="control has-icons-left">
             <input asp-for="Input.Email" disabled class="input" />
             <span class="icon is-left">
                 <i class="mdi mdi-email"></i>
@@ -27,12 +19,20 @@
     </div>
     <div class="field">
         <p class="control has-icons-left">
-            <input asp-for="Input.PhoneNumber" placeholder="Phone Number" class="input" />
+            <input asp-for="Input.DisplayName" disabled class="input" />
             <span class="icon is-left">
-                <i class="mdi mdi-phone"></i>
+                <i class="mdi mdi-account"></i>
             </span>
         </p>
-        <span asp-validation-for="Input.PhoneNumber" class="has-text-danger"></span>
+    </div>
+    <div class="field">
+        <p class="control has-icons-left">
+            <input asp-for="Input.PublicKey" placeholder="Public Key" class="input" />
+            <span class="icon is-left">
+                <i class="mdi mdi-key"></i>
+            </span>
+        </p>
+        <span asp-validation-for="Input.PublicKey" class="has-text-danger"></span>
     </div>
     <div class="field">
         <div class="control">

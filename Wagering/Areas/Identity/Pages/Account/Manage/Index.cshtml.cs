@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Wagering.Handlers;
 using Wagering.Models;
 
 namespace Wagering.Areas.Identity.Pages.Account.Manage
@@ -13,13 +13,16 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _context;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         [TempData]
@@ -31,12 +34,12 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
         //Maybe allow for name changes later ?
         public class InputModel
         {
+            public string? Email { get; set; }
             //[RegularExpression(Constants.NameRegex)]
             //[StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
             public string? DisplayName { get; set; }
-            public string? Email { get; set; }
-            [DataType(DataType.PhoneNumber)]
-            public string? PhoneNumber { get; set; }
+            [CustomValidation(typeof(StellarHandler), "IsPublicKeyValid", ErrorMessage = "{0} is not a valid stellar public key.")]
+            public string? PublicKey { get; set; }
         }
 
         private async Task Load(ApplicationUser user)
@@ -44,9 +47,9 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
             var claims = await _userManager.GetClaimsAsync(user);
             Input = new InputModel
             {
-                DisplayName = claims.FirstOrDefault(x => x.Type == "display_name")?.Value,
                 Email = user.Email,
-                PhoneNumber = user.PhoneNumber
+                DisplayName = claims.NameClaim()?.Value,
+                PublicKey = claims.KeyClaim()?.Value
             };
         }
 
@@ -75,15 +78,22 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
                 await Load(user);
                 return Page();
             }
+            var claims = await _userManager.GetClaimsAsync(user);
+            var profile = await _context.Profiles.FindAsync(user.Id);
 
-            var number = user.PhoneNumber;
-            if (Input.PhoneNumber != number)
+            var publicKey = profile.PublicKey;
+            if (Input.PublicKey != publicKey)
             {
-                var result = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!result.Succeeded)
-                {
-                    throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
-                }
+                profile.PublicKey = Input.PublicKey;
+                Claim keyClaim = claims.KeyClaim();
+                Claim newClaim = new Claim(Constants.Claims.PublicKey, Input.PublicKey);
+
+                if (keyClaim == null)
+                    await _userManager.AddClaimAsync(user, newClaim);
+                else
+                    await _userManager.ReplaceClaimAsync(user, keyClaim, newClaim);
+                _context.Profiles.Update(profile);
+                _context.SaveChanges();
             }
 
             await _signInManager.RefreshSignInAsync(user);

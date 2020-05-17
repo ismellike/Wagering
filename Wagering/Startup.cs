@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.SpaServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using stellar_dotnet_sdk;
 using VueCliMiddleware;
 using Wagering.Models;
-using stellar_dotnet_sdk;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Wagering.Services;
 #nullable disable
 
@@ -40,8 +40,11 @@ namespace Wagering
                 options.UseSqlServer(_config.GetConnectionString("Identity"));
             });
 
-            services.AddDefaultIdentity<ApplicationUser>()
-                .AddEntityFrameworkStores<IdentityDbContext>();
+            services.AddDefaultIdentity<ApplicationUser>(x =>
+            {
+                x.User.RequireUniqueEmail = true;
+                x.SignIn.RequireConfirmedEmail = true;
+            }).AddEntityFrameworkStores<IdentityDbContext>();
 
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, IdentityDbContext>()
@@ -101,7 +104,6 @@ namespace Wagering
                 network = "https://horizon-testnet.stellar.org/";
             }
             services.AddSingleton(new Server(network));
-            services.AddSingleton(_config.GetSection("EmailConfiguration").Get<EmailConfiguration>());
             services.AddScoped<IEmailSender, EmailSender>();
         }
 

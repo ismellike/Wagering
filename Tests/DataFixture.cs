@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using Wagering.Models;
 
 namespace Wagering.Tests
 {
@@ -11,11 +10,7 @@ namespace Wagering.Tests
         public DataFixture()
         {
             DbContextOptions<ApplicationDbContext> options = new DbContextOptionsBuilder<ApplicationDbContext>().UseInMemoryDatabase("test_data").Options;
-            Context = new ApplicationDbContext(options, null);
-            Context.Users.Add(new ApplicationUser
-            {
-                UserName = "user0",
-            });
+            Context = new ApplicationDbContext(options);
             Context.SaveChanges();
         }
 

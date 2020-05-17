@@ -19,7 +19,22 @@ namespace Wagering
 
         public static string? GetName(this ClaimsPrincipal User)
         {
-            return User.Claims.FirstOrDefault(x => x.Type == "display_name")?.Value;
+            return User.Claims.FirstOrDefault(x => x.Type == Constants.Claims.DisplayName)?.Value;
+        }
+
+        public static Claim NameClaim(this IList<Claim> claims)
+        {
+            return claims.FirstOrDefault(x => x.Type == Constants.Claims.DisplayName);
+        }
+
+        public static Claim VerifiedClaim(this IList<Claim> claims)
+        {
+            return claims.FirstOrDefault(x => x.Type == Constants.Claims.IsVerified);
+        }
+
+        public static Claim KeyClaim(this IList<Claim> claims)
+        {
+            return claims.FirstOrDefault(x => x.Type == Constants.Claims.PublicKey);
         }
     }
 }

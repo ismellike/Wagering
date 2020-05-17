@@ -6,6 +6,7 @@ class State {
     id: string | null = null;
     isAuthenticated = false;
     isInitialized = false;
+    isVerified = false;
     token: string | null = null;
 }
 const getters: GetterTree<State, any> = {
@@ -14,6 +15,9 @@ const getters: GetterTree<State, any> = {
     },
     isInitialized: (state) => {
         return state.isInitialized;
+    },
+    isVerified: (state) => {
+        return state.isVerified;
     },
     displayName: (state) => {
         return state.displayName;
@@ -34,12 +38,14 @@ const mutations: MutationTree<State> = {
         state.id = payload.id;
         state.isAuthenticated = true;
         state.token = payload.token;
+        state.isVerified = payload.isVerified;
     },
     setLogout(state) {
         state.displayName = null;
         state.id = null;
         state.token = null;
         state.isAuthenticated = false;
+        state.isVerified = false;
     },
     setInitialized(state) {
         state.isInitialized = true;
@@ -62,6 +68,7 @@ const actions: ActionTree<State, any> = {
                 id: user.sub,
                 isAuthenticated: true,
                 token: token,
+                isVerified: user.is_verified,
             } as State;
             commit("setLogin", payload);
             return true;
