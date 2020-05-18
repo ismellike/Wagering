@@ -27,6 +27,7 @@ namespace Wagering.Controllers
         public async Task<IActionResult> GetGroups()
         {
             var userId = User.GetId();
+            //maybe go through all bids instead
             List<string> groups = await _context.UserGroups.Where(x => x.ProfileId == userId).Select(x => x.GroupName).ToListAsync();
             return Ok(groups);
         }

@@ -14,17 +14,15 @@ namespace Wagering.Controllers
     [Authorize]
     public class BidController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
         private readonly ErrorMessages _errorMessages = new ErrorMessages { Name = "wager bid" };
 
-        public BidController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public BidController(ApplicationDbContext context)
         {
-            _userManager = userManager;
             _context = context;
         }
 
-        [HttpPost("wager/accept")]
+        [HttpPost("wager/accept/{id}")]
         public async Task<IActionResult> AcceptBid(int id)
         {
             string? userId = User.GetId();
@@ -61,7 +59,7 @@ namespace Wagering.Controllers
         }
 
         //decline then send notification to users status => 2
-        [HttpPost("wager/decline")]
+        [HttpPost("wager/decline/{id}")]
         public async Task<IActionResult> DeclineBid(int id)
         {
             string? userId = User.GetId();

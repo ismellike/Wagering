@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Wagering.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Wagering.Controllers
 {
@@ -11,21 +13,19 @@ namespace Wagering.Controllers
     [Authorize]
     public class ClientController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public ClientController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public ClientController(ApplicationDbContext context)
         {
-            _userManager = userManager;
             _context = context;
         }
 
-        [HttpGet("wagers")]
-        public async Task<IActionResult> ClientWagers()
+        [HttpGet("WagerChallenge")]
+        public async Task<IActionResult> WagerChallenges()
         {
             string? userId = User.GetId();
-            //look through challengebids
-            return Ok();
+            List<WagerChallenge> results = await _context.WagerChallengeBids.AsNoTracking().Where(x => x.ProfileId == userId).Include(x => x.Challenge).ThenInclude(x => x.Challengers).ThenInclude(x => x.Profile).Select(x => x.Challenge).ToListAsync();
+            return Ok(results);
         }
     }
 }

@@ -32,8 +32,9 @@ namespace Wagering.Hubs
                 }
                 else
                 {
-                    user.Connections.Add(new Connection
+                    _context.Connections.Add(new Connection
                     {
+                        ProfileId = id,
                         ConnectionID = Context.ConnectionId,
                         UserAgent = Context.GetHttpContext().Request.Headers["User-Agent"],
                         Connected = true

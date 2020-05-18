@@ -17,9 +17,7 @@ namespace Wagering.Controllers
     [ApiController]
     public class WagerController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
-        private readonly IMemoryCache _cache;
         private readonly Server _server;
         private const int ResultSize = 15;
         private readonly ErrorMessages _errorMessages = new ErrorMessages { Name = "wager" };
@@ -33,11 +31,9 @@ namespace Wagering.Controllers
             public int? playerCount;
         }
 
-        public WagerController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IMemoryCache cache, Server server)
+        public WagerController(ApplicationDbContext context, Server server)
         {
-            _userManager = userManager;
             _context = context;
-            _cache = cache;
             _server = server;
         }
 
@@ -86,40 +82,6 @@ namespace Wagering.Controllers
             if (wager == null)
             {
                 ModelState.AddModelError(string.Empty, _errorMessages.NotFound);
-                return BadRequest(ModelState);
-            }
-            return Ok(wager);
-        }
-
-        [HttpGet("control")]
-        [Authorize]
-        public async Task<IActionResult> ControlWagers()
-        {
-            string? userId = User.GetId();
-            List<Wager> results = await _context.UserGroups.AsNoTracking().Where(x => x.ProfileId == userId).Include(x => x.Wager).ThenInclude(x => x.Hosts).ThenInclude(x => x.Profile).Select(x => x.Wager).ToListAsync();
-            return Ok(results);
-        }
-
-        [HttpGet("control/{id}")]
-        [Authorize]
-        public async Task<IActionResult> GetControlWager(int id)
-        {
-            string? userId = User.GetId();
-
-            if (!_cache.TryGetValue(id, out Wager wager))
-            {
-                wager = await _context.Wagers.AsNoTracking().Include(x => x.Hosts).ThenInclude(x => x.Profile).Include(x => x.Challenges).ThenInclude(x => x.Challengers).ThenInclude(x => x.Profile).FirstOrDefaultAsync(x => x.Id == id);
-                _cache.Set(id, wager, TimeSpan.FromSeconds(20));
-            }
-
-            if (wager == null)
-            {
-                ModelState.AddModelError(string.Empty, _errorMessages.NotFound);
-                return BadRequest(ModelState);
-            }
-            if (!wager.Hosts.Any(x => x.ProfileId == userId))
-            {
-                ModelState.AddModelError(string.Empty, "You are not a host of this wager.");
                 return BadRequest(ModelState);
             }
             return Ok(wager);
@@ -239,8 +201,6 @@ namespace Wagering.Controllers
             NotificationHandler.AddNotificationToUsers(_context, others, notification);
             WagerHandler.AddUserGroups(_context, wager.Id, users);
             _context.SaveChanges();
-            _cache.Set(wager.Id, wager, TimeSpan.FromSeconds(20));
-
             return Ok(new { id = wager.Id, groupName = wager.GroupName, others = others, notification = notification });
         }
     }
