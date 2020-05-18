@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Wagering.Migrations
 {
@@ -26,12 +26,10 @@ namespace Wagering.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    DisplayName = table.Column<string>(nullable: false),
-                    NormalizedDisplayName = table.Column<string>(nullable: false),
+                    DisplayName = table.Column<string>(maxLength: 12, nullable: false),
+                    NormalizedDisplayName = table.Column<string>(nullable: true),
                     IsVerified = table.Column<bool>(nullable: false),
-                    PublicKey = table.Column<string>(nullable: true),
-                    Platform = table.Column<string>(nullable: true),
-                    Input = table.Column<string>(nullable: true)
+                    PublicKey = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -103,23 +101,23 @@ namespace Wagering.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Connection",
+                name: "Connections",
                 columns: table => new
                 {
                     ConnectionID = table.Column<string>(nullable: false),
-                    ProfileId = table.Column<string>(nullable: false),
+                    ProfileId = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: false),
                     Connected = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Connection", x => x.ConnectionID);
+                    table.PrimaryKey("PK_Connections", x => x.ConnectionID);
                     table.ForeignKey(
-                        name: "FK_Connection_Profiles_ProfileId",
+                        name: "FK_Connections_Profiles_ProfileId",
                         column: x => x.ProfileId,
                         principalTable: "Profiles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -128,7 +126,7 @@ namespace Wagering.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProfileId = table.Column<string>(nullable: false),
+                    ProfileId = table.Column<string>(nullable: true),
                     Message = table.Column<string>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     DataModel = table.Column<byte>(nullable: false),
@@ -142,11 +140,11 @@ namespace Wagering.Migrations
                         column: x => x.ProfileId,
                         principalTable: "Profiles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Rating",
+                name: "Ratings",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -159,15 +157,15 @@ namespace Wagering.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rating", x => x.Id);
+                    table.PrimaryKey("PK_Ratings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Rating_Games_GameId",
+                        name: "FK_Ratings_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Rating_Profiles_ProfileId1",
+                        name: "FK_Ratings_Profiles_ProfileId1",
                         column: x => x.ProfileId1,
                         principalTable: "Profiles",
                         principalColumn: "Id",
@@ -180,7 +178,7 @@ namespace Wagering.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProfileId = table.Column<string>(nullable: false),
+                    ProfileId = table.Column<string>(nullable: true),
                     WagerId = table.Column<int>(nullable: true),
                     TournamentId = table.Column<int>(nullable: true)
                 },
@@ -192,7 +190,7 @@ namespace Wagering.Migrations
                         column: x => x.ProfileId,
                         principalTable: "Profiles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_UserGroups_Tournaments_TournamentId",
                         column: x => x.TournamentId,
@@ -236,7 +234,7 @@ namespace Wagering.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProfileId = table.Column<string>(nullable: false),
+                    ProfileId = table.Column<string>(nullable: true),
                     Approved = table.Column<bool>(nullable: true),
                     ReceivablePt = table.Column<byte>(nullable: false),
                     PayablePt = table.Column<byte>(nullable: false),
@@ -251,7 +249,7 @@ namespace Wagering.Migrations
                         column: x => x.ProfileId,
                         principalTable: "Profiles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_WagerHostBids_Wagers_WagerId",
                         column: x => x.WagerId,
@@ -292,7 +290,7 @@ namespace Wagering.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProfileId = table.Column<string>(nullable: false),
+                    ProfileId = table.Column<string>(nullable: true),
                     Approved = table.Column<bool>(nullable: true),
                     ReceivablePt = table.Column<byte>(nullable: false),
                     PayablePt = table.Column<byte>(nullable: false),
@@ -313,7 +311,7 @@ namespace Wagering.Migrations
                         column: x => x.ProfileId,
                         principalTable: "Profiles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
@@ -322,8 +320,8 @@ namespace Wagering.Migrations
                 values: new object[] { 1, "Fortnite", "fortnite" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Connection_ProfileId",
-                table: "Connection",
+                name: "IX_Connections_ProfileId",
+                table: "Connections",
                 column: "ProfileId");
 
             migrationBuilder.CreateIndex(
@@ -341,16 +339,17 @@ namespace Wagering.Migrations
                 name: "IX_Profiles_NormalizedDisplayName",
                 table: "Profiles",
                 column: "NormalizedDisplayName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedDisplayName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rating_GameId",
-                table: "Rating",
+                name: "IX_Ratings_GameId",
+                table: "Ratings",
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rating_ProfileId1",
-                table: "Rating",
+                name: "IX_Ratings_ProfileId1",
+                table: "Ratings",
                 column: "ProfileId1");
 
             migrationBuilder.CreateIndex(
@@ -417,13 +416,13 @@ namespace Wagering.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Connection");
+                name: "Connections");
 
             migrationBuilder.DropTable(
                 name: "Notifications");
 
             migrationBuilder.DropTable(
-                name: "Rating");
+                name: "Ratings");
 
             migrationBuilder.DropTable(
                 name: "UserGroups");

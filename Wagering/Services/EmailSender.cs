@@ -9,16 +9,15 @@ namespace Wagering.Services
 {
     public class EmailSender : IEmailSender
     {
-        private readonly IConfiguration _config;
+        private readonly string apiKey;
 
         public EmailSender(IConfiguration config)
         {
-            _config = config;
+            apiKey = config["SendGridKey"];
         }
 
         public Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            var apiKey = _config.GetSection("SENDGRID_API_KEY").Value;
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage();
             msg.SetFrom(new EmailAddress("ismellike@live.com", "Wagering.gg (ismellike)"));

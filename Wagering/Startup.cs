@@ -43,7 +43,7 @@ namespace Wagering
             services.AddDefaultIdentity<ApplicationUser>(x =>
             {
                 x.User.RequireUniqueEmail = true;
-                x.SignIn.RequireConfirmedEmail = true;
+                x.SignIn.RequireConfirmedAccount = true;
             }).AddEntityFrameworkStores<IdentityDbContext>();
 
             services.AddIdentityServer()

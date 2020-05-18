@@ -15,7 +15,7 @@ namespace Wagering.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.3")
+                .HasAnnotation("ProductVersion", "3.1.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -28,7 +28,6 @@ namespace Wagering.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ProfileId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserAgent")
@@ -94,7 +93,6 @@ namespace Wagering.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfileId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -111,20 +109,14 @@ namespace Wagering.Migrations
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Input")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(12)")
+                        .HasMaxLength(12);
 
                     b.Property<bool>("IsVerified")
                         .HasColumnType("bit");
 
                     b.Property<string>("NormalizedDisplayName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Platform")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PublicKey")
                         .HasColumnType("nvarchar(max)");
@@ -134,7 +126,8 @@ namespace Wagering.Migrations
                     b.HasAlternateKey("DisplayName");
 
                     b.HasIndex("NormalizedDisplayName")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[NormalizedDisplayName] IS NOT NULL");
 
                     b.ToTable("Profiles");
                 });
@@ -229,7 +222,6 @@ namespace Wagering.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ProfileId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("TournamentId")
@@ -338,7 +330,6 @@ namespace Wagering.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("ProfileId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<byte>("ReceivablePt")
@@ -370,7 +361,6 @@ namespace Wagering.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("ProfileId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<byte>("ReceivablePt")
@@ -414,18 +404,14 @@ namespace Wagering.Migrations
                 {
                     b.HasOne("Wagering.Models.Profile", "Profile")
                         .WithMany("Connections")
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProfileId");
                 });
 
             modelBuilder.Entity("Wagering.Models.PersonalNotification", b =>
                 {
                     b.HasOne("Wagering.Models.Profile", "Profile")
                         .WithMany("Notifications")
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProfileId");
                 });
 
             modelBuilder.Entity("Wagering.Models.Rating", b =>
@@ -454,9 +440,7 @@ namespace Wagering.Migrations
                 {
                     b.HasOne("Wagering.Models.Profile", "Profile")
                         .WithMany("UserGroups")
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProfileId");
 
                     b.HasOne("Wagering.Models.Tournament", "Tournament")
                         .WithMany()
@@ -495,18 +479,14 @@ namespace Wagering.Migrations
 
                     b.HasOne("Wagering.Models.Profile", "Profile")
                         .WithMany()
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProfileId");
                 });
 
             modelBuilder.Entity("Wagering.Models.WagerHostBid", b =>
                 {
                     b.HasOne("Wagering.Models.Profile", "Profile")
                         .WithMany()
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProfileId");
 
                     b.HasOne("Wagering.Models.Wager", "Wager")
                         .WithMany("Hosts")
