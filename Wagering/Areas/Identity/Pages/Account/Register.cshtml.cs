@@ -95,16 +95,14 @@ namespace Wagering.Areas.Identity.Pages.Account
                 Email = Input.Email
             };
             var result = await _userManager.CreateAsync(user, Input.Password);
-            var claimsResult = await _userManager.AddClaimAsync(user, new Claim("display_name", Input.DisplayName));
-
-            if (!result.Succeeded || !claimsResult.Succeeded)
+            if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
-                foreach (var error in claimsResult.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    if (error.Code != "DuplicateUserName") //same as email
+                        ModelState.AddModelError(string.Empty, error.Description);
                 return Page();
             }
+            await _userManager.AddClaimAsync(user, new Claim("display_name", Input.DisplayName));
 
             _logger.LogInformation("User created a new account with password.");
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

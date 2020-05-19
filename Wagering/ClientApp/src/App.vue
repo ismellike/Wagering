@@ -14,17 +14,14 @@
                     <v-list-item-action>
                         <v-icon>mdi-home</v-icon>
                     </v-list-item-action>
-
                     <v-list-item-content>
                         <v-list-item-title>Home</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-
                 <v-list-item to="/about" link>
                     <v-list-item-action>
                         <v-icon>mdi-information-outline</v-icon>
                     </v-list-item-action>
-
                     <v-list-item-content>
                         <v-list-item-title>About</v-list-item-title>
                     </v-list-item-content>
@@ -33,7 +30,6 @@
                     <v-list-item-action>
                         <v-icon>mdi-gamepad-variant</v-icon>
                     </v-list-item-action>
-
                     <v-list-item-content>
                         <v-list-item-title>The Hub</v-list-item-title>
                     </v-list-item-content>
@@ -51,7 +47,6 @@
                                 <v-icon>mdi-clipboard-multiple</v-icon>
                             </v-badge>
                         </v-list-item-action>
-
                         <v-list-item-content>
                             <v-list-item-title>Client Panel</v-list-item-title>
                         </v-list-item-content>
@@ -68,7 +63,6 @@
                                 <v-icon>mdi-clipboard</v-icon>
                             </v-badge>
                         </v-list-item-action>
-
                         <v-list-item-content>
                             <v-list-item-title>Host Panel</v-list-item-title>
                         </v-list-item-content>
@@ -79,7 +73,6 @@
                 <login-menu />
             </template>
         </v-navigation-drawer>
-
         <v-app-bar app color="accent" dense clipped-right>
             <v-toolbar-title>Wagering.gg</v-toolbar-title>
             <v-spacer />

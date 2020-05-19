@@ -139,15 +139,15 @@ namespace Wagering.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
-                    var claimsResult = await _userManager.AddClaimAsync(user, new Claim("display_name", Input.DisplayName));
-                    if (!result.Succeeded || !claimsResult.Succeeded)
+                    if (!result.Succeeded)
                     {
                         foreach (var error in result.Errors)
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        foreach (var error in claimsResult.Errors)
-                            ModelState.AddModelError(string.Empty, error.Description);
+                            if (error.Code != "DuplicateUserName")
+                                ModelState.AddModelError(string.Empty, error.Description);
                         return Page();
                     }
+                    await _userManager.AddClaimAsync(user, new Claim("display_name", Input.DisplayName));
+
                     _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
                     // If account confirmation is required, we need to show the link if we don't have a real email sender
