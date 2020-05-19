@@ -98,11 +98,7 @@ namespace Wagering
                .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddSignalR();
 
-            string network = "https://horizon.stellar.org/";
-            if (_env.IsDevelopment())
-            {
-                network = "https://horizon-testnet.stellar.org/";
-            }
+            string network = _env.IsDevelopment() ? "https://horizon-testnet.stellar.org/" : "https://horizon.stellar.org/";
             services.AddSingleton(new Server(network));
             //add errormessage singleton
             services.AddScoped<IEmailSender, EmailSender>();

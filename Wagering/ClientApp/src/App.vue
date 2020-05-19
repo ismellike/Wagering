@@ -39,7 +39,24 @@
                     </v-list-item-content>
                 </v-list-item>
                 <template v-if="$store.getters.isAuthenticated">
-                    <v-list-item to="/control" link>
+                    <v-list-item to="/client" link>
+                        <v-list-item-action>
+                            <v-badge
+                                :content="groupCount"
+                                :value="groupCount > 0"
+                                offset-x="10"
+                                offset-y="10"
+                                color="error"
+                            >
+                                <v-icon>mdi-clipboard-multiple</v-icon>
+                            </v-badge>
+                        </v-list-item-action>
+
+                        <v-list-item-content>
+                            <v-list-item-title>Client Panel</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item to="/host" link>
                         <v-list-item-action>
                             <v-badge
                                 :content="groupCount"
@@ -53,7 +70,7 @@
                         </v-list-item-action>
 
                         <v-list-item-content>
-                            <v-list-item-title>Control Panel</v-list-item-title>
+                            <v-list-item-title>Host Panel</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </template>
@@ -116,7 +133,8 @@ export default Vue.extend({
         return {
             drawer: false as boolean,
             notifications: [] as PersonalNotification[],
-            groupCount: 0 as number
+            hostCount: 0 as number,
+            clientCount: 0 as number
         };
     },
     methods: {
@@ -150,10 +168,12 @@ export default Vue.extend({
         },
         addGroups(): void {
             this.$axios.get("/api/group").then(response => {
-                response.data.forEach((group: string) => {
-                    this.$microsoft.signalr.invoke("AddToGroup", group);
-                    this.groupCount++;
-                });
+                this.$microsoft.signalr.invoke(
+                    "AddToGroups",
+                    response.data.groups
+                );
+                this.hostCount = response.data.hostCount;
+                this.clientCount = response.data.clientCount;
             });
         },
         listen(): void {

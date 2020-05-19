@@ -27,9 +27,11 @@ namespace Wagering.Controllers
         public async Task<IActionResult> GetGroups()
         {
             var userId = User.GetId();
-            //maybe go through all bids instead
-            List<string> groups = await _context.UserGroups.Where(x => x.ProfileId == userId).Select(x => x.GroupName).ToListAsync();
-            return Ok(groups);
+            //join tournamenthostbids etc
+            List<string> hostGroups = await _context.WagerHostBids.AsNoTracking().Where(x => x.ProfileId == userId).Select(x => GetGroupName.Wager(x.Id)).ToListAsync();
+
+            List<string> clientGroups = await _context.WagerChallengeBids.AsNoTracking().Where(x => x.ProfileId == userId).Select(x => GetGroupName.Wager(x.Id)).ToListAsync();
+            return Ok(new { groups = hostGroups.Union(clientGroups), hostCount = hostGroups.Count, clientCount = clientGroups.Count });
         }
     }
 }

@@ -16,12 +16,17 @@ namespace Wagering.Hubs
         {
             _context = context;
         }
+
+        private async Task<Profile> GetUserAsync(string id)
+        {
+            return await _context.Profiles.AsNoTracking().Where(x => x.Id == id)
+                .Include(x => x.Connections)
+                .FirstOrDefaultAsync();
+        }
         public override async Task OnConnectedAsync()
         {
             var id = Context.UserIdentifier;
-            var user = await _context.Profiles.Where(x => x.Id == id)
-                .Include(x => x.Connections)
-                .FirstOrDefaultAsync();
+            var user = await GetUserAsync(id);
 
             if (user != null)
             {
@@ -47,20 +52,26 @@ namespace Wagering.Hubs
 
         public async Task AddToGroup(string id, string groupName)
         {
-            var user = await _context.Profiles.AsNoTracking().Where(x => x.Id == id)
-                .Include(x => x.Connections)
-                .FirstOrDefaultAsync();
+            var user = await GetUserAsync(id);
             if (user != null)
                 foreach (Connection connection in user.Connections)
                     if (connection.Connected)
                         await Groups.AddToGroupAsync(connection.ConnectionID, groupName);
         }
 
+        public async Task AddToGroups(string id, string[] groups)
+        {
+            var user = await GetUserAsync(id);
+            if (user != null)
+                foreach (Connection connection in user.Connections)
+                    if (connection.Connected)
+                        foreach (string groupName in groups)
+                            await Groups.AddToGroupAsync(connection.ConnectionID, groupName);
+        }
+
         public async Task RemoveFromGroup(string id, string groupName)
         {
-            var user = await _context.Profiles.AsNoTracking().Where(x => x.Id == id)
-                .Include(x => x.Connections)
-                .FirstOrDefaultAsync();
+            var user = await GetUserAsync(id);
             if (user != null)
                 foreach (Connection connection in user.Connections)
                     if (connection.Connected)

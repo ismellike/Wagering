@@ -19,7 +19,6 @@ namespace Wagering.Models
         public string PublicKey { get; set; }
         public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
         public IList<PersonalNotification> Notifications { get; set; } = new List<PersonalNotification>();
-        public ICollection<UserGroup> UserGroups { get; set; } = new List<UserGroup>();
         public ICollection<Connection> Connections { get; set; } = new List<Connection>();
     }
 }
