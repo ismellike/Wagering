@@ -98,19 +98,5 @@ namespace Wagering.Handlers
         {
             return await _context.Wagers.Where(x => x.Id == wagerId).Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync();
         }
-
-        public static void AddUserGroups(ApplicationDbContext _context, int wagerId, IEnumerable<string> userIds)
-        {
-            List<UserGroup> userGroups = new List<UserGroup>();
-            foreach (string id in userIds)
-            {
-                userGroups.Add(new UserGroup
-                {
-                    WagerId = wagerId,
-                    ProfileId = id
-                });
-            }
-            _context.AddRange(userGroups);
-        }
     }
 }

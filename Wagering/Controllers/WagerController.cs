@@ -196,10 +196,8 @@ namespace Wagering.Controllers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            IEnumerable<string> users = wager.HostIds();
-            IEnumerable<string> others = users.Where(x => x != userId);
+            IEnumerable<string> others = wager.HostIds().Where(x => x != userId);
             NotificationHandler.AddNotificationToUsers(_context, others, notification);
-            WagerHandler.AddUserGroups(_context, wager.Id, users);
             _context.SaveChanges();
             return Ok(new { id = wager.Id, groupName = wager.GroupName, others = others, notification = notification });
         }

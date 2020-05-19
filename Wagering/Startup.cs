@@ -59,6 +59,15 @@ namespace Wagering
                     options.ClientId = section["ClientId"];
                     options.ClientSecret = section["ClientSecret"];
                 })
+                .AddFacebook(options =>
+                {
+                    IConfigurationSection section =
+                        _config.GetSection("Authentication:Facebook");
+
+                    options.AppId = section["ClientId"];
+                    options.AppSecret = section["ClientSecret"];
+                    options.AccessDeniedPath = "/Error";
+                })
                 .AddTwitter(options =>
                 {
                     IConfigurationSection section =
