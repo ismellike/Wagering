@@ -112,7 +112,16 @@ namespace Wagering.Controllers
                 ModelState.AddModelError(string.Empty, "You are not a host of this wager.");
                 return BadRequest(ModelState);
             }
-            await WagerHandler.DeclineAsync(_context, id, userName);
+            wager.Status = (byte)Status.Canceled;
+            PersonalNotification notification = new PersonalNotification
+            {
+                Date = DateTime.Now,
+                Message = $"{userName} has canceled the wager.",
+                Data = wager.Id.ToString(),
+                DataModel = (byte)DataModel.Wager
+            };
+            List<PersonalNotification> notifications = NotificationHandler.AddNotificationToUsers(_context, wager.HostIds(), notification);
+            await SignalRHandler.SendNotificationsAsync(_context, _hubContext, wager.HostIds(), notifications);
             return Ok();
         }
 

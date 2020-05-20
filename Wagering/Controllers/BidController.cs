@@ -8,6 +8,7 @@ using Wagering.Models;
 using Wagering.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
+using System;
 
 namespace Wagering.Controllers
 {
@@ -56,11 +57,23 @@ namespace Wagering.Controllers
 
             bid.Approved = true;
             if (bid.Wager != null)
+            {
+                PersonalNotification notification = new PersonalNotification
+                {
+                    Date = DateTime.Now,
+                    Data = bid.Wager.Id.ToString(),
+                    DataModel = (byte)DataModel.Wager
+                };
                 if (bid.Wager.IsApproved())
                 {
-                    List<PersonalNotification> notifications = await WagerHandler.ConfirmAsync(_context, bid.WagerId, userName);
-                    await SignalRHandler.SendNotificationsAsync(_context, _hubContext, notifications.Select(x => x.ProfileId), notifications);
+                    bid.Wager.Status = (byte)Status.Confirmed;
+                    notification.Message = $"{userName} has accepted and confirmed the wager.";
                 }
+                else
+                    notification.Message = $"{userName} has accepted the wager.";
+                List<PersonalNotification> notifications = NotificationHandler.AddNotificationToUsers(_context, bid.Wager.HostIds(), notification);
+                await SignalRHandler.SendNotificationsAsync(_context, _hubContext, bid.Wager.HostIds(), notifications);
+            }
             return Ok();
         }
 
@@ -70,7 +83,7 @@ namespace Wagering.Controllers
             string? userId = User.GetId();
             string? userName = User.GetName();
 
-            var bid = await _context.WagerHostBids.Where(x => x.Id == id).Include(x => x.Wager).FirstOrDefaultAsync();
+            var bid = await _context.WagerHostBids.Where(x => x.Id == id).Include(x => x.Wager).ThenInclude(x => x.Hosts).FirstOrDefaultAsync();
             if (bid == null)
             {
                 ModelState.AddModelError(string.Empty, _errorMessages.NotFound);
@@ -92,8 +105,16 @@ namespace Wagering.Controllers
                 return BadRequest(ModelState);
             }
             bid.Approved = false;
-            List<PersonalNotification> notifications = await WagerHandler.DeclineAsync(_context, bid.WagerId, userName);
-            await SignalRHandler.SendNotificationsAsync(_context, _hubContext, notifications.Select(x => x.ProfileId), notifications);
+            bid.Wager.Status = (byte)Status.Canceled;
+            PersonalNotification notification = new PersonalNotification
+            {
+                Date = DateTime.Now,
+                Message = $"{userName} has declined the wager.",
+                Data = bid.Wager.Id.ToString(),
+                DataModel = (byte)DataModel.Wager
+            };
+            List<PersonalNotification> notifications = NotificationHandler.AddNotificationToUsers(_context, bid.Wager.HostIds(), notification);
+            await SignalRHandler.SendNotificationsAsync(_context, _hubContext, bid.Wager.HostIds(), notifications);
             return Ok();
         }
     }
