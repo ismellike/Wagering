@@ -38,7 +38,7 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
             //[RegularExpression(Constants.NameRegex)]
             //[StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
             public string? DisplayName { get; set; }
-            [IsPublicKey]
+            [IsPublicKeyAttribute]
             public string? PublicKey { get; set; }
         }
 

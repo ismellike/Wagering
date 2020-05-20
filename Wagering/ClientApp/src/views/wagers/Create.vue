@@ -22,9 +22,15 @@
                                 <v-card-text>
                                     <v-row>
                                         <v-col cols="12" sm="6">
-                                            <v-autocomplete
+                                            <v-text-field
+                                                disabled
                                                 v-if="index"
+                                                label="User Name"
+                                                :value="bid.profile.displayName"
+                                            ></v-text-field>
+                                            <v-autocomplete
                                                 v-model="search.select"
+                                                v-else
                                                 :loading="search.loading"
                                                 :items="search.users"
                                                 :search-input.sync="searchEvent"
@@ -32,15 +38,9 @@
                                                 hide-no-data
                                                 clearable
                                                 label="User Name"
-                                                item-text="profile.displayName"
+                                                item-text="displayName"
                                                 return-object
                                             ></v-autocomplete>
-                                            <v-text-field
-                                                disabled
-                                                v-else
-                                                label="User Name"
-                                                :value="bid.profile.displayName"
-                                            ></v-text-field>
                                         </v-col>
                                         <v-col cols="6" sm="3">
                                             <v-text-field
@@ -257,7 +257,7 @@ export default Vue.extend({
             search: {
                 users: [],
                 displayName: null,
-                interval: 500,
+                interval: 1000,
                 loading: false,
                 select: null,
                 timer: null
@@ -343,7 +343,7 @@ export default Vue.extend({
             return this.totalPayable == 100 ? "success" : "error";
         },
         dialogTitle(): string {
-            return this.index ? "Add User" : "Edit User";
+            return this.index ? "Edit User" : "Add User";
         }
     },
     methods: {
@@ -404,12 +404,10 @@ export default Vue.extend({
             this.dialog = true;
         },
         deleteUser(item: WagerHostBid): void {
-            if (this.wager && this.wager.hosts) {
-                const index = this.wager.hosts.indexOf(item);
-                if (index > -1)
-                    confirm("Are you sure you want to remove this user?") &&
-                        this.wager.hosts.splice(index, 1);
-            }
+            const index = this.wager?.hosts?.indexOf(item);
+            if (index)
+                confirm("Are you sure you want to remove this user?") &&
+                    this.wager?.hosts?.splice(index, 1);
         },
         normalize(): void {
             if (!this.wager || !this.wager.hosts) return;
@@ -427,19 +425,8 @@ export default Vue.extend({
             this.$axios
                 .post("/api/wager", this.wager)
                 .then((response: AxiosResponse) => {
-                    this.$microsoft.signalr.invoke(
-                        "AddToGroup",
-                        response.data.groupName
-                    );
-                    if (response.data.others.length > 0)
-                        this.$microsoft.signalr.invoke(
-                            "AddUsersToGroup",
-                            response.data.groupName,
-                            response.data.others,
-                            response.data.notification
-                        );
                     const pathName =
-                        response.data.wager.status == 1
+                        response.data.status == 1
                             ? "wager_confirmed"
                             : "wager_pending";
                     this.$router.push({

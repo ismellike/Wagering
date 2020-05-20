@@ -1,5 +1,5 @@
 <template>
-    <v-tabs grow show-arrows color="secondary">
+    <v-tabs grow show-arrows>
         <!--Member invitations sent here and confirm send is shown when available-->
         <v-tab>Pending</v-tab>
         <!--Item is confirmed and button here to vote for winner/report-->

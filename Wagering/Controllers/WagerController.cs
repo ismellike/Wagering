@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using stellar_dotnet_sdk;
 using System;
 using System.Collections.Generic;
@@ -10,6 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Wagering.Handlers;
 using Wagering.Models;
+using Wagering.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Wagering.Controllers
 {
@@ -18,6 +18,7 @@ namespace Wagering.Controllers
     public class WagerController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHubContext<GroupHub> _hubContext;
         private readonly Server _server;
         private const int ResultSize = 15;
         private readonly ErrorMessages _errorMessages = new ErrorMessages { Name = "wager" };
@@ -31,10 +32,11 @@ namespace Wagering.Controllers
             public int? playerCount;
         }
 
-        public WagerController(ApplicationDbContext context, Server server)
+        public WagerController(ApplicationDbContext context, IHubContext<GroupHub> hubContext, Server server)
         {
             _context = context;
             _server = server;
+            _hubContext = hubContext;
         }
 
         //POST: api/wagers/search
@@ -110,7 +112,7 @@ namespace Wagering.Controllers
                 ModelState.AddModelError(string.Empty, "You are not a host of this wager.");
                 return BadRequest(ModelState);
             }
-            await WagerHandler.Decline(_context, id, userName);
+            await WagerHandler.DeclineAsync(_context, id, userName);
             return Ok();
         }
 
@@ -119,7 +121,7 @@ namespace Wagering.Controllers
         // more details see https://aka.ms/RazorPagesCRUD.
         [Authorize]
         [HttpPost]
-        public IActionResult PostWager(Wager wagerData)
+        public async Task<IActionResult> PostWager(Wager wagerData)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -197,9 +199,9 @@ namespace Wagering.Controllers
                 DataModel = (byte)DataModel.Wager
             };
             IEnumerable<string> others = wager.HostIds().Where(x => x != userId);
-            NotificationHandler.AddNotificationToUsers(_context, others, notification);
-            _context.SaveChanges();
-            return Ok(new { id = wager.Id, groupName = wager.GroupName, others = others, notification = notification });
+            List<PersonalNotification> notifications = NotificationHandler.AddNotificationToUsers(_context, others, notification);
+            await SignalRHandler.SendNotificationsAsync(_context, _hubContext, others, notifications);
+            return Ok(new { id = wager.Id, status = wager.Status });
         }
     }
 }

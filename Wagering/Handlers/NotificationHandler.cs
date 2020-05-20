@@ -5,7 +5,7 @@ namespace Wagering.Handlers
 {
     public static class NotificationHandler
     {
-        public static void AddNotificationToUsers(ApplicationDbContext _context, IEnumerable<string> userIds, PersonalNotification notification)
+        public static List<PersonalNotification> AddNotificationToUsers(ApplicationDbContext _context, IEnumerable<string> userIds, PersonalNotification notification)
         {
             List<PersonalNotification> notifications = new List<PersonalNotification>();
             foreach (string id in userIds)
@@ -20,8 +20,12 @@ namespace Wagering.Handlers
                 };
                 notifications.Add(personalNotification);
             }
-
-            _context.Notifications.AddRange(notifications);
+            if (notifications.Count > 0)
+            {
+                _context.Notifications.AddRange(notifications);
+                _context.SaveChanges();
+            }
+            return notifications;
         }
     }
 }

@@ -9,16 +9,13 @@ namespace Wagering.Handlers
 {
     public static class WagerHandler
     {
-        public static async Task Confirm(ApplicationDbContext _context, int wagerId, string? username)
+        public static async Task<Wager> GetWagerAsync(ApplicationDbContext _context, int wagerId)
         {
-            var wager = await _context.Wagers.Where(x => x.Id == wagerId).Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync();
-            if (wager == null)
-                return;
-            Confirm(_context, wager, username);
+            return await _context.Wagers.Where(x => x.Id == wagerId).Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync();
         }
-
-        public static void Confirm(ApplicationDbContext _context, Wager wager, string? username)
+        public static async Task<List<PersonalNotification>> ConfirmAsync(ApplicationDbContext _context, int wagerId, string? username)
         {
+            var wager = await GetWagerAsync(_context, wagerId);
             wager.Status = (byte)Status.Confirmed;
             PersonalNotification notification = new PersonalNotification
             {
@@ -27,18 +24,12 @@ namespace Wagering.Handlers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            //_context.AddNotificationToUsers(wager.AllUsers(), notification);
+            return NotificationHandler.AddNotificationToUsers(_context, wager.AllIds(), notification);
         }
 
-        public static async Task Decline(ApplicationDbContext _context, int wagerId, string? username)
+        public static async Task<List<PersonalNotification>> DeclineAsync(ApplicationDbContext _context, int wagerId, string? username)
         {
-            var wager = await _context.Wagers.Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync(x => x.Id == wagerId);
-            if (wager == null)
-                return;
-            Decline(_context, wager, username);
-        }
-        public static void Decline(ApplicationDbContext _context, Wager wager, string? username)
-        {
+            var wager = await GetWagerAsync(_context, wagerId);
             wager.Status = (byte)Status.Closed;
             PersonalNotification notification = new PersonalNotification
             {
@@ -47,19 +38,12 @@ namespace Wagering.Handlers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            //_context.AddNotificationToUsers(wager.AllUsers(), notification);
+            return NotificationHandler.AddNotificationToUsers(_context, wager.AllIds(), notification);
         }
 
-        public static async Task Close(ApplicationDbContext _context, int wagerId, string username)
+        public static async Task<List<PersonalNotification>> CloseAsync(ApplicationDbContext _context, int wagerId, string username)
         {
-            var wager = await _context.Wagers.Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync(x => x.Id == wagerId);
-            if (wager == null)
-                return;
-            Close(_context, wager, username);
-        }
-
-        public static void Close(ApplicationDbContext _context, Wager wager, string username)
-        {
+            var wager = await GetWagerAsync(_context, wagerId);
             wager.Status = (byte)Status.Canceled;
             PersonalNotification notification = new PersonalNotification
             {
@@ -68,21 +52,12 @@ namespace Wagering.Handlers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            //_context.AddNotificationToUsers(wager.AllUsers(), notification);
+            return NotificationHandler.AddNotificationToUsers(_context, wager.AllIds(), notification);
         }
 
-        public static async Task Complete(ApplicationDbContext _context, int wagerId, string username)
+        public static async Task<List<PersonalNotification>> CompleteAsync(ApplicationDbContext _context, int wagerId, string username)
         {
-            var wager = await _context.Wagers.Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync(x => x.Id == wagerId);
-            if (wager == null)
-                return;
-            Complete(_context, wager, username);
-        }
-
-        public static void Complete(ApplicationDbContext _context, Wager wager, string username)
-        {
-            if (wager == null)
-                return;
+            var wager = await GetWagerAsync(_context, wagerId);
             wager.Status = (byte)Status.Completed;
             PersonalNotification notification = new PersonalNotification
             {
@@ -91,12 +66,7 @@ namespace Wagering.Handlers
                 Data = wager.Id.ToString(),
                 DataModel = (byte)DataModel.Wager
             };
-            //_context.AddNotificationToUsers(wager.AllUsers(), notification);
-        }
-
-        private static async Task<Wager> GetWagerAsync(ApplicationDbContext _context, int wagerId)
-        {
-            return await _context.Wagers.Where(x => x.Id == wagerId).Include(x => x.Hosts).Include(x => x.Challenges).ThenInclude(x => x.Challengers).FirstOrDefaultAsync();
+            return NotificationHandler.AddNotificationToUsers(_context, wager.AllIds(), notification);
         }
     }
 }

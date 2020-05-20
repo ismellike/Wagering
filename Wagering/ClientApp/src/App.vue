@@ -133,7 +133,7 @@ export default Vue.extend({
     methods: {
         receiveNotifications(): void {
             this.$microsoft.signalr.on(
-                "GetNotification",
+                "ReceiveNotification",
                 (notification: PersonalNotification) => {
                     this.notifications.push(notification);
                 }
@@ -150,15 +150,6 @@ export default Vue.extend({
             //add to list to be sent to server when dialog closed
             this.notifications.splice(index, 1);
         },
-        receiveGroups(): void {
-            this.$microsoft.signalr.on(
-                "ReceiveGroup",
-                (name: string, notification: PersonalNotification) => {
-                    this.notifications.push(notification);
-                    this.$microsoft.signalr.invoke("AddToGroup", name);
-                }
-            );
-        },
         addGroups(): void {
             this.$axios.get("/api/group").then(response => {
                 this.$microsoft.signalr.invoke(
@@ -170,7 +161,6 @@ export default Vue.extend({
             });
         },
         listen(): void {
-            this.receiveGroups();
             this.receiveNotifications();
         }
     },

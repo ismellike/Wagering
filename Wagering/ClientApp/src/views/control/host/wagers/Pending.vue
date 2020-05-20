@@ -80,17 +80,6 @@ export default Vue.extend({
                     .post("/api/bid/wager/accept", this.userBid.id)
                     .then(() => {
                         if (this.userBid) this.userBid.approved = true;
-                        this.$microsoft.signalr.invoke(
-                            "NotifyGroup",
-                            "wager_" + this.$route.params.id,
-                            {
-                                message:
-                                    this.$store.getters.displayName +
-                                    " has accepted the wager.",
-                                isRead: false,
-                                link: this.$route.path
-                            }
-                        );
                     });
         },
         decline(): void {
@@ -99,35 +88,12 @@ export default Vue.extend({
                     .post("/api/bid/wager/decline", this.userBid.id)
                     .then(() => {
                         if (this.userBid) this.userBid.approved = false;
-                        this.$microsoft.signalr.invoke(
-                            "NotifyGroup",
-                            "wager_" + this.$route.params.id,
-                            {
-                                message:
-                                    this.$store.getters.displayName +
-                                    " has declined the wager.",
-                                isRead: false,
-                                link: this.$route.path
-                            }
-                        );
                     });
         },
         cancel(): void {
             this.$axios
                 .post("/api/wager/cancel", this.$route.params.id)
-                .then(() => {
-                    this.$microsoft.signalr.invoke(
-                        "NotifyGroup",
-                        "wager_" + this.$route.params.id,
-                        {
-                            message:
-                                this.$store.getters.displayName +
-                                " has canceled the wager.",
-                            isRead: false,
-                            link: this.$route.path
-                        }
-                    );
-                });
+                .then(() => {});
         }
     },
     computed: {

@@ -30,7 +30,7 @@ namespace Wagering.Hubs
 
             if (user != null)
             {
-                var connection = user.Connections.FirstOrDefault(x => x.ConnectionID == Context.ConnectionId);
+                var connection = user.Connections.FirstOrDefault(x => x.ConnectionId == Context.ConnectionId);
                 if (connection != null)
                 {
                     connection.Connected = true;
@@ -40,7 +40,7 @@ namespace Wagering.Hubs
                     _context.Connections.Add(new Connection
                     {
                         ProfileId = id,
-                        ConnectionID = Context.ConnectionId,
+                        ConnectionId = Context.ConnectionId,
                         UserAgent = Context.GetHttpContext().Request.Headers["User-Agent"],
                         Connected = true
                     });
@@ -48,15 +48,6 @@ namespace Wagering.Hubs
                 _context.SaveChanges();
             }
             await base.OnConnectedAsync();
-        }
-
-        public async Task AddToGroup(string id, string groupName)
-        {
-            var user = await GetUserAsync(id);
-            if (user != null)
-                foreach (Connection connection in user.Connections)
-                    if (connection.Connected)
-                        await Groups.AddToGroupAsync(connection.ConnectionID, groupName);
         }
 
         /// <summary>
@@ -68,31 +59,6 @@ namespace Wagering.Hubs
         {
             foreach (string groupName in groups)
                 await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-        }
-
-        public async Task RemoveFromGroup(string id, string groupName)
-        {
-            var user = await GetUserAsync(id);
-            if (user != null)
-                foreach (Connection connection in user.Connections)
-                    if (connection.Connected)
-                        await Groups.RemoveFromGroupAsync(connection.ConnectionID, groupName);
-        }
-
-        public async Task AddUsersToGroup(string name, string[] ids, PersonalNotification notification)
-        {
-            var users = await _context.Profiles.AsNoTracking().Where(x => ids.Contains(x.Id))
-            .Include(x => x.Connections)
-            .ToListAsync();
-            foreach (var user in users)
-                foreach (var connection in user.Connections)
-                    if (connection.Connected)
-                        await Clients.Client(connection.ConnectionID).SendAsync("ReceiveGroup", name, notification);
-        }
-
-        public async Task NotifyGroup(string name, PersonalNotification notification)
-        {
-            await Clients.OthersInGroup(name).SendAsync("GetNotification", notification);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)

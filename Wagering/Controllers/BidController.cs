@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Wagering.Handlers;
 using Wagering.Models;
+using Wagering.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using System.Collections.Generic;
 
 namespace Wagering.Controllers
 {
@@ -15,11 +17,13 @@ namespace Wagering.Controllers
     public class BidController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHubContext<GroupHub> _hubContext;
         private readonly ErrorMessages _errorMessages = new ErrorMessages { Name = "wager bid" };
 
-        public BidController(ApplicationDbContext context)
+        public BidController(ApplicationDbContext context, IHubContext<GroupHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         [HttpPost("wager/accept/{id}")]
@@ -53,12 +57,13 @@ namespace Wagering.Controllers
             bid.Approved = true;
             if (bid.Wager != null)
                 if (bid.Wager.IsApproved())
-                    await WagerHandler.Confirm(_context, bid.WagerId, userName);
-            _context.SaveChanges();
+                {
+                    List<PersonalNotification> notifications = await WagerHandler.ConfirmAsync(_context, bid.WagerId, userName);
+                    await SignalRHandler.SendNotificationsAsync(_context, _hubContext, notifications.Select(x => x.ProfileId), notifications);
+                }
             return Ok();
         }
 
-        //decline then send notification to users status => 2
         [HttpPost("wager/decline/{id}")]
         public async Task<IActionResult> DeclineBid(int id)
         {
@@ -87,8 +92,8 @@ namespace Wagering.Controllers
                 return BadRequest(ModelState);
             }
             bid.Approved = false;
-            await WagerHandler.Decline(_context, bid.WagerId, userName);
-            _context.SaveChanges();
+            List<PersonalNotification> notifications = await WagerHandler.DeclineAsync(_context, bid.WagerId, userName);
+            await SignalRHandler.SendNotificationsAsync(_context, _hubContext, notifications.Select(x => x.ProfileId), notifications);
             return Ok();
         }
     }
