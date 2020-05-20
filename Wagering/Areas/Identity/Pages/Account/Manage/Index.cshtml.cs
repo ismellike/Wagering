@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Wagering.Models;
@@ -81,6 +80,7 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
             var claims = await _userManager.GetClaimsAsync(user);
             var profile = await _context.Profiles.FindAsync(user.Id);
 
+            //ADD SEP-0010 PROTOCOL FOR VERIFYING OWNERSHIP
             var publicKey = profile.PublicKey;
             if (Input.PublicKey != publicKey)
             {

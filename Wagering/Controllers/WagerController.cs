@@ -132,13 +132,15 @@ namespace Wagering.Controllers
         [HttpPost]
         public async Task<IActionResult> PostWager(Wager wagerData)
         {
+            string? userId = User.GetId();
+            string? userName = User.GetName();
+            string? userKey = User.GetKey();
+            if (userKey == null)
+                ModelState.AddModelError(string.Empty, "User does not have a public key registered.");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            string? userId = User.GetId();
-            string? userName = User.GetName();
             WagerHostBid caller = wagerData.Hosts.FirstOrDefault(x => x.ProfileId == userId);
-
             if (wagerData.Hosts.Sum(x => x.ReceivablePt) != 100)
                 ModelState.AddModelError(string.Empty, "The hosts receivable percentages do not add up to 100.");
             if (wagerData.Hosts.Sum(x => x.PayablePt) != 100)
@@ -158,7 +160,6 @@ namespace Wagering.Controllers
             {
                 ModelState.AddModelError(string.Empty, e.Message);
             }
-            //TODO: check sufficient funds on horizon
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -196,7 +197,7 @@ namespace Wagering.Controllers
             }
 
             if (wager.IsApproved())
-                wager.Status = 1;
+                wager.Status = (byte)Status.Confirmed;
 
             _context.Wagers.Add(wager);
             _context.SaveChanges();

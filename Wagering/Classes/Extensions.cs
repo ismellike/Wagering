@@ -13,6 +13,10 @@ namespace Wagering
             return list.All(hs.Add);
         }
 
+        public static string? GetKey(this ClaimsPrincipal User)
+        {
+            return User.Claims.FirstOrDefault(x => x.Type == Constants.Claims.PublicKey)?.Value;
+        }
         public static string? GetId(this ClaimsPrincipal User)
         {
             return User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
