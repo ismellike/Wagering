@@ -4,7 +4,7 @@
         {
             "label": "Sass Compile",
             "type": "shell",
-            "command": "node-sass Styles/bulma.sass wwwroot/lib/bulma.css",
+            "command": "node-sass Styles/bulma.sass wwwroot/css/bulma.min.css --output-style compressed",
             "group": "build",
             "problemMatcher": []
         },
