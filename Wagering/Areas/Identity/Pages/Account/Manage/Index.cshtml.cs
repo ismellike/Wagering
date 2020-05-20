@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Wagering.Handlers;
 using Wagering.Models;
+using Wagering.Validation;
 
 namespace Wagering.Areas.Identity.Pages.Account.Manage
 {
@@ -38,7 +38,7 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
             //[RegularExpression(Constants.NameRegex)]
             //[StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
             public string? DisplayName { get; set; }
-            [CustomValidation(typeof(StellarHandler), "IsPublicKeyValid", ErrorMessage = "{0} is not a valid stellar public key.")]
+            [IsPublicKey]
             public string? PublicKey { get; set; }
         }
 

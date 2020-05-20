@@ -59,14 +59,15 @@ namespace Wagering.Hubs
                         await Groups.AddToGroupAsync(connection.ConnectionID, groupName);
         }
 
-        public async Task AddToGroups(string id, string[] groups)
+        /// <summary>
+        /// Used on startup for adding user to groups
+        /// </summary>
+        /// <param name="groups"></param>
+        /// <returns></returns>
+        public async Task AddToGroups(string[] groups)
         {
-            var user = await GetUserAsync(id);
-            if (user != null)
-                foreach (Connection connection in user.Connections)
-                    if (connection.Connected)
-                        foreach (string groupName in groups)
-                            await Groups.AddToGroupAsync(connection.ConnectionID, groupName);
+            foreach (string groupName in groups)
+                await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
         }
 
         public async Task RemoveFromGroup(string id, string groupName)

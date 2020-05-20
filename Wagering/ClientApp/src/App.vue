@@ -38,8 +38,8 @@
                     <v-list-item to="/client" link>
                         <v-list-item-action>
                             <v-badge
-                                :content="groupCount"
-                                :value="groupCount > 0"
+                                :content="clientCount"
+                                :value="clientCount > 0"
                                 offset-x="10"
                                 offset-y="10"
                                 color="error"
@@ -54,8 +54,8 @@
                     <v-list-item to="/host" link>
                         <v-list-item-action>
                             <v-badge
-                                :content="groupCount"
-                                :value="groupCount > 0"
+                                :content="hostCount"
+                                :value="hostCount > 0"
                                 offset-x="10"
                                 offset-y="10"
                                 color="error"
@@ -73,7 +73,7 @@
                 <login-menu />
             </template>
         </v-navigation-drawer>
-        <v-app-bar app color="accent" dense clipped-right>
+        <v-app-bar app dense clipped-right>
             <v-toolbar-title>Wagering.gg</v-toolbar-title>
             <v-spacer />
             <notifications-display :notifications="notifications" />
