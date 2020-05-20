@@ -30,7 +30,7 @@ namespace Wagering.Controllers
             return Ok(results);
         }
 
-        [HttpGet("wagers/{id}")]
+        [HttpGet("wager/{id}")]
         [Authorize]
         public async Task<IActionResult> GetControlWager(int id)
         {

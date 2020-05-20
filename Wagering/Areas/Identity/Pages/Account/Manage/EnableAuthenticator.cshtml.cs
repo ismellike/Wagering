@@ -146,7 +146,7 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
         {
             return string.Format(
                 AuthenticatorUriFormat,
-                _urlEncoder.Encode("Wagering"),
+                _urlEncoder.Encode("Wagering.gg"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }

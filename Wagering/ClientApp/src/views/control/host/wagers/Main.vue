@@ -95,7 +95,7 @@ export default Vue.extend({
         };
     },
     created() {
-        this.$axios.get("/api/wager/control").then(response => {
+        this.$axios.get("/api/host/wagers").then(response => {
             response.data.forEach((item: Wager) => {
                 switch (item.status) {
                     case Status.Created:
