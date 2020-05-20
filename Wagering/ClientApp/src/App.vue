@@ -76,7 +76,81 @@
         <v-app-bar app dense clipped-right>
             <v-toolbar-title>Wagering.gg</v-toolbar-title>
             <v-spacer />
-            <notifications-display :notifications="notifications" />
+            <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                    <v-badge
+                        :content="notifications.length"
+                        :value="notifications.length > 0"
+                        color="error"
+                        offset-y="20"
+                        offset-x="20"
+                    >
+                        <v-btn
+                            color="warning"
+                            icon
+                            v-on="on"
+                            @click.stop="dialog = true"
+                        >
+                            <v-icon>mdi-bell</v-icon>
+                        </v-btn>
+                    </v-badge>
+                </template>
+                <span>Notifications</span>
+                <v-dialog v-model="dialog" max-width="500">
+                    <v-card>
+                        <v-card-title>Notifications</v-card-title>
+
+                        <v-card-text>
+                            <v-list two-line>
+                                <v-list-item
+                                    v-for="(notification, i) in notifications"
+                                    :key="i"
+                                >
+                                    <v-list-item-content>
+                                        <v-list-item-title>{{
+                                            notification.message
+                                        }}</v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <timeago
+                                                :datetime="notification.date"
+                                                autoUpdate
+                                            />
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <template>
+                                            <v-btn
+                                                icon
+                                                @click="
+                                                    deleteNotification(
+                                                        notification,
+                                                        i
+                                                    )
+                                                "
+                                            >
+                                                <v-icon color="error"
+                                                    >mdi-delete</v-icon
+                                                >
+                                            </v-btn>
+                                            <v-btn icon :to="notification.link">
+                                                <v-icon
+                                                    >mdi-subdirectory-arrow-right</v-icon
+                                                >
+                                            </v-btn>
+                                        </template>
+                                    </v-list-item-action>
+                                </v-list-item>
+                            </v-list>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn text color="error" @click="dialog = false"
+                                >Close</v-btn
+                            >
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </v-tooltip>
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         </v-app-bar>
         <v-content>
@@ -110,7 +184,6 @@
 <script lang="ts">
 import Vue from "vue";
 import LoginMenu from "@/components/LoginMenu.vue";
-import NotifcationsDisplay from "@/components/NotificationDisplay.vue";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 export default Vue.extend({
@@ -119,15 +192,15 @@ export default Vue.extend({
         source: String
     },
     components: {
-        "login-menu": LoginMenu,
-        "notifications-display": NotifcationsDisplay
+        "login-menu": LoginMenu
     },
     data() {
         return {
             drawer: false as boolean,
             notifications: [] as PersonalNotification[],
             hostCount: 0 as number,
-            clientCount: 0 as number
+            clientCount: 0 as number,
+            dialog: false as boolean
         };
     },
     methods: {
@@ -146,8 +219,11 @@ export default Vue.extend({
                 });
             });
         },
-        deleteNotification(index: number): void {
-            //add to list to be sent to server when dialog closed
+        deleteNotification(
+            notification: PersonalNotification,
+            index: number
+        ): void {
+            this.$axios.get("/api/notification/delete/" + notification.id);
             this.notifications.splice(index, 1);
         },
         addGroups(): void {
