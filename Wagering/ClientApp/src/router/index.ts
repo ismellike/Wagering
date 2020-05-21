@@ -27,6 +27,13 @@ const routes = [
         component: () => import("@/views/Hub.vue"),
     },
     {
+        path: "/profile",
+        component: () => import("@/views/profile/Main.vue"),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
         path: "/host",
         component: () => import("@/views/control/host/Main.vue"),
         meta: {

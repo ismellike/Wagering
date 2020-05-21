@@ -1,40 +1,35 @@
 ﻿<template>
     <v-list dense>
         <div v-if="this.$store.getters.isAuthenticated">
-            <v-list-item to="/authentication/profile" link>
-                <v-list-item-action>
-                    <v-icon>mdi-account</v-icon>
-                </v-list-item-action>
+            <v-list-item>
                 <v-list-item-content>
-                    <v-list-item-title>
+                    <v-btn color="accent" block to="/profile">
+                        <v-icon left>mdi-account</v-icon>
                         {{ $store.getters.displayName }}
-                    </v-list-item-title>
+                    </v-btn>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/authentication/logout" link>
-                <v-list-item-action>
-                    <v-icon>mdi-logout</v-icon>
-                </v-list-item-action>
+            <v-list-item>
                 <v-list-item-content>
-                    <v-list-item-title>Logout</v-list-item-title>
+                    <v-btn block to="/authentication/logout">
+                        <v-icon left>mdi-logout</v-icon> Logout
+                    </v-btn>
                 </v-list-item-content>
             </v-list-item>
         </div>
         <div v-else>
-            <v-list-item to="/authentication/login" link>
-                <v-list-item-action>
-                    <v-icon>mdi-login</v-icon>
-                </v-list-item-action>
+            <v-list-item>
                 <v-list-item-content>
-                    <v-list-item-title>Login</v-list-item-title>
+                    <v-btn color="accent" block to="/authentication/login">
+                        <v-icon left>mdi-login</v-icon> Login
+                    </v-btn>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item to="/authentication/register" link>
-                <v-list-item-action>
-                    <v-icon>mdi-account-plus</v-icon>
-                </v-list-item-action>
+            <v-list-item>
                 <v-list-item-content>
-                    <v-list-item-title>Register</v-list-item-title>
+                    <v-btn block to="/authentication/register">
+                        <v-icon left>mdi-account-plus</v-icon> Register
+                    </v-btn>
                 </v-list-item-content>
             </v-list-item>
         </div>

@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Wagering.Models;
-using Wagering.Validation;
 
 namespace Wagering.Areas.Identity.Pages.Account.Manage
 {
@@ -24,9 +22,6 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
             _context = context;
         }
 
-        [TempData]
-        public string? StatusMessage { get; set; }
-
         [BindProperty]
         public InputModel Input { get; set; } = new InputModel();
 
@@ -37,8 +32,6 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
             //[RegularExpression(Constants.NameRegex)]
             //[StringLength(12, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
             public string? DisplayName { get; set; }
-            [IsPublicKeyAttribute]
-            public string? PublicKey { get; set; }
         }
 
         private async Task Load(ApplicationUser user)
@@ -47,8 +40,7 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
             Input = new InputModel
             {
                 Email = user.Email,
-                DisplayName = claims.NameClaim()?.Value,
-                PublicKey = claims.KeyClaim()?.Value
+                DisplayName = claims.NameClaim()?.Value
             };
         }
 
@@ -62,43 +54,6 @@ namespace Wagering.Areas.Identity.Pages.Account.Manage
 
             await Load(user);
             return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            ApplicationUser user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                await Load(user);
-                return Page();
-            }
-            var claims = await _userManager.GetClaimsAsync(user);
-            var profile = await _context.Profiles.FindAsync(user.Id);
-
-            //ADD SEP-0010 PROTOCOL FOR VERIFYING OWNERSHIP
-            var publicKey = profile.PublicKey;
-            if (Input.PublicKey != publicKey)
-            {
-                profile.PublicKey = Input.PublicKey;
-                Claim keyClaim = claims.KeyClaim();
-                Claim newClaim = new Claim(Constants.Claims.PublicKey, Input.PublicKey);
-
-                if (keyClaim == null)
-                    await _userManager.AddClaimAsync(user, newClaim);
-                else
-                    await _userManager.ReplaceClaimAsync(user, keyClaim, newClaim);
-                _context.Profiles.Update(profile);
-                _context.SaveChanges();
-            }
-
-            await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
-            return RedirectToPage();
         }
     }
 }
