@@ -109,7 +109,6 @@ namespace Wagering
 
             string network = _env.IsDevelopment() ? "https://horizon-testnet.stellar.org/" : "https://horizon.stellar.org/";
             services.AddSingleton(new Server(network));
-            //add errormessage singleton
             services.AddScoped<IEmailSender, EmailSender>();
         }
 

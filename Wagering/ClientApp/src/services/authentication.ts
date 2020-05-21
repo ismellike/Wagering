@@ -169,6 +169,7 @@ export class AuthorizeService {
                 displayName: user.profile.display_name,
                 token: user.access_token,
                 isVerified: user.profile.is_verified,
+                publicKey: user.profile.public_key,
             });
         } else {
             store.dispatch("setLogout");

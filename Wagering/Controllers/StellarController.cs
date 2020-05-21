@@ -12,6 +12,7 @@ namespace Wagering.Controllers
         {
             _server = server;
         }
+
         [HttpGet]
         public IActionResult RequestChallenge([FromQuery] string account)
         {

@@ -23,7 +23,7 @@ namespace Wagering.Controllers
             _signInManager = signInManager;
         }
 
-        [HttpPut("publickey/{key}")]
+        [HttpPut("key/{key}")]
         public async Task<IActionResult> EditPublicKey(string key)
         {
             if (!StrKey.IsValidEd25519PublicKey(key))

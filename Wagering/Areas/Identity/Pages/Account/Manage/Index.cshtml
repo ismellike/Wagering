@@ -1,24 +1,8 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Profile";
-    ViewData["ActivePage"] = ManageNavPages.Index;
+    ViewData["Title"] = "Manage Account";
 }
 
 <h1 class="title">@ViewData["Title"]</h1>
-<div class="field">
-    <p class="control has-icons-left">
-        <input asp-for="Input.Email" disabled class="input" />
-        <span class="icon is-left">
-            <i class="mdi mdi-email"></i>
-        </span>
-    </p>
-</div>
-<div class="field">
-    <p class="control has-icons-left">
-        <input asp-for="Input.DisplayName" disabled class="input" />
-        <span class="icon is-left">
-            <i class="mdi mdi-account"></i>
-        </span>
-    </p>
-</div>
+<p class="subtitle">View all administrative account properties here.</p>

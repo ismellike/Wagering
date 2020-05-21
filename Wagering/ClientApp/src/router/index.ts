@@ -134,16 +134,6 @@ const routes = [
         },
     },
     {
-        path: ApplicationPaths.Profile,
-        component: Login,
-        props: {
-            action: LoginActions.Profile,
-        },
-        meta: {
-            requiresAuth: true,
-        },
-    },
-    {
         path: ApplicationPaths.Register,
         component: Login,
         props: {

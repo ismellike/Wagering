@@ -2,9 +2,11 @@
     <content-display>
         <h1 v-if="!!message">{{ message }}</h1>
         <div v-else>
-            <h1 v-if="action === logout">Processing logout</h1>
-            <h1 v-else-if="action === callback">Processing logout callback</h1>
-            <h1 v-else-if="action === loggedOut">{{ message }}</h1>
+            <h1 v-if="action === logoutPath">Processing logoutPath</h1>
+            <h1 v-else-if="action === callbackPath">
+                Processing logoutPath callbackPath
+            </h1>
+            <h1 v-else-if="action === loggedOutPath">{{ message }}</h1>
             <h1 v-else>Invalid action {{ action }}</h1>
         </div>
     </content-display>
@@ -31,9 +33,9 @@ export default Vue.extend({
     data() {
         return {
             message: null as string | null,
-            logout: LogoutActions.Logout,
-            callback: LogoutActions.LogoutCallback,
-            loggedOut: LogoutActions.LoggedOut
+            logoutPath: LogoutActions.Logout,
+            callbackPath: LogoutActions.LogoutCallback,
+            loggedOutPath: LogoutActions.LoggedOut
         };
     },
     mounted() {
@@ -120,7 +122,7 @@ export default Vue.extend({
             );
         },
         navigateToReturnUrl(returnUrl: string): void {
-            // It's important that we do a replace here so that we remove the callback uri with the
+            // It's important that we do a replace here so that we remove the callbackPath uri with the
             // fragment containing the tokens from the browser history.
             window.location.replace(returnUrl);
         }

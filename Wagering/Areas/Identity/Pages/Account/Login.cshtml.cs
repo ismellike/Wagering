@@ -64,7 +64,7 @@ namespace Wagering.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/authentication/login");
-
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (!ModelState.IsValid)
                 return Page();
             // This doesn't count login failures towards account lockout
